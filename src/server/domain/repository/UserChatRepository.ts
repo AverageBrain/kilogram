@@ -1,3 +1,3 @@
-public class UserChatRepository {
+export class UserChatRepository {
 
 }

@@ -1,4 +1,6 @@
-public interface User {
-    id?: number
+import {BaseEntity} from "./BaseEntity";
 
+export interface User extends BaseEntity  {
+    username?: string
+    name?: string
 }

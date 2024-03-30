@@ -1,5 +1,5 @@
-public interface Chat {
-    id?: number
+import {BaseEntity} from "./BaseEntity";
 
+export interface Chat extends BaseEntity{
     name?: string
 }

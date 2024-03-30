@@ -1,3 +1,3 @@
-public class MessageRepository {
+export class MessageRepository {
 
 }
