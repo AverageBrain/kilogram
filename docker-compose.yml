@@ -7,4 +7,4 @@ services:
       POSTGRES_USER: "kilogram"
       POSTGRES_PASSWORD: "kilogram"
     ports:
-      - "5432:5432"
+      - "3000:5432"
