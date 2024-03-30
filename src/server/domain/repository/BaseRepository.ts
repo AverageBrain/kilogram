@@ -1,6 +1,6 @@
 import {BaseEntity} from "../entity/BaseEntity";
 
-type findValue = number | string
+export type FindValue = number | string
 
 export interface BaseRepository<E extends BaseEntity> {
     save: (entity: E) => Promise<E>
@@ -8,5 +8,5 @@ export interface BaseRepository<E extends BaseEntity> {
     remove: (entity: E) => Promise<E>
     findById: (id: number) => Promise<E | null>
     findByIds: (ids: number[]) => Promise<E[]>
-    findByField: (name: string, value: findValue) => Promise<E[]>
+    findByField: (name: string, value: FindValue) => Promise<E[]>
 }

@@ -1,4 +1,4 @@
-import {BaseRepository} from "./BaseRepository";
+import {BaseRepository, FindValue} from "./BaseRepository";
 import {Chat} from "../entity/Chat";
 import {db} from "./Pool";
 
@@ -8,9 +8,9 @@ export class ChatRepository implements BaseRepository<Chat> {
         entity.id = data.id
         return entity
     }
-
+    update: (entity: Chat) => Promise<Chat>;
     remove: (entity: Chat) => Promise<Chat>;
     findById: (id: number) => Promise<Chat>;
     findByIds: (ids: number[]) => Promise<Chat[]>;
-    findByField: (name: string, value: findValue) => Promise<Chat[]>;
+    findByField: (name: string, value: FindValue) => Promise<Chat[]>;
 }

@@ -1,4 +1,4 @@
-import {BaseRepository} from "./BaseRepository";
+import {BaseRepository, FindValue} from "./BaseRepository";
 import {User} from "../entity/User";
 import {db} from "./Pool";
 
@@ -19,6 +19,6 @@ export class UserRepository implements BaseRepository<User> {
     remove: (entity: User) => Promise<User>;
     findById: (id: number) => Promise<User | null>;
     findByIds: (ids: number[]) => Promise<User[]>;
-    findByField: (name: string, value: string | number) => Promise<User[]>;
+    findByField: (name: string, value: FindValue) => Promise<User[]>;
 
 }
