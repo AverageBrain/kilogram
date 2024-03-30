@@ -1,5 +1,5 @@
 import { User, Chat } from '../types';
-import { users } from './users'
+import { users } from './users';
 
 const findUserById = (id: string): User => {
   const user: User | undefined = users.find((user: User) => user.id === id);
