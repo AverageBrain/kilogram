@@ -1,10 +1,11 @@
 import React from 'react';
 import logo from './logo.svg';
 import './App.css';
-import { ChatsList } from './client/components';
+import { ChatList } from './client/components';
+import { chatList } from './mock/chatList';
 
 function App() {
-  return <ChatsList />;
+  return <ChatList chats={chatList}/>;
   // return (
   //   <div className="App">
   //     <header className="App-header">
