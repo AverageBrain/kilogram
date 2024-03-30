@@ -4,6 +4,7 @@ import expressSession from "express-session";
 
 import {routers} from "./routes";
 import {myPassport} from "./myPassport";
+import {UserRepository} from "./domain/repository/UserRepository";
 
 const app = express();
 
@@ -43,3 +44,6 @@ app.use(myPassport.session());
 app.use(routers);
 
 app.listen(3000);
+
+const userRepository = new UserRepository()
+userRepository.findByFieldFirst("githubId", '123123123213').then(response => console.log(response))
