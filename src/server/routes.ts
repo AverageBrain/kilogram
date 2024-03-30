@@ -1,4 +1,4 @@
-import {isAuthenticatedMiddleware} from "./server/controllers/isAuthenticatedMiddleware";
+import {isAuthenticatedMiddleware} from "./controllers/isAuthenticatedMiddleware";
 import {NextFunction, Request, Response} from "express-serve-static-core";
 import {Router} from "express";
 import passport from "passport";
@@ -8,7 +8,10 @@ const routers = Router();
 // Главная страница
 routers.get(
     '/',
-    (req: Request, res: Response) => res.render('main', {user: req.user})
+    (req: Request, res: Response) => {
+        res.status(200).type('text/plain');
+        res.send('Create user request');
+    }
 );
 
 // Маршрут для входа
@@ -34,7 +37,10 @@ routers.get(
     // Если пользователь не аутентифицирован, то отправляем на /
     isAuthenticatedMiddleware,
     // Иначе показываем его профиль
-    (req: Request, res: Response) => res.render('user', {user: req.user})
+    (req: Request, res: Response) => {
+        res.status(200).type('text/plain');
+        res.send(req.user);
+    }
 );
 
 // Маршрут для выхода пользователя

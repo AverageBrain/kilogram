@@ -2,14 +2,10 @@ import cookieParser from "cookie-parser";
 import express from "express";
 import expressSession from "express-session";
 
-import {routers} from "../routes";
+import {routers} from "./routes";
 import {myPassport} from "./myPassport";
 
 const app = express();
-
-// Подключаем шаблонизатор handlebars (https://handlebarsjs.com/)
-app.set('view engine', 'hbs');
-app.set('views', './src/views');
 
 // Подключаем библиотеку для парсинга кук, чтобы получить доступ к сессионной куке
 app.use(cookieParser());
