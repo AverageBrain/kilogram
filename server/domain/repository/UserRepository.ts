@@ -4,7 +4,7 @@ import {db} from "./Pool";
 
 export class UserRepository implements BaseRepository<User> {
     private excInfo = {
-        "table": '"user"'
+        "table": 'user'
     }
 
 
@@ -43,14 +43,14 @@ export class UserRepository implements BaseRepository<User> {
     }
 
     async findByIds(ids: number[]) {
-        return await db.many<User>('SELECT * FROM $[table~] where id in $[ids]', {
+        return await db.manyOrNone<User>('SELECT * FROM $[table~] where id in $[ids]', {
             ids: ids,
             ...this.excInfo
         })
     }
 
     async findByField(name: string, value: FindValue) {
-        return await db.many<User>('SELECT * FROM $[table~] where $[column~] = $[value]', {
+        return await db.manyOrNone<User>('SELECT * FROM $[table~] where $[column~] = $[value]', {
             column: name,
             value: value,
             ...this.excInfo
@@ -58,7 +58,7 @@ export class UserRepository implements BaseRepository<User> {
     }
 
     async findByFieldFirst(name: string, value: FindValue) {
-        return await db.one<User>('SELECT * FROM $[table~] where $[column~] = $[value] LIMIT 1', {
+        return await db.oneOrNone<User>('SELECT * FROM $[table~] where $[column] = $[value] LIMIT 1', {
             column: name,
             value: value,
             ...this.excInfo

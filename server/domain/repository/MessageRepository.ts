@@ -8,5 +8,4 @@ export class MessageRepository implements BaseRepository<Message> {
     findById: (id: number) => Promise<Message | null>;
     findByIds: (ids: number[]) => Promise<Message[]>;
     findByField: (name: string, value: FindValue) => Promise<Message[]>;
-
 }
