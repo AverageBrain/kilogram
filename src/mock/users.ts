@@ -1,6 +1,6 @@
-import { User } from '../types';
+import { UserType } from '../types';
 
-export const users: Array<User> = [
+export const users: Array<UserType> = [
   {
     id: '1',
     createdAt: '2024-03-30T12:38:31',

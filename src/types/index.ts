@@ -1,6 +1,6 @@
 export type {
-  User,
-  Message,
-  ChatListItem,
-  Chat,
+  UserType,
+  MessageType,
+  ChatListItemType,
+  ChatType,
 } from './types';

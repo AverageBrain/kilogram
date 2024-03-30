@@ -1,0 +1,47 @@
+.chat {
+  /* max-width: 500px; */
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.messages {
+  display: flex;
+  flex-direction: column-reverse;
+  height: 100%;
+  color: black;
+  padding: 10px;
+}
+
+.message {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid lightgray;
+  border-radius: 5px;
+  margin-top: 5px
+  /* backg */
+}
+
+.user-name {
+  color: white;
+}
+
+.active-person-message {
+  align-self: start; 
+  width: 66%;
+}
+
+.partner-message {
+  align-self: end;
+  width: 66%;
+}
+
+.send-message {
+  display: flex;
+
+}
+
+.send-message textarea {
+  margin-right: 5px;
+}
+
