@@ -1,14 +1,4 @@
-import { User, ChatListItem } from '../types';
-import { users } from './users'
-
-const findUserById = (id: string): User => {
-  const user: User | undefined = users.find((user: User) => user.id === id);
-  if (!user) {
-    throw Error("Mock: Can't find user with id");
-  }
-  return user;
-}
-
+import { ChatListItem } from '../types';
 
 export const chatList: ChatListItem[] = [
   {
