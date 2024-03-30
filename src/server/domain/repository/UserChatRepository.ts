@@ -8,5 +8,4 @@ export class UserChatRepository implements BaseRepository<UserChat> {
     findById: (id: number) => Promise<UserChat | null>;
     findByIds: (ids: number[]) => Promise<UserChat[]>;
     findByField: (name: string, value: FindValue) => Promise<UserChat[]>;
-
 }
