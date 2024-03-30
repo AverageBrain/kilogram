@@ -2,7 +2,7 @@ import cookieParser from "cookie-parser";
 import express from "express";
 import expressSession from "express-session";
 
-import {routers} from "../routes";
+import {routers} from "./routes";
 import {myPassport} from "./myPassport";
 
 const app = express();

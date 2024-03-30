@@ -1,4 +1,4 @@
-import {isAuthenticatedMiddleware} from "./server/controllers/isAuthenticatedMiddleware";
+import {isAuthenticatedMiddleware} from "./controllers/isAuthenticatedMiddleware";
 import {NextFunction, Request, Response} from "express-serve-static-core";
 import {Router} from "express";
 import passport from "passport";
