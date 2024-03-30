@@ -46,6 +46,6 @@ export class UserRepository implements BaseRepository<User> {
             ids: ids
         })
     }
-    findByFieldFirst: (name: string, value: FindValue) => Promise<User>;
+    findByFieldFirst: (name: string, value: FindValue) => Promise<User | null>;
 
 }
