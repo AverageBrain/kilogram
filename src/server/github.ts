@@ -1,5 +1,9 @@
 // Создаём стратегию для аутентификации через GitHub
 import passportGithub from "passport-github";
+import {UserRepository} from "./domain/repository/UserRepository";
+import {User} from "./domain/entity/User";
+
+const userRepository: UserRepository = new UserRepository()
 
 const githubStrategy = new passportGithub.Strategy(
     {
@@ -8,21 +12,29 @@ const githubStrategy = new passportGithub.Strategy(
         // Адрес, на который пользователь будет возвращён после авторизации в GitHub
         callbackURL: 'http://127.0.0.1:3000/auth/github/callback'
     },
-    (accessToken, refreshToken, profile, done) => {
+    async (accessToken, refreshToken, profile, done) => {
         // В этом месте можно сохранить пользователя в свою базу
         // или найти уже существующего в базе по данным из `profile`
         //
-        // User.findOrCreate(profile.username, (err, profile) => {
-        //     done(err, profile);
-        // });
+        const user: User | null = await userRepository.findByFieldFirst('githubId', profile.id);
 
-        // Чтобы завершить процесс аутентификации необходимо вызвать `done`
-        // и передать туда профиль пользователя – исходный или дополненный из базы
-        done(null, profile)
+        if (user !== null) {
+            done(null, user);
+        } else {
+            const profileUsername: string | undefined = profile.username;
 
-        // Чтобы отменить аутентификацию отправляем false
-        // done(null, false)
-    }
-);
+            if (profileUsername === undefined) {
+                throw Error('Cannot resolve github profile username');
+            }
+            const newUser = userRepository.save({
+                username: profileUsername,
+                name: profile.displayName,
+                githubId: profile.id
+            });
+
+            done(null, newUser);
+        }
+    })
+;
 
 export {githubStrategy}
