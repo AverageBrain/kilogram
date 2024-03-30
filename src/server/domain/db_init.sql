@@ -7,6 +7,7 @@ create table "user"
     updatedAt timestamp default now(),
 
     username    varchar(64),
+    githubId    varchar(100),
     name        varchar(64)
 );
 
