@@ -58,7 +58,7 @@ export class UserRepository implements BaseRepository<User> {
     }
 
     async findByFieldFirst(name: string, value: FindValue) {
-        return await db.oneOrNone<User>('SELECT * FROM $[table~] where $[column] = $[value] LIMIT 1', {
+        return await db.oneOrNone<User>('SELECT * FROM $[table~] where $[column~] = $[value] LIMIT 1', {
             column: name,
             value: value,
             ...this.excInfo
