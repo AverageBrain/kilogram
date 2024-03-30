@@ -9,4 +9,5 @@ export interface BaseRepository<E extends BaseEntity> {
     findById: (id: number) => Promise<E | null>
     findByIds: (ids: number[]) => Promise<E[]>
     findByField: (name: string, value: FindValue) => Promise<E[]>
+    findByFieldFirst: (name: string, value: FindValue) => Promise<E>
 }

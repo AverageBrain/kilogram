@@ -16,7 +16,7 @@ export class UserRepository implements BaseRepository<User> {
 
     async update(entity: User) {
         entity.updatedAt = new Date()
-        const data = await db.none(
+        await db.none(
             'UPDATE "user" SET updatedAt = $[updatedAt], username = $[username], name = $[name], githubId = $[githubId] WHERE id = $[id]', entity
         )
         return entity
@@ -31,12 +31,21 @@ export class UserRepository implements BaseRepository<User> {
     }
 
     async findById(id: number) {
-        return await db.oneOrNone('SELECT * FROM "user" where id = $[id]', {
-            table: 'Table Name',
+        return await db.oneOrNone<User>('SELECT * FROM "user" where id = $[id]', {
             id: id
         })
     }
 
-    findByIds: (ids: number[]) => Promise<User[]>;
-    findByField: (name: string, value: FindValue) => Promise<User[]>;
+    async findByIds(ids: number[]) {
+        return await db.many<User>('SELECT * FROM "user" where id in $[ids]', {
+            ids: ids
+        })
+    }
+    async findByField (name: string, value: FindValue) {
+        return await db.many<User>('SELECT * FROM "user" where id in $[ids]', {
+            ids: ids
+        })
+    }
+    findByFieldFirst: (name: string, value: FindValue) => Promise<User>;
+
 }
