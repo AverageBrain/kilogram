@@ -1,36 +1,32 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { List, Avatar } from 'antd';
+import { ChatListItemType } from '../../../types';
 
 type Props = {
-  
+  chats: ChatListItemType[];
 };
 
-const data = [
-  {
-    title: 'Ant Design Title 1',
-  },
-  {
-    title: 'Ant Design Title 2',
-  },
-  {
-    title: 'Ant Design Title 3',
-  },
-  {
-    title: 'Ant Design Title 4',
-  },
-];
+const ChatList: React.FC<Props> = ({ chats }) => {
+  const [activeChat, setActiveChat] = useState('0');
 
-const ChatsList: React.FC = () => {
+  const handleChatClick = (id: string) => {
+    setActiveChat(id);
+  };
+
   return (
     <List
       itemLayout="horizontal"
-      dataSource={data}
-      renderItem={(item, index) => (
-        <List.Item>
+      dataSource={chats}
+      renderItem={(chat, index) => (
+        <List.Item
+          key={chat.id}
+          onClick={() => handleChatClick(chat.id)}
+        >
           <List.Item.Meta
             avatar={<Avatar src={`https://api.dicebear.com/7.x/miniavs/svg?seed=${index}`} />}
-            title={<a href="https://ant.design">{item.title}</a>}
-            description="Ant Design, a design language for background applications, is refined by Ant UED Team"
+            title={chat.name}
+            description={chat.lastMessage}
+            style={{ background: chat.id === activeChat ? '#f0f0f0' : 'initial' }}
           />
         </List.Item>
       )}
@@ -38,4 +34,4 @@ const ChatsList: React.FC = () => {
   );
 };
 
-export default ChatsList;
+export default ChatList;

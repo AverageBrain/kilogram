@@ -36,3 +36,17 @@
     transform: rotate(360deg);
   }
 }
+
+main {
+  display: flex;
+  flex-direction: row;
+}
+
+.chat {
+  width: 100%;
+}
+
+.border-right {
+  border-right: solid 1px lightgray;
+  height: 100%;
+}

@@ -8,7 +8,7 @@ export const SendMessage: FC = () => {
       <Input.TextArea
         placeholder="Введите сообщение..."
       />
-      <Button />
+      <Button>Send</Button>
     </Form>
   );
 };

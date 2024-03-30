@@ -16,7 +16,7 @@ export type MessageType = BaseItemType & {
 
 export type ChatListItemType = BaseItemType & { 
   name: string;
-  lastMessage: MessageType;
+  lastMessage: string;
 }
 
 export type ChatType = BaseItemType & { 
