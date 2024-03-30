@@ -10,6 +10,7 @@ export type User = BaseItem & {
 } 
 
 export type Message = BaseItem & {
+  user: User;
   text: string;
 }
 
