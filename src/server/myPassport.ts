@@ -5,7 +5,6 @@ import {User} from "./domain/entity/User";
 myPassport.use(githubStrategy);
 
 myPassport.serializeUser((profile: User, done) => {
-    console.log(profile)
     done(null, profile);
 });
 
