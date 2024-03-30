@@ -41,11 +41,18 @@ export class UserRepository implements BaseRepository<User> {
             ids: ids
         })
     }
-    async findByField (name: string, value: FindValue) {
-        return await db.many<User>('SELECT * FROM "user" where id in $[ids]', {
-            ids: ids
+
+    async findByField(name: string, value: FindValue) {
+        return await db.many<User>('SELECT * FROM "user" where ${column~} = ${value}', {
+            column: name,
+            value: value
         })
     }
-    findByFieldFirst: (name: string, value: FindValue) => Promise<User | null>;
 
+    async findByFieldFirst(name: string, value: FindValue) {
+        return await db.one<User>('SELECT * FROM "user" where ${column~} = ${value} LIMIT 1', {
+            column: name,
+            value: value
+        })
+    }
 }
