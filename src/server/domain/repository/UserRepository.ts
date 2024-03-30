@@ -3,7 +3,7 @@ import {User} from "../entity/User";
 import {db} from "./Pool";
 
 export class UserRepository implements BaseRepository<User> {
-    static async save(entity: User) {
+    async save(entity: User) {
         const data = await db.one(
             'INSERT INTO "user" (username, name, githubId) VALUES($[username], $[name], $[githubId]) RETURNING id, createdAt, updatedAt',
             entity
