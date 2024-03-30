@@ -7,8 +7,8 @@ const userRepository: UserRepository = new UserRepository()
 
 const githubStrategy = new passportGithub.Strategy(
     {
-        clientID: process.env.GITHUB_CLIENT_ID as string,
-        clientSecret: process.env.GITHUB_CLIENT_SECRET as string,
+        clientID: 'c6264da0a139e182368f' as string,
+        clientSecret: '15aff26175f4d18bd476102c3d57f85a4fc293cd' as string,
         // Адрес, на который пользователь будет возвращён после авторизации в GitHub
         callbackURL: 'http://127.0.0.1:3000/auth/github/callback'
     },

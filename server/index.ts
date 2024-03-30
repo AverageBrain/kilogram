@@ -26,7 +26,7 @@ app.use(expressSession({
     // Если есть, то считаем пользователя уже аутентифицированным.
 
     // Секрет, для подписи сессионной cookie, чтобы её нельзя было подделать
-    secret: process.env.EXPRESS_SESSION_SECRET as string,
+    secret: 'kjasndjkasndkjasndkjasndkasd' as string,
     // Указываем, нужно ли сохранять сессию, даже если она не была изменена
     resave: false,
     // Указываем, нужно ли сохранять новую, но не измененную сессию

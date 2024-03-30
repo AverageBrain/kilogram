@@ -32,7 +32,7 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject",
 
-    "start-server": "npx tsx src/server/index.ts"
+    "start-server": "npx tsx server/index.ts"
   },
   "type":"module",
   "eslintConfig": {
