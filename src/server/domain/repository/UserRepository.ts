@@ -3,9 +3,9 @@ import {User} from "../entity/User";
 import {db} from "./Pool";
 
 export class UserRepository implements BaseRepository<User> {
-    async save(entity: User) {
+    static async save(entity: User) {
         const data = await db.one(
-            'INSERT INTO "user" (username, name) VALUES($[username], $[name]) RETURNING id, createdAt, updatedAt',
+            'INSERT INTO "user" (username, name, githubId) VALUES($[username], $[name], $[githubId]) RETURNING id, createdAt, updatedAt',
             entity
         )
         entity.id = data.id
@@ -17,7 +17,7 @@ export class UserRepository implements BaseRepository<User> {
     async update(entity: User) {
         entity.updatedAt = new Date()
         const data = await db.none(
-            'UPDATE "user" SET updatedAt = $[updatedAt], username = $[username], name = $[name] WHERE id = $[id]', entity
+            'UPDATE "user" SET updatedAt = $[updatedAt], username = $[username], name = $[name], githubId = $[githubId] WHERE id = $[id]', entity
         )
         return entity
     }
