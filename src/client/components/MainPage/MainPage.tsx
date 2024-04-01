@@ -12,6 +12,7 @@ const { Content } = Layout;
 
 const MainPage: React.FC = () => {
   const [activeChat, setActiveChat] = useState<ChatListItemType | null>(null);
+  const [panelSizes, setPanelSizes] = useState<number[]>([]); // TODO: можно записывать в localStorage
 
   const handleEscapePress = (event: KeyboardEvent) => {
     if (event.key === 'Escape') {
@@ -27,14 +28,18 @@ const MainPage: React.FC = () => {
       };
   }, []);
 
+  const handleResizeFinished = (pairIdx: number, newSizes: number[]) => setPanelSizes(newSizes);
+
   return (
     <Layout style={{ height: "100vh" }}>
       <Content>
         <Splitter
+          initialSizes={panelSizes}
           direction={SplitDirection.Horizontal}
           minWidths={[350, 500]}
           gutterTheme={GutterTheme.Light}
           draggerClassName="dragger"
+          onResizeFinished={handleResizeFinished}
         >
           <ChatListPage
             activeChat={activeChat}
