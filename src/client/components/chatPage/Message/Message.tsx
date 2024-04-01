@@ -1,5 +1,6 @@
 import React from 'react';
 import clsx from 'clsx';
+import './index.css';
 
 import { UserType, MessageType } from '../../../../types'
 
@@ -12,7 +13,7 @@ const Message: React.FC<Props> = ({ message, activeUser }) => {
   const isActivePerson = activeUser === message.user;
 
   return (
-    <div className={clsx('message', isActivePerson ? 'active-person-message' : 'partner-message')}>
+    <div className={clsx('message', isActivePerson ? 'my-message' : 'partner-message')}>
       {message.text}
     </div>
   );

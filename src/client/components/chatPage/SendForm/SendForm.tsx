@@ -1,5 +1,7 @@
 import React from 'react';
 import { Form, Input, Button } from 'antd';
+import { SendOutlined } from '@ant-design/icons';
+import './index.css'
 
 const SendMessage: React.FC = () => {
   return (
@@ -7,7 +9,7 @@ const SendMessage: React.FC = () => {
       <Input.TextArea
         placeholder="Введите сообщение..."
       />
-      <Button>Send</Button>
+      <button><SendOutlined /></button>
     </Form>
   );
 };

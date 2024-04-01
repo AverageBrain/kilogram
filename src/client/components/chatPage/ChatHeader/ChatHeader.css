@@ -1,16 +1,11 @@
-.header {
+.chat-header {
   padding: 0 10px;
-
   background-color: white;
-  border-bottom: solid 1px lightgray;
+  color: #516460;
+  font-weight: 500;
 
   display: flex;
   align-items: center;
   justify-content: flex-start;
   gap: 16px;
-}
-
-.icon {
-  font-size: 20px;
-  color: #516460;
 }

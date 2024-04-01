@@ -29,7 +29,7 @@ const Header: React.FC = () => {
         </Dropdown>
         <Input
           placeholder="Поиск контактов"
-          prefix={<SearchOutlined />}
+          prefix={<SearchOutlined style={ {color: '#516460' }}/>}
         />
     </HeaderAD>
   );
