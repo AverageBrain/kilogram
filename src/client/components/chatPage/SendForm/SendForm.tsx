@@ -1,7 +1,7 @@
 import React from 'react';
 import { Form, Input, Button } from 'antd';
 import { SendOutlined } from '@ant-design/icons';
-import './index.css'
+import './SendForm.css'
 
 const SendMessage: React.FC = () => {
   return (
