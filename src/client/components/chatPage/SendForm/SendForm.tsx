@@ -1,5 +1,5 @@
 import React from 'react';
-import { Form, Input, Button } from 'antd';
+import { Form, Input } from 'antd';
 import { SendOutlined } from '@ant-design/icons';
 import './SendForm.css'
 

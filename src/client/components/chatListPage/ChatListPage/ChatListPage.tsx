@@ -2,14 +2,22 @@ import React from 'react';
 import { Layout } from 'antd';
 import { Header } from '../Header';
 import { ChatList } from '../ChatList';
-import { chatList } from '../../../../mock';
+import { ChatListItemType } from '../../../../types';
 import './ChatListPage.css';
 
-const ChatListPage: React.FC = () => {
+type Props = {
+  activeChat: ChatListItemType | null;
+  setActiveChat: (chat: ChatListItemType | null) => void;
+};
+
+const ChatListPage: React.FC<Props> = ({ activeChat, setActiveChat }) => {
   return (
     <Layout className='main'>
         <Header />
-        <ChatList chats={chatList}/>
+        <ChatList
+          activeChat={activeChat}
+          setActiveChat={setActiveChat}
+        />
     </Layout>
   );
 };
