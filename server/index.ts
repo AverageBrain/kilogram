@@ -4,6 +4,7 @@ import expressSession from "express-session";
 
 import {routers} from "./routes";
 import {myPassport} from "./myPassport";
+import {UserRepository} from "./domain/repository/UserRepository";
 
 const app = express();
 
