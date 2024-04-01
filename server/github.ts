@@ -1,4 +1,3 @@
-// Создаём стратегию для аутентификации через GitHub
 import passportGithub from "passport-github";
 import {UserRepository} from "./domain/repository/UserRepository";
 
