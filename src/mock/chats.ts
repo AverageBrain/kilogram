@@ -9,7 +9,7 @@ export const findUserById = (id: string): UserType => {
   return user;
 }
 
-export const chats: Array<ChatType> = [
+export const chats: ChatType[] = [
   {
     id: '9',
     createdAt: '2024-03-30T12:38:31',
