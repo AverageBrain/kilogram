@@ -1,8 +1,7 @@
-import { FC } from 'react';
+import React from 'react';
 import { Form, Input, Button } from 'antd';
 
-export const SendMessage: FC = () => {
-
+const SendMessage: React.FC = () => {
   return (
     <Form className="send-message">
       <Input.TextArea
@@ -12,3 +11,5 @@ export const SendMessage: FC = () => {
     </Form>
   );
 };
+
+export default SendMessage;

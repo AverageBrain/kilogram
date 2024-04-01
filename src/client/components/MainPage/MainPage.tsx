@@ -2,9 +2,9 @@ import React from 'react';
 import { Layout } from 'antd';
 import Splitter, { GutterTheme, SplitDirection } from '@devbookhq/splitter'
 
-import { ActiveChat } from '../ActiveChat';
 import { chats, findUserById } from '../../../mock';
 import { ChatListPage } from '../chatListPage';
+import { ChatPage } from '../chatPage';
 import './MainPage.css';
 
 const { Content } = Layout;
@@ -20,10 +20,11 @@ const MainPage: React.FC = () => {
           draggerClassName="dragger"
         >
           <ChatListPage />
-          <ActiveChat chat={chats[0]} activeUser={findUserById('1')}/>
+          <ChatPage chat={chats[0]} activeUser={findUserById('1')}/>
         </Splitter>
       </Content>
     </Layout>
   );
 }
+
 export default MainPage;

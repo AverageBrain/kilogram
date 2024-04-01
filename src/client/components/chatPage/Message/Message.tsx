@@ -1,13 +1,14 @@
-import { FC } from 'react';
-import { UserType, MessageType } from '../../../../types'
+import React from 'react';
 import clsx from 'clsx';
 
-interface Props {
+import { UserType, MessageType } from '../../../../types'
+
+type Props = {
   message: MessageType;
   activeUser: UserType;
 }
 
-export const Message: FC<Props> = ({ message, activeUser }) => {
+const Message: React.FC<Props> = ({ message, activeUser }) => {
   const isActivePerson = activeUser === message.user;
 
   return (
@@ -16,3 +17,5 @@ export const Message: FC<Props> = ({ message, activeUser }) => {
     </div>
   );
 };
+
+export default Message;

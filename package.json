@@ -14,6 +14,7 @@
     "@types/react-dom": "^18.2.23",
     "antd": "^5.15.4",
     "body-parser": "1.20.2",
+    "clsx": "^2.1.0",
     "connect-ensure-login": "0.1.1",
     "cookie-parser": "1.4.6",
     "express": "4.18.3",
@@ -21,11 +22,9 @@
     "passport": "0.7.0",
     "passport-github": "1.1.0",
     "pg-promise": "^11.5.5",
-    "clsx": "^2.1.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-scripts": "5.0.1",
-    "typescript": "^4.9.5",
     "web-vitals": "^2.1.4"
   },
   "scripts": {
@@ -33,10 +32,9 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-
     "start-server": "npx tsx server/index.ts"
   },
-  "type":"module",
+  "type": "module",
   "eslintConfig": {
     "extends": [
       "react-app",

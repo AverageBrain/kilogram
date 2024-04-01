@@ -1,13 +1,14 @@
-import { FC } from 'react';
-import { ChatType, UserType } from '../../../../types'
-import { Message } from './Message'
+import React from 'react';
 
-interface Props {
+import { ChatType, UserType } from '../../../../types'
+import { Message } from '../Message';
+
+type Props =  {
   chat: ChatType;
   activeUser: UserType;
 }
 
-export const Messages: FC<Props> = ({ chat, activeUser }) => {
+const MessageList: React.FC<Props> = ({ chat, activeUser }) => {
 
   return (
     <section className="messages">
@@ -16,3 +17,5 @@ export const Messages: FC<Props> = ({ chat, activeUser }) => {
     
   );
 };
+
+export default MessageList;

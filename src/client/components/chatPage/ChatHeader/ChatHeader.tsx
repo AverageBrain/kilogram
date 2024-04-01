@@ -1,18 +1,20 @@
-import { FC } from 'react';
+import React from 'react';
 import { Layout } from 'antd';
 import { ChatType } from '../../../../types'
 
-interface Props {
+type Props = {
   chat: ChatType;
 }
 
 const { Header: HeaderAD } = Layout;
 
-export const Header: FC<Props> = ({ chat }) => {
+const ChatHeader: React.FC<Props> = ({ chat }) => {
 
   return (
     <HeaderAD>
       <div className="user-name">{chat.user.name}</div>
-     </HeaderAD>
+    </HeaderAD>
   );
 };
+
+export default ChatHeader;

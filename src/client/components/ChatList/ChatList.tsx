@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { List, Avatar } from 'antd';
-import { ChatListItem } from '../../../types';
+import { ChatListItemType } from '../../../types';
 
 type Props = {
-  chats: ChatListItem[];
+  chats: ChatListItemType[];
 };
 
 const ChatList: React.FC<Props> = ({ chats }) => {

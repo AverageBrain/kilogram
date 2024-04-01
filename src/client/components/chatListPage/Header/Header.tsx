@@ -1,17 +1,36 @@
 import React from 'react';
-import { Layout, Input } from 'antd';
-import { SearchOutlined } from '@ant-design/icons';
+import { Layout, Input, Dropdown, MenuProps } from 'antd';
+import { SearchOutlined, MenuOutlined } from '@ant-design/icons';
 
+import './Header.css';
 
 const { Header: HeaderAD } = Layout;
 
+const items: MenuProps['items'] = [ // TODO: вместе с логикой вынести в отдельный компонент
+  {
+    label: 'Профиль',
+    key: '0',
+  },
+  {
+    type: 'divider',
+  },
+  {
+    label: 'Выйти',
+    key: '1',
+  },
+];
+
+
 const Header: React.FC = () => {
   return (
-    <HeaderAD>
-      <Input
-        placeholder="Поиск контактов"
-        prefix={<SearchOutlined />}
-      />
+    <HeaderAD className="header">
+        <Dropdown menu={{ items }} trigger={['click']}> 
+          <MenuOutlined className="icon" />
+        </Dropdown>
+        <Input
+          placeholder="Поиск контактов"
+          prefix={<SearchOutlined />}
+        />
     </HeaderAD>
   );
 };
