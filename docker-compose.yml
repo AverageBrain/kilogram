@@ -15,7 +15,7 @@ services:
       context: .
       dockerfile: client.Dockerfile
     networks:
-      - api_bridge
+      - client_bridge
     ports:
       - "3001:80"
 
@@ -27,12 +27,12 @@ services:
     ports:
       - "80:80"
     networks:
-      - api_bridge
+      - client_bridge
     depends_on:
       - client
 
 networks:
-  api_bridge:
+  client_bridge:
     driver: bridge
 
   database_bridge:
