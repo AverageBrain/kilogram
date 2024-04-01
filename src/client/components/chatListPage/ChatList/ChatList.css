@@ -4,6 +4,7 @@
 
 .chat-list-item-meta {
   padding: 10px;
+  cursor: pointer;
 }
 
 .list {
