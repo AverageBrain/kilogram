@@ -1,0 +1,39 @@
+version: "3.9"
+services:
+  postgres:
+    image: postgres:13.3
+    environment:
+      POSTGRES_DB: "kilogram"
+      POSTGRES_USER: "kilogram"
+      POSTGRES_PASSWORD: "kilogram"
+    ports:
+      - "5432:5432"
+
+  client:
+    image: kilogram/client
+    build:
+      context: .
+      dockerfile: client.Dockerfile
+    networks:
+      - client_bridge
+    ports:
+      - "3001:80"
+
+  nginx:
+    build:
+      context: ./nginx
+      dockerfile: Dockerfile
+    restart: always
+    ports:
+      - "80:80"
+    networks:
+      - client_bridge
+    depends_on:
+      - client
+
+networks:
+  client_bridge:
+    driver: bridge
+
+  database_bridge:
+    driver: bridge

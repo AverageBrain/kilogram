@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@ant-design/icons": "^5.3.5",
     "@devbookhq/splitter": "^1.4.2",
     "@testing-library/jest-dom": "^5.17.0",
     "@testing-library/react": "^13.4.0",
@@ -12,6 +13,14 @@
     "@types/react": "^18.2.73",
     "@types/react-dom": "^18.2.23",
     "antd": "^5.15.4",
+    "body-parser": "1.20.2",
+    "connect-ensure-login": "0.1.1",
+    "cookie-parser": "1.4.6",
+    "express": "4.18.3",
+    "express-session": "1.18.0",
+    "passport": "0.7.0",
+    "passport-github": "1.1.0",
+    "pg-promise": "^11.5.5",
     "clsx": "^2.1.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
@@ -23,8 +32,11 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+
+    "start-server": "npx tsx server/index.ts"
   },
+  "type":"module",
   "eslintConfig": {
     "extends": [
       "react-app",
@@ -42,5 +54,11 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "@types/cookie-parser": "^1.4.7",
+    "@types/express-session": "^1.18.0",
+    "@types/passport": "^1.0.16",
+    "@types/passport-github": "^1.1.12"
   }
 }
