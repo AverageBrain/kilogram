@@ -1,6 +1,6 @@
-import { ChatListItem } from '../types';
+import { ChatListItemType } from '../types';
 
-export const chatList: ChatListItem[] = [
+export const chatList: ChatListItemType[] = [
   {
     id: '9',
     createdAt: '2024-03-30T12:38:31',

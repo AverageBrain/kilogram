@@ -1,0 +1,22 @@
+.message {
+  width: 100%;
+  padding: 10px;
+  border-radius: 10px;
+  margin-top: 5px;
+  border: none;
+  background-color: white;
+  max-width: 500px;
+  color: #516460;
+}
+
+.my-message {
+  align-self: start;
+  width: 66%;
+  border-radius: 10px 10px 10px 0;
+}
+
+.partner-message {
+  align-self: end;
+  width: 66%;
+  border-radius: 10px 10px 0 10px;
+}

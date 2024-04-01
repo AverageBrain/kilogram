@@ -1,15 +1,15 @@
-import { User, Chat } from '../types';
-import { users } from './users';
+import { UserType, ChatType } from '../types';
+import { users } from './users'
 
-const findUserById = (id: string): User => {
-  const user: User | undefined = users.find((user: User) => user.id === id);
+export const findUserById = (id: string): UserType => {
+  const user: UserType | undefined = users.find((user: UserType) => user.id === id);
   if (!user) {
     throw Error("Mock: Can't find user with id");
   }
   return user;
 }
 
-export const chats: Array<Chat> = [
+export const chats: ChatType[] = [
   {
     id: '9',
     createdAt: '2024-03-30T12:38:31',
