@@ -12,6 +12,7 @@ type Props = {
 const ChatList: React.FC<Props> = ({ activeChat, setActiveChat }) => {
   return (
     <List
+      className="list"
       itemLayout="horizontal"
       dataSource={chatList}
       renderItem={(chat, index) => (

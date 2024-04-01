@@ -7,6 +7,7 @@ const SendMessage: React.FC = () => {
   return (
     <Form className="send-message">
       <Input.TextArea
+        variant="borderless"
         placeholder="Введите сообщение..."
       />
       <button><SendOutlined /></button>
