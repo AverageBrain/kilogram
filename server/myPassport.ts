@@ -1,6 +1,6 @@
 import myPassport from 'passport';
 import {githubStrategy} from './github';
-import {User} from "./domain/entity/User";
+import {User} from "@prisma/client";
 
 myPassport.use(githubStrategy);
 

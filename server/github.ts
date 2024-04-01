@@ -1,7 +1,7 @@
 import passportGithub from "passport-github";
-import {UserRepository} from "./domain/repository/UserRepository";
+import {UserController} from "./controllers/UserController";
 
-const userRepository: UserRepository = new UserRepository()
+const userController = new UserController()
 
 const githubStrategy = new passportGithub.Strategy(
     {
@@ -10,24 +10,9 @@ const githubStrategy = new passportGithub.Strategy(
         callbackURL: 'http://127.0.0.1:3000/auth/github/callback'
     },
     async (accessToken, refreshToken, profile, done) => {
-        userRepository.findByFieldFirst('githubid', profile.id).then(user => {
-            if (user !== null) {
-                done(null, user);
-            } else {
-                const profileUsername: string | undefined = profile.username;
-
-                if (profileUsername === undefined) {
-                    throw Error('Cannot resolve github profile username');
-                }
-                const newUser = userRepository.save({
-                    username: profileUsername,
-                    name: profile.displayName,
-                    githubId: profile.id
-                });
-
-                done(null, newUser);
-            }
-        });
+        const profileUsername: string = profile.username ? profile.username : ""
+        const user = await userController.getOrCreateUserByGithub(profile.id, profile.displayName, profileUsername)
+        done(null, user);
     })
 ;
 
