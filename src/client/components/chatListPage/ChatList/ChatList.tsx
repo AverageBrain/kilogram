@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { List, Avatar } from 'antd';
-import { ChatListItemType } from '../../../types';
+import { ChatListItemType } from '../../../../types';
 
 type Props = {
   chats: ChatListItemType[];
