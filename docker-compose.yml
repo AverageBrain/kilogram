@@ -8,3 +8,48 @@ services:
       POSTGRES_PASSWORD: "kilogram"
     ports:
       - "5432:5432"
+
+  client:
+    image: kilogram/client
+    build:
+      context: .
+      dockerfile: client.Dockerfile
+    networks:
+      - client_bridge
+    ports:
+      - "3001:80"
+
+  server:
+    image: kilogram/server
+    build:
+      context: .
+      dockerfile: server.Dockerfile
+    networks:
+      - database_bridge
+      - server_bridge
+    ports:
+      - "3002:3000"
+
+  nginx:
+    build:
+      context: ./nginx
+      dockerfile: Dockerfile
+    restart: always
+    ports:
+      - "3000:80"
+    networks:
+      - client_bridge
+      - server_bridge
+    depends_on:
+      - client
+      - server
+
+networks:
+  client_bridge:
+    driver: bridge
+
+  server_bridge:
+    driver: bridge
+
+  database_bridge:
+    driver: bridge
