@@ -38,6 +38,9 @@ const Header: React.FC<Props> = ({ activeUser }) => {
             <MenuOutlined className="icon" />
           </Dropdown>
           <Input
+            allowClear
+            className="search"
+            variant="borderless"
             placeholder="Поиск контактов"
             prefix={<SearchOutlined style={ {color: '#516460' }}/>}
           />

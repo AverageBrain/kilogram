@@ -1,4 +1,13 @@
-import { ChatListItemType } from '../types';
+import { ChatListItemType, ChatType } from '../types';
+import { chats } from './chats';
+
+export const findChatById = (id: string): ChatType => {
+  const chat: ChatType | undefined = chats.find((chat) => chat.id === id);
+  if (!chat) {
+    throw Error("Mock: Can't find chat with id");
+  }
+  return chat;
+}
 
 export const chatList: ChatListItemType[] = [
   {
@@ -13,6 +22,6 @@ export const chatList: ChatListItemType[] = [
     createdAt: '2024-03-30T12:38:31',
     updatedAt: '2024-03-30T12:38:31',
     name: '2',
-    lastMessage: 'Goodbye',
+    lastMessage: 'Blinded by me, you can\'t see a thing',
   }, 
 ]

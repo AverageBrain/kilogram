@@ -7,10 +7,15 @@
   display: flex;
   align-items: center;
   justify-content: flex-start;
-  gap: 16px;
+  gap: 8px;
 }
 
 .icon {
   font-size: 20px;
   color: #516460;
+}
+
+.search svg {
+    font-size: 18px;
+    color: #516460;
 }

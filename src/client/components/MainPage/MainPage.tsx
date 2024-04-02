@@ -1,26 +1,54 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Layout } from 'antd';
 import Splitter, { GutterTheme, SplitDirection } from '@devbookhq/splitter'
 
-import { chats, findUserById } from '../../../mock';
 import { ChatListPage } from '../chatListPage';
-import { ChatPage } from '../chatPage';
+import { ChatPage, EmptyPanel } from '../chatPage';
+import { ChatListItemType } from '../../../types';
+import { findChatById, findUserById } from '../../../mock';
 import './MainPage.css';
 
 const { Content } = Layout;
 
 const MainPage: React.FC = () => {
+  const [activeChat, setActiveChat] = useState<ChatListItemType | null>(null);
+  const [panelSizes, setPanelSizes] = useState<number[]>([]); // TODO: можно записывать в localStorage
+
+  const handleEscapePress = (event: KeyboardEvent) => {
+    if (event.key === 'Escape') {
+      setActiveChat(null);
+    }
+  };
+
+  useEffect(() => {
+      document.addEventListener('keydown', handleEscapePress);
+
+      return () => {
+          document.removeEventListener('keydown', handleEscapePress);
+      };
+  }, []);
+
+  const handleResizeFinished = (pairIdx: number, newSizes: number[]) => setPanelSizes(newSizes);
+
   return (
     <Layout style={{ height: "100vh" }}>
       <Content>
         <Splitter
+          initialSizes={panelSizes}
           direction={SplitDirection.Horizontal}
           minWidths={[350, 500]}
           gutterTheme={GutterTheme.Light}
           draggerClassName="dragger"
+          onResizeFinished={handleResizeFinished}
         >
-          <ChatListPage activeUser={findUserById('1')}/>
-          <ChatPage chat={chats[0]} activeUser={findUserById('1')}/>
+          <ChatListPage
+            activeChat={activeChat}
+            setActiveChat={setActiveChat}
+          />
+          {activeChat
+          ? <ChatPage chat={findChatById(activeChat.id)} activeUser={findUserById('1')}/>
+          : <EmptyPanel />
+          }
         </Splitter>
       </Content>
     </Layout>
