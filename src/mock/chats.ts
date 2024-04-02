@@ -68,4 +68,35 @@ export const chats: ChatType[] = [
       },
     ]
   }, 
+  {
+    id: '11',
+    createdAt: '2024-03-30T12:41:31',
+    updatedAt: '2024-03-30T12:41:31',
+    user: findUserById('3'), 
+    messages: [
+      {
+        id: '13',
+        user: findUserById('1'),
+        createdAt: '2024-03-30T14:43:31',
+        updatedAt: '2024-03-30T14:43:31',
+        text: 'I wake up screaming from dreaming',
+      },
+      {
+        id: '14',
+        user: findUserById('3'),
+        createdAt: '2024-03-30T14:12:31',
+        updatedAt: '2024-03-30T14:12:31',
+        text: 'I should not be left to my own devices. They come with prices and vices. I end up in crisis',
+      },
+      {
+        id: '15',
+        user: findUserById('3'),
+        createdAt: '2024-03-30T13:51:31',
+        updatedAt: '2024-03-30T13:51:31',
+        text: 'When my depression works the graveyard shift, all of the people I\'ve ghosted stand there in the room',
+      },
+      
+      
+    ]
+  }, 
 ]

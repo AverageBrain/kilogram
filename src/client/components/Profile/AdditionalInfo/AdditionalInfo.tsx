@@ -16,7 +16,7 @@ export const AdditionalInfo: React.FC<Props> = ({ user }) => {
       </div>
       <div className='additional-info-list'>
         <AdditionalInfoItem value={user.username} description='Username'/>
-        <AdditionalInfoItem value='Здесь описание профиля' description='Описание'/>
+        {user.bio && <AdditionalInfoItem value={user.bio} description='Описание'/>}
       </div>
     </div>
   );

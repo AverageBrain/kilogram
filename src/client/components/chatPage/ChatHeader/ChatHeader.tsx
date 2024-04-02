@@ -17,8 +17,11 @@ const ChatHeader: React.FC<Props> = ({ chat }) => {
   return (
     <>
       <HeaderAD className='chat-header'>
-        <div className="user-name" onClick={showModal}>
-          {chat.user.name}
+        <div className='user-info' onClick={showModal}>
+          <span className='user-name'>{chat.user.name}</span>
+          <span className='last-seen'>
+            {chat.user.lastSeen ? chat.user.lastSeen : 'был в сети недавно'}
+          </span>
         </div>
       </HeaderAD>
 

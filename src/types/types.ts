@@ -7,6 +7,8 @@ type BaseItemType = {
 export type UserType = BaseItemType & {
   name: string;
   username: string;
+  bio?: string;
+  lastSeen?: string;
 } 
 
 export type MessageType = BaseItemType & {

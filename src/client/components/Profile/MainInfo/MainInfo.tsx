@@ -16,7 +16,9 @@ export const MainInfo: React.FC<Props> = ({ user }) => {
       </div>
       <div className='text-info'>
         <span className='name'>{user.name}</span>
-        <span className='last-seen'>онлайн</span>
+        <span className='last-seen'>
+          {user.lastSeen? user.lastSeen : 'был в сети недавно'}
+        </span>
       </div>
     </div>
   );
