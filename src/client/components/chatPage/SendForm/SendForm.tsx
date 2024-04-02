@@ -9,6 +9,7 @@ const SendMessage: React.FC = () => {
       <Input.TextArea
         variant="borderless"
         placeholder="Введите сообщение..."
+        autoSize={{ minRows: 3, maxRows: 5 }}
       />
       <button><SendOutlined /></button>
     </Form>

@@ -50,7 +50,7 @@ export const chats: ChatType[] = [
         user: findUserById('2'),
         createdAt: '2024-03-30T12:38:31',
         updatedAt: '2024-03-30T12:38:31',
-        text: 'Master of puppets, I\'m pulling your strings',
+        text: 'Blinded by me, you can\'t see a thing\nJust call my name, \'cause I\'ll hear you scream\nMaster, master',
       },
       {
         id: '14',
@@ -64,7 +64,7 @@ export const chats: ChatType[] = [
         user: findUserById('1'),
         createdAt: '2024-03-30T12:43:31',
         updatedAt: '2024-03-30T12:43:31',
-        text: 'Blinded by me, you can\'t see a thing',
+        text: 'Master of puppets, I\'m pulling your strings',
       },
     ]
   }, 

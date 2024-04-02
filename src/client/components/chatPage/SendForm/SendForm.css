@@ -1,6 +1,10 @@
 .send-message {
   display: flex;
   background-color: white;
+
+  ::-webkit-scrollbar {
+    display: none;
+  }
 }
 
 .send-message button {

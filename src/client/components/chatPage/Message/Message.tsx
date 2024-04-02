@@ -1,8 +1,9 @@
 import React from 'react';
 import clsx from 'clsx';
-import './index.css';
+import { Typography } from 'antd';
 
 import { UserType, MessageType } from '../../../../types'
+import './Message.css';
 
 type Props = {
   message: MessageType;
@@ -13,9 +14,9 @@ const Message: React.FC<Props> = ({ message, activeUser }) => {
   const isActivePerson = activeUser === message.user;
 
   return (
-    <div className={clsx('message', isActivePerson ? 'my-message' : 'partner-message')}>
+    <Typography.Text className={clsx('message', isActivePerson ? 'my-message' : 'partner-message')}>
       {message.text}
-    </div>
+    </Typography.Text>
   );
 };
 
