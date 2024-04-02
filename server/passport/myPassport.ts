@@ -1,6 +1,6 @@
 import myPassport, {DoneCallback} from 'passport';
 import {githubStrategy} from './github';
-import {prisma} from "./domain/PrismaClient";
+import {prisma} from "../domain/PrismaClient";
 
 myPassport.use(githubStrategy);
 

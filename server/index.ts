@@ -1,11 +1,26 @@
 import cookieParser from "cookie-parser";
-import express from "express";
 import expressSession from "express-session";
 
-import {routers} from "./routes";
-import {myPassport} from "./myPassport";
+import {myPassport} from "./passport/myPassport";
+import {createExpressServer} from "routing-controllers";
+import "reflect-metadata"
+import {UserController} from "./controllers/UserController";
 
-const app = express();
+
+declare global {
+    namespace Express {
+        interface User {
+            id: number
+        }
+    }
+}
+
+const app = createExpressServer({
+    routePrefix: '/api',
+    controllers: [
+        UserController
+    ]
+});
 
 app.use(cookieParser());
 
@@ -16,9 +31,6 @@ app.use(expressSession({
 }));
 
 app.use(myPassport.initialize());
-
 app.use(myPassport.session());
-
-app.use(routers);
 
 app.listen(3000);

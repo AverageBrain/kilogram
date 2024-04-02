@@ -1,9 +1,9 @@
 import passportGithub from "passport-github";
-import {UserService} from "./services/UserService";
+import {UserService} from "../services/UserService";
 
 const userService = new UserService()
 
-const githubStrategy = new passportGithub.Strategy(
+export const githubStrategy = new passportGithub.Strategy(
     {
         clientID: 'c6264da0a139e182368f' as string,
         clientSecret: '15aff26175f4d18bd476102c3d57f85a4fc293cd' as string,
@@ -16,4 +16,3 @@ const githubStrategy = new passportGithub.Strategy(
     })
 ;
 
-export {githubStrategy}
