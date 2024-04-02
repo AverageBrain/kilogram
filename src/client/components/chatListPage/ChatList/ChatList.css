@@ -4,4 +4,9 @@
 
 .chat-list-item-meta {
   padding: 10px;
+  cursor: pointer;
+}
+
+.list {
+  border-bottom: solid 1px rgba(5, 5, 5, 0.06);
 }

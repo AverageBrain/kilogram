@@ -1,5 +1,5 @@
 import React from 'react';
-import { Form, Input, Button } from 'antd';
+import { Form, Input } from 'antd';
 import { SendOutlined } from '@ant-design/icons';
 import './SendForm.css'
 
@@ -7,6 +7,7 @@ const SendMessage: React.FC = () => {
   return (
     <Form className="send-message">
       <Input.TextArea
+        variant="borderless"
         placeholder="Введите сообщение..."
       />
       <button><SendOutlined /></button>

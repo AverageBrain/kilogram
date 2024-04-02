@@ -1,5 +1,5 @@
 export { findUserById, chats } from './chats';
 
-export { chatList } from './chatList';
+export { findChatById, chatList } from './chatList';
 
 export { users } from './users';
