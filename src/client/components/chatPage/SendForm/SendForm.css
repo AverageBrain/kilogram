@@ -13,6 +13,12 @@
   font-size: 24px;
   color: #516460;
   background: none;
+
+  cursor: pointer;
+
+  &:hover {
+    color: #06A191;
+  }
 }
 
 .send-message textarea {
