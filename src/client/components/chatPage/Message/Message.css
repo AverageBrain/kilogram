@@ -7,7 +7,19 @@
 
   border: none;
   background-color: white;
+  display: flex;
+}
+
+.text {
   color: #516460;
+}
+
+.timestep {
+  align-self: flex-end;
+  margin-left: 6px;
+
+  font-size: smaller;
+  color: grey;
 }
 
 .my-message {
