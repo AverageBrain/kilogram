@@ -1,0 +1,13 @@
+.ReactModal__Content header {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  font-weight: 500;
+
+  .icon {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    color: #898989;
+  }
+}

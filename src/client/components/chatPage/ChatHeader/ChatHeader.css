@@ -9,3 +9,8 @@
   justify-content: flex-start;
   gap: 16px;
 }
+
+.user-name {
+  width: 100%;
+  cursor: pointer;
+}

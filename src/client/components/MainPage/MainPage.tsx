@@ -19,7 +19,7 @@ const MainPage: React.FC = () => {
           gutterTheme={GutterTheme.Light}
           draggerClassName="dragger"
         >
-          <ChatListPage />
+          <ChatListPage activeUser={findUserById('1')}/>
           <ChatPage chat={chats[0]} activeUser={findUserById('1')}/>
         </Splitter>
       </Content>
