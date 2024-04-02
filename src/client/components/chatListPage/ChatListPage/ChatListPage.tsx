@@ -7,11 +7,12 @@ import './ChatListPage.css';
 import { UserType } from '../../../../types';
 
 type Props = {
+  activeUser: UserType;
   activeChat: ChatListItemType | null;
   setActiveChat: (chat: ChatListItemType | null) => void;
 };
 
-const ChatListPage: React.FC<Props> = ({ activeChat, setActiveChat }) => {
+const ChatListPage: React.FC<Props> = ({ activeUser, activeChat, setActiveChat }) => {
   return (
     <Layout className='main'>
         <Header activeUser={activeUser}/>
