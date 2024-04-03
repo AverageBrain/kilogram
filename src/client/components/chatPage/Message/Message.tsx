@@ -1,7 +1,7 @@
 import React from 'react';
 import clsx from 'clsx';
-import { Typography } from 'antd';
 import moment from 'moment';
+import ReactMarkdown from 'react-markdown'
 
 import { UserType, MessageType } from '../../../../types'
 import './Message.css';
@@ -16,9 +16,9 @@ const Message: React.FC<Props> = ({ message, activeUser }) => {
 
   return (
     <div className={clsx('message', isActivePerson ? 'my-message' : 'partner-message')}>
-      <Typography.Text className="text">
-        {message.text}
-      </Typography.Text>
+        <ReactMarkdown className="text">
+          {message.text}
+        </ReactMarkdown>
       <br />
       <span className={"timestep"}>
         {moment(message.createdAt).format('LT')}
