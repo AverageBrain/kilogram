@@ -18,6 +18,7 @@
   align-self: flex-end;
   margin-left: 6px;
 
+  white-space: nowrap;
   font-size: smaller;
   color: grey;
 }
