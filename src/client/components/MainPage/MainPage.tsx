@@ -29,6 +29,7 @@ const MainPage: React.FC = () => {
   }, []);
 
   const handleResizeFinished = (pairIdx: number, newSizes: number[]) => setPanelSizes(newSizes);
+  const activeUser = findUserById('1');
 
   return (
     <Layout style={{ height: "100vh" }}>
@@ -42,11 +43,12 @@ const MainPage: React.FC = () => {
           onResizeFinished={handleResizeFinished}
         >
           <ChatListPage
+            activeUser={activeUser}
             activeChat={activeChat}
             setActiveChat={setActiveChat}
           />
           {activeChat
-          ? <ChatPage chat={findChatById(activeChat.id)} activeUser={findUserById('1')}/>
+          ? <ChatPage chat={findChatById(activeChat.id)} activeUser={activeUser}/>
           : <EmptyPanel />
           }
         </Splitter>
