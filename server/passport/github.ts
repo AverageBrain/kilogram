@@ -12,7 +12,7 @@ export const githubStrategy = new passportGithub.Strategy(
     async (accessToken, refreshToken, profile, done) => {
         const profileUsername: string = profile.username ? profile.username : ""
         const user = await userService.getOrCreateUserByGithub(profile.id, profile.displayName, profileUsername)
-        done(null, user);
+        done(null, {userId: user.id, prismaUser: user});
     })
 ;
 

@@ -20,13 +20,11 @@ const ChatList: React.FC<Props> = ({ chats }) => {
       renderItem={(chat, index) => (
         <List.Item
           key={chat.id}
-          onClick={() => handleChatClick(chat.id)}
         >
           <List.Item.Meta
             avatar={<Avatar src={`https://api.dicebear.com/7.x/miniavs/svg?seed=${index}`} />}
             title={chat.name}
             description={chat.lastMessage}
-            style={{ background: chat.id === activeChat ? '#f0f0f0' : 'initial' }}
           />
         </List.Item>
       )}

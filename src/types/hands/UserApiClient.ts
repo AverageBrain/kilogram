@@ -2,8 +2,13 @@ import {User} from "../types";
 import {BaseApiClient} from "./BaseApiClient";
 
 export class UserApiClient extends BaseApiClient {
-    authWithGithub(): Promise<User> {
-        return this.axiosGet<User>("/auth/github")
+    async authWithGithub(): Promise<null> {
+        const res = await fetch("/api/auth/github")
+        console.log("qyqyqyq")
+
+        console.log(res.headers)
+        // document.location.href = res.headers
+        return null
     }
 
     getMe(): Promise<User> {

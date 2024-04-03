@@ -3,13 +3,13 @@ import logo from './logo.svg';
 import './App.css';
 import { Layout } from 'antd';
 import { ChatList, Header } from './client/components';
-import { chatList } from './mock/chatList';
+import Auth from "./Auth";
 
 function App() {
   return (
     <Layout>
+        <Auth/>
       <Header />
-      <ChatList chats={chatList}/>
     </Layout>
   );
 }

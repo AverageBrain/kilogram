@@ -1,19 +1,22 @@
 import myPassport, {DoneCallback} from 'passport';
 import {githubStrategy} from './github';
-import {prisma} from "../domain/PrismaClient";
+import {UserService} from "../services/UserService";
 
 myPassport.use(githubStrategy);
 
-myPassport.serializeUser((profile, done: DoneCallback) => {
-    console.log('serialize user: ' + profile)
-    done(null, profile);
+const userService = new UserService()
+
+myPassport.serializeUser((profile: Express.User, done: DoneCallback) => {
+    done(null, {userId: profile.userId, prismaUser: null});
 });
 
-myPassport.deserializeUser<number>((id: number, done: DoneCallback) => {
-    console.log('deserialize user: ' + id)
-    prisma.user.findUniqueOrThrow({where: {id: id}})
-        .then(res => done(null, {id: res.id}))
-        .catch(err => done(err, {id: id}))
+myPassport.deserializeUser(async (profile: Express.User, done: DoneCallback) => {
+    try {
+        const user = await userService.getUserById(profile.userId)
+        done(null, {userId: profile.userId, prismaUser: user})
+    } catch (e) {
+        done(e, profile)
+    }
 });
 
 export {myPassport};
