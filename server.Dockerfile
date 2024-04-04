@@ -15,5 +15,7 @@ RUN npm install -g npm@9.8.1 && npm install --save
 COPY . /app/
 
 # build
-CMD prisma generate
-CMD npm run start-server
+RUN prisma generate
+RUN npm run build-server && rm -rf /app/node-modules
+CMD sed -i 's/module/commonjs/g' file.txt
+CMD node ./dist/server/bundle.js

@@ -66,4 +66,6 @@ app.get(
     (req, res) => res.sendStatus(200)
 );
 
+
+console.log("Server started")
 app.listen(3001);
