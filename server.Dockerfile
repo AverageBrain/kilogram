@@ -17,4 +17,4 @@ COPY . /app/
 RUN prisma generate
 
 # build
-RUN npm run start-server
+CMD npm run start-server
