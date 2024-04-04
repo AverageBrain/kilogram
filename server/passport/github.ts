@@ -5,9 +5,8 @@ const userService = new UserService()
 
 export const githubStrategy = new passportGithub.Strategy(
     {
-        clientID: 'c6264da0a139e182368f' as string,
-        clientSecret: '15aff26175f4d18bd476102c3d57f85a4fc293cd' as string,
-        callbackURL: 'http://localhost:3000/auth/github/callback'
+        clientID: process.env.GITHUB_CLIENT_ID as string,
+        clientSecret: process.env.GITHUB_CLIENT_SECRET as string,
     },
     async (accessToken, refreshToken, profile, done) => {
         const profileUsername: string = profile.username ? profile.username : ""
@@ -15,4 +14,3 @@ export const githubStrategy = new passportGithub.Strategy(
         done(null, {userId: user.id, prismaUser: user});
     })
 ;
-

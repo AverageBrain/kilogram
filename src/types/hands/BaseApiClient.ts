@@ -8,6 +8,7 @@ const axiosClient = axios.create(
         withCredentials: true
     }
 );
+
 export abstract class BaseApiClient {
     async axiosPost<T>(url: string, data: object): Promise<T> {
         return (await axiosClient.post<T>(url, data)).data
