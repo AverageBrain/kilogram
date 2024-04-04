@@ -11,10 +11,10 @@ ADD ./package.json /app/package.json
 ADD ./package-lock.json /app/package-lock.json
 RUN npm install -g npm@9.8.1 && npm install --save
 
-RUN prisma generate
-
 # copy all
 COPY . /app/
+
+RUN prisma generate
 
 # build
 RUN npm run start-server
