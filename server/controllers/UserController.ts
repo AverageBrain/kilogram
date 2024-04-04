@@ -19,16 +19,16 @@ function convertPrismaUser(prismaUser: User): types.User {
 @JsonController("/user")
 export class UserController {
     @Get("/me")
-    async getMe(@Req() request: express.Request): Promise<types.User | null> {
+    async getMe(@Req() request: express.Request): Promise<types.User | {}> {
         const sessionUser = request.user
         if (sessionUser?.prismaUser != undefined) {
             return convertPrismaUser(sessionUser.prismaUser)
         }
-        return null
+        return {}
     }
 
     @Post("/edit")
-    async editMe(@Req() request: express.Request, @BodyParam("user") user: types.User): Promise<types.User | null> {
+    async editMe(@Req() request: express.Request, @BodyParam("user") user: types.User): Promise<types.User | {}> {
         const sessionUser = request.user
         if (user != undefined) {
             const localUser = await prisma.user.findUniqueOrThrow({where: {githubId: sessionUser?.toString()}})
@@ -36,6 +36,6 @@ export class UserController {
             localUser.username = user.username
             return convertPrismaUser(localUser)
         }
-        return null
+        return {}
     }
 }

@@ -1,9 +1,12 @@
 import React, {Component} from 'react';
 import {UserApiClient} from "./types/hands/UserApiClient";
 
+
+
+
 class Auth extends Component {
-    constructor(props: {}) {
-        super(props);
+    componentDidMount() {
+        new UserApiClient().getMe().then(res => console.log(res))
     }
 
     render() {

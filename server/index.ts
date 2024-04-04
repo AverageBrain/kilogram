@@ -10,6 +10,8 @@ import express from "express";
 import {User as PrismaUser} from "@prisma/client";
 import {AuthController} from "./controllers/AuthController";
 import connect_pg_simple from "connect-pg-simple";
+import cors from "cors";
+import passport from "passport";
 
 const pgSession = connect_pg_simple(expressSession)
 
@@ -23,6 +25,23 @@ declare global {
 }
 
 const app = express();
+
+const allowedOrigins = ['http://localhost:3000/']
+const corsMiddleware = cors({
+    // origin: function(origin, callback){
+    //     if(!origin) return callback(null, true);
+    //     if(allowedOrigins.indexOf(origin) === -1){
+    //         const msg = 'The CORS policy for this site does not ' +
+    //             'allow access from the specified Origin.';
+    //         return callback(new Error(msg), false);
+    //     }
+    //     return callback(null, true);
+    // },
+    origin: 'http://localhost:3000/',
+    credentials: true,
+})
+
+app.use(cors({credentials: true, origin: 'http://localhost:3000'}));
 
 app.use(cookieParser());
 
@@ -39,6 +58,7 @@ app.use(expressSession({
     })
 }));
 
+
 app.use(myPassport.initialize());
 app.use(myPassport.session());
 
@@ -49,16 +69,16 @@ useExpressServer(app, {
         UserController
     ],
     middlewares: [
+        // corsMiddleware,
         LoggerMiddleware,
     ]
 })
 
+
 app.get(
-    '/',
+    '/api/auth/github/callback',
+    passport.authenticate('github', {failureRedirect: '/'}),
     (req, res) => res.sendStatus(200)
-)
-app.get(
-    '/api',
-    (req, res) => res.sendStatus(200)
-)
+);
+
 app.listen(3001);

@@ -1,13 +1,9 @@
 import {User} from "../types";
-import {BaseApiClient} from "./BaseApiClient";
+import {BASE_SERVER_HOST, BaseApiClient} from "./BaseApiClient";
 
 export class UserApiClient extends BaseApiClient {
     async authWithGithub(): Promise<null> {
-        const res = await fetch("/api/auth/github")
-        console.log("qyqyqyq")
-
-        console.log(res.headers)
-        // document.location.href = res.headers
+        window.location.href = BASE_SERVER_HOST + 'auth/github'
         return null
     }
 
