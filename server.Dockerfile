@@ -14,7 +14,6 @@ RUN npm install -g npm@9.8.1 && npm install --save
 # copy all
 COPY . /app/
 
-RUN prisma generate
-
 # build
+CMD prisma generate
 CMD npm run start-server
