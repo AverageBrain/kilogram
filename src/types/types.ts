@@ -1,7 +1,7 @@
 type BaseItem = {
-  id: string;
-  createdAt: string;
-  updatedAt: string;
+  id: number;
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 export type User = BaseItem & {

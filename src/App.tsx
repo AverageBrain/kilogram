@@ -1,15 +1,12 @@
 import React from 'react';
-import logo from './logo.svg';
 import './App.css';
 import { Layout } from 'antd';
-import { ChatList, Header } from './client/components';
-import { chatList } from './mock/chatList';
+import { Header } from './client/components';
 
 function App() {
   return (
     <Layout>
       <Header />
-      <ChatList chats={chatList}/>
     </Layout>
   );
 }

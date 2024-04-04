@@ -7,55 +7,52 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-
 model User {
-  id        Int         @id @default(autoincrement())
-  createdAt DateTime    @default(now())
-  updatedAt DateTime    @updatedAt
-
-  username  String      @default("")
-  name      String      @default("")
-  githubId  String?     @unique
-
-  chats     UserChat[]
+  id        Int        @id @default(autoincrement())
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+  username  String     @default("")
+  name      String     @default("")
+  githubId  String?    @unique
   messages  Message[]
+  chats     UserChat[]
 }
-
 
 model Chat {
-  id        Int         @id @default(autoincrement())
-  createdAt DateTime    @default(now())
-  updatedAt DateTime    @updatedAt
-
-  name      String      @default("")
-  type      String      @default("chat")
-
-  members   UserChat[]
+  id        Int        @id @default(autoincrement())
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+  name      String     @default("")
+  type      String     @default("chat")
   messages  Message[]
+  members   UserChat[]
 }
 
-
 model UserChat {
-  id        Int         @id @default(autoincrement())
-  createdAt DateTime    @default(now())
-  updatedAt DateTime    @updatedAt
-
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
   userId    Int
   chatId    Int
-
-  chat      Chat        @relation(fields: [chatId], references: [id])
-  user      User        @relation(fields: [userId], references: [id])
+  chat      Chat     @relation(fields: [chatId], references: [id])
+  user      User     @relation(fields: [userId], references: [id])
 }
 
 model Message {
-  id        Int         @id @default(autoincrement())
-  createdAt DateTime    @default(now())
-  updatedAt DateTime    @updatedAt
-
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
   userId    Int
   chatId    Int
   text      String
+  chat      Chat     @relation(fields: [chatId], references: [id])
+  user      User     @relation(fields: [userId], references: [id])
+}
 
-  chat      Chat        @relation(fields: [chatId], references: [id])
-  user      User        @relation(fields: [userId], references: [id])
+model ExpressSession {
+  sid    String   @id(map: "session_pkey") @db.VarChar
+  sess   Json     @db.Json
+  expire DateTime @db.Timestamp(6)
+
+  @@index([expire], map: "IDX_session_expire")
 }
