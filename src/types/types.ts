@@ -10,7 +10,7 @@ export type User = BaseItem & {
 } 
 
 export type Message = BaseItem & {
-  user: User;
+  userId: number, // that's enough for now
   text: string;
 }
 
@@ -19,7 +19,7 @@ export type ChatListItem = BaseItem & {
   lastMessage: string;
 }
 
-export type Chat = BaseItem & { 
+export type Chat = BaseItem & {
   user: User;
   messages: Message[];
 }

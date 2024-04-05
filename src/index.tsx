@@ -4,13 +4,13 @@ import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import Auth from "./Auth";
-import {UserApiClient} from "./types/hands/UserApiClient";
+import {AuthApiClient} from "./types/hands/AuthApiClient";
 
 
 const pathname = '/api/auth/github/callback'
 if (window.location.pathname == pathname) {
-    new UserApiClient().axiosGet(window.location.href.replace(window.location.origin + '/api', '')).then(() => {
-            console.log("ya")
+    const url = window.location.href.replace(window.location.origin + '/api', '')
+    new AuthApiClient().authGithubCallback(url).then(() => {
             window.location.href = '/'
         }
     )
