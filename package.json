@@ -44,7 +44,7 @@
     "build-server": "webpack",
     "start-server": "npx tsx server/index.ts"
   },
-  "type": "commonjs",
+  "type": "module",
   "eslintConfig": {
     "extends": [
       "react-app",
