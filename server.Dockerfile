@@ -23,5 +23,4 @@ WORKDIR /app
 ADD prisma ./prisma
 COPY --from=build-stage /app/dist /app/dist
 COPY --from=build-stage /app/node_modules/.prisma /app/node_modules/.prisma
-#CMD node ./dist/server/bundle.js
-CMD sleep 9999999 & wait
+CMD node ./dist/server/bundle.js
