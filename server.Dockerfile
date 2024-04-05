@@ -9,9 +9,18 @@ ENV PATH /app/node_modules/.bin:$PATH
 # install app dependencies
 ADD ./package.json /app/package.json
 ADD ./package-lock.json /app/package-lock.json
+RUN npm install -g npm@9.8.1 && npm install --save
+
 COPY . /app/
-RUN npm install -g npm@9.8.1 && npm install --save && prisma generate && npm run build-server && rm -rf /app/node-modules
 
 # build
-CMD sed -i 's/module/commonjs/g' file.txt
+RUN prisma generate && npm run build-server
+
+FROM node:18.12.1 as production-stage
+
+WORKDIR /app
+
+ADD prisma ./prisma
+COPY --from=build-stage /app/dist /app/dist
+COPY --from=build-stage /app/node_modules/.prisma /app/node_modules/.prisma
 CMD node ./dist/server/bundle.js
