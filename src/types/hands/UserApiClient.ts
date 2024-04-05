@@ -1,9 +1,9 @@
 import {User} from "../types";
-import {BASE_SERVER_HOST, BaseApiClient} from "./BaseApiClient";
+import {BASE_SERVER_GITHUB_REDIRECT, BaseApiClient} from "./BaseApiClient";
 
 export class UserApiClient extends BaseApiClient {
     async authWithGithub(): Promise<null> {
-        window.location.href = BASE_SERVER_HOST + 'auth/github'
+        window.location.href = BASE_SERVER_GITHUB_REDIRECT
         return null
     }
 

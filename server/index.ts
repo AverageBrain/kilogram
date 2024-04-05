@@ -36,7 +36,7 @@ app.use(expressSession({
     secret: process.env.EXPRESS_SESSION_SECRET as string,
     resave: false,
     saveUninitialized: true,
-    cookie: {maxAge: 60000},
+    cookie: {maxAge: 24 * 60 * 60 * 1000}, // 24 hours
     name: "SID",
     store: new pgSession({
         conString: "postgresql://kilogram:kilogram@158.160.118.181:5432/kilogram",

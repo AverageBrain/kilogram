@@ -1,12 +1,10 @@
 import React, {Component} from 'react';
 import {UserApiClient} from "./types/hands/UserApiClient";
-
-
+new UserApiClient().getMe().then(res => console.log(res))
 
 
 class Auth extends Component {
     componentDidMount() {
-        new UserApiClient().getMe().then(res => console.log(res))
     }
 
     render() {
