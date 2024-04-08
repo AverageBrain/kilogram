@@ -1,25 +1,27 @@
-type BaseItem = {
+type BaseItemType = {
   id: string;
   createdAt: string;
   updatedAt: string;
 }
 
-export type User = BaseItem & {
+export type UserType = BaseItemType & {
   name: string;
   username: string;
+  bio?: string;
+  lastSeen?: string;
 } 
 
-export type Message = BaseItem & {
-  user: User;
+export type MessageType = BaseItemType & {
+  user: UserType;
   text: string;
 }
 
-export type ChatListItem = BaseItem & { 
+export type ChatListItemType = BaseItemType & { 
   name: string;
   lastMessage: string;
 }
 
-export type Chat = BaseItem & { 
-  user: User;
-  messages: Message[];
+export type ChatType = BaseItemType & { 
+  user: UserType;
+  messages: MessageType[];
 }

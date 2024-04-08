@@ -1,0 +1,28 @@
+.chat-header {
+  padding: 0;
+  background-color: white;
+  color: #516460;
+  line-height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+
+  .user-info {
+    width: 100%;
+    padding: 0 10px;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+
+    .user-name {
+      font-weight: 500;
+    }  
+
+    .last-seen {
+      font-weight: 200;
+      font-size: 14px;
+    }
+
+  }
+}
