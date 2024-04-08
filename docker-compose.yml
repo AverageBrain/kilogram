@@ -2,18 +2,20 @@ version: "3.9"
 services:
   postgres:
     image: postgres:13.3
-    environment:
-      POSTGRES_DB: "kilogram"
-      POSTGRES_USER: "kilogram"
-      POSTGRES_PASSWORD: "kilogram"
+    env_file:
+      - env/db.env
     ports:
       - "5432:5432"
+    networks:
+      - database_bridge
 
   client:
-    image: kilogram/client
+    image: phoenixnazarov/kilogram-client
     build:
       context: .
       dockerfile: client.Dockerfile
+    env_file:
+      - env/client.env
     networks:
       - client_bridge
     ports:
@@ -24,11 +26,13 @@ services:
     build:
       context: .
       dockerfile: server.Dockerfile
+    env_file:
+      - env/server.env
     networks:
       - database_bridge
       - server_bridge
     ports:
-      - "3002:3000"
+      - "3002:3001"
 
   nginx:
     build:
