@@ -4,15 +4,17 @@ import { Header } from '../Header';
 import { ChatList } from '../ChatList';
 import { ChatListItemType } from '../../../../types';
 import './ChatListPage.css';
-import { UserType } from '../../../../types';
+import { findUserById } from '../../../../mock';
 
 type Props = {
-  activeUser: UserType;
+  activeUserId: number;
   activeChat: ChatListItemType | null;
   setActiveChat: (chat: ChatListItemType | null) => void;
 };
 
-const ChatListPage: React.FC<Props> = ({ activeUser, activeChat, setActiveChat }) => {
+const ChatListPage: React.FC<Props> = ({ activeUserId, activeChat, setActiveChat }) => {
+  const activeUser = findUserById(activeUserId);
+
   return (
     <Layout className='main'>
         <Header activeUser={activeUser}/>

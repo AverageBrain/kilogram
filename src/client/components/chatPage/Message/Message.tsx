@@ -3,16 +3,16 @@ import clsx from 'clsx';
 import moment from 'moment';
 import ReactMarkdown from 'react-markdown'
 
-import { UserType, MessageType } from '../../../../types'
+import { MessageType } from '../../../../types'
 import './Message.css';
 
 type Props = {
   message: MessageType;
-  activeUser: UserType;
+  activeUserId: number;
 }
 
-const Message: React.FC<Props> = ({ message, activeUser }) => {
-  const isActivePerson = activeUser === message.user;
+const Message: React.FC<Props> = ({ message, activeUserId }) => {
+  const isActivePerson = activeUserId === message.userId;
 
   return (
     <div className={clsx('message', isActivePerson ? 'my-message' : 'partner-message')}>

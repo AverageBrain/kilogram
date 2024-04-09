@@ -5,7 +5,7 @@ import Splitter, { GutterTheme, SplitDirection } from '@devbookhq/splitter'
 import { ChatListPage } from '../chatListPage';
 import { ChatPage, EmptyPanel } from '../chatPage';
 import { ChatListItemType } from '../../../types';
-import { findChatById, findUserById } from '../../../mock';
+import { findChatById } from '../../../mock';
 import './MainPage.css';
 
 const { Content } = Layout;
@@ -29,7 +29,7 @@ const MainPage: React.FC = () => {
   }, []);
 
   const handleResizeFinished = (pairIdx: number, newSizes: number[]) => setPanelSizes(newSizes);
-  const activeUser = findUserById('1');
+  const activeUserId = 1;
 
   return (
     <Layout style={{ height: "100vh" }}>
@@ -43,12 +43,12 @@ const MainPage: React.FC = () => {
           onResizeFinished={handleResizeFinished}
         >
           <ChatListPage
-            activeUser={activeUser}
+            activeUserId={activeUserId}
             activeChat={activeChat}
             setActiveChat={setActiveChat}
           />
           {activeChat
-          ? <ChatPage chat={findChatById(activeChat.id)} activeUser={activeUser}/>
+          ? <ChatPage chat={findChatById(activeChat.id)} activeUserId={activeUserId}/>
           : <EmptyPanel />
           }
         </Splitter>
