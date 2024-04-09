@@ -1,5 +1,5 @@
 import {BodyParam, Get, JsonController, Param, Post, Req} from "routing-controllers";
-import {Message, UserChat} from "@prisma/client";
+import {UserChat} from "@prisma/client";
 import express from "express";
 import {ChatService} from "../services/ChatService";
 import {prisma} from "../domain/PrismaClient";
@@ -21,18 +21,18 @@ export class ChatController {
             chatId: number
             text: string
         }
-    ): Promise<types.Message> {
+    ): Promise<types.MessageType> {
         const user = request.user?.prismaUser
-        if (user == undefined) {
+        if (!user) {
             throw new Error("User must be authorized")
         }
 
         const userChat = chatService.getChatWithUserAccess(message.chatId, user.id)
-        if (userChat == null) {
+        if (userChat === null) {
             throw new Error("User have not access to chat")
         }
 
-        return prisma.message.create({data: {chatId: message.chatId, text: message.text, userId: user.id}});
+        return prisma.message.create({ data: { chatId: message.chatId, text: message.text, userId: user.id }});
     }
 
     @Post("/create")
@@ -41,14 +41,14 @@ export class ChatController {
         @BodyParam('createChat') createChat: {
             userId: number
         }
-    ): Promise<types.Chat> {
+    ): Promise<types.ChatType> {
         const user = request.user?.prismaUser
-        if (user == undefined) {
+        if (!user) {
             throw new Error("User must be authorized")
         }
 
         const toUser = await userService.getUserById(createChat.userId)
-        if (toUser == null) {
+        if (toUser === null) {
             throw new Error("User not find")
         }
 
@@ -70,13 +70,13 @@ export class ChatController {
     async getMyChats(
         @Req() request: express.Request,
         @Param("afterId") afterId: number
-    ): Promise<types.Chat[]> {
-        if (afterId == -1) {
+    ): Promise<types.ChatType[]> {
+        if (afterId === -1) {
             // first page -- new users
             afterId = await prisma.user.count()
         }
         const user = request.user?.prismaUser
-        if (user == undefined) {
+        if (!user) {
             throw new Error("User must be authorized")
         }
         const userChats: UserChat[] = await prisma.userChat.findMany(
@@ -99,8 +99,8 @@ export class ChatController {
                 createdAt: chat.createdAt,
                 updatedAt: chat.updatedAt,
                 user: convertPrismaUser(usersById[c.userId][0]),
-                messages: chat.messages as types.Message[]
-            } as types.Chat
+                messages: chat.messages as types.MessageType[]
+            } as types.ChatType
         })
     }
 
@@ -112,9 +112,9 @@ export class ChatController {
             chatId: number,
             afterId: number, // first message can be get in "/chats/:afterId"
         }
-    ): Promise<types.Message[]> {
+    ): Promise<types.MessageType[]> {
         const user = request.user?.prismaUser
-        if (user == undefined) {
+        if (!user) {
             throw new Error("User must be authorized")
         }
 
