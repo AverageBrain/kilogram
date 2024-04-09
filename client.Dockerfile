@@ -15,7 +15,7 @@ RUN npm install -g npm@9.8.1 && npm install --save
 COPY . /app/
 
 # build
-RUN npm run build
+RUN npm run build && rm -rf /app/node_modules
 
 FROM nginx as production-stage
 COPY nginx/client.conf /etc/nginx/nginx.conf

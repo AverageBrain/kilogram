@@ -1,7 +1,7 @@
 type BaseItemType = {
-  id: string;
-  createdAt: string;
-  updatedAt: string;
+  id: number;
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 export type UserType = BaseItemType & {
@@ -12,7 +12,7 @@ export type UserType = BaseItemType & {
 } 
 
 export type MessageType = BaseItemType & {
-  user: UserType;
+  userId: number;
   text: string;
 }
 
