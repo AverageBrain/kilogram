@@ -7,7 +7,7 @@ import {AuthApiClient} from "./types/hands/AuthApiClient";
 
 
 const pathname = '/api/auth/github/callback'
-if (window.location.pathname == pathname) {
+if (window.location.pathname === pathname) {
     const url = window.location.href.replace(window.location.origin + '/api', '')
     new AuthApiClient().authGithubCallback(url).then(() => {
             window.location.href = '/'
