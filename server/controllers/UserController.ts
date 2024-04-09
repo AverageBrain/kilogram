@@ -25,7 +25,7 @@ export class UserController {
             return convertPrismaUser(sessionUser.prismaUser)
         }
         // not authorized
-        return {}
+        return {};
     }
 
     @Post("/edit")

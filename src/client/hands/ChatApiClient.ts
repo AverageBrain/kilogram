@@ -1,7 +1,7 @@
 import { BaseApiClient } from "./BaseApiClient";
-import { ChatType, MessageType} from "../types";
+import { ChatType, MessageType} from "../../types/types";
 
-export class UserApiClient extends BaseApiClient {
+class UserApiClient extends BaseApiClient {
     sendMessage(chatId: number, text: string): Promise<MessageType> {
         return this.axiosPost("/chat/send", {message: {chatId: chatId, text: text}})
     }
@@ -22,3 +22,5 @@ export class UserApiClient extends BaseApiClient {
         return this.axiosPost("/chat/messages", {chatId: chatId, afterId: afterId})
     }
 }
+
+export default new UserApiClient();

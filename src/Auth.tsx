@@ -1,7 +1,6 @@
 import React, {Component} from 'react';
-import {UserApiClient} from "./types/hands/UserApiClient";
-import {AuthApiClient} from "./types/hands/AuthApiClient";
-new UserApiClient().getMe().then(res => console.log(res))
+import { authApiClient } from './client/hands';
+// new userApiClient().getMe().then(res => console.log(res))
 
 
 class Auth extends Component {
@@ -11,7 +10,7 @@ class Auth extends Component {
     render() {
         return (
             <div>
-                <p onClick={() => new AuthApiClient().authWithGithub()}>Auth with github</p>
+                <p onClick={() => authApiClient.authWithGithub()}>Auth with github</p>
             </div>
         );
     }

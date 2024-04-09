@@ -6,6 +6,7 @@ import './Header.css';
 import { useModal } from '../../../../hooks/useModal';
 import { Profile } from '../../Profile';
 import { UserType } from '../../../../types';
+import { authApiClient } from '../../../hands';
 
 const { Header: HeaderAD } = Layout;
 
@@ -15,6 +16,11 @@ type Props = {
 
 const Header: React.FC<Props> = ({ activeUser }) => {
   const { isOpenModal, showModal, closeModal } = useModal();
+
+  const handleLogout = async () => {
+    await authApiClient.logout();
+    window.location.href = 'http://localhost:3000/';
+  };
 
   const items: MenuProps['items'] = [ // TODO: вместе с логикой вынести в отдельный компонент
     {
@@ -28,6 +34,7 @@ const Header: React.FC<Props> = ({ activeUser }) => {
     {
       label: 'Выйти',
       key: '1',
+      onClick: handleLogout,
     },
   ];
   
