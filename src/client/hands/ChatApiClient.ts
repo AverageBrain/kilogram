@@ -7,7 +7,7 @@ class UserApiClient extends BaseApiClient {
     }
 
     createChat(userId: number): Promise<ChatType> {
-        return this.axiosPost("/chat/create", {message: {chatId: userId}})
+        return this.axiosPost("/chat/create", { createChat: { userId } })
     }
 
     getMyChats(afterId: number = -1): Promise<ChatType[]> {

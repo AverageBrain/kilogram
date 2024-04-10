@@ -1,23 +1,22 @@
 import React from 'react';
 import { Layout } from 'antd';
+import { observer } from 'mobx-react-lite';
+
 import { Header } from '../Header';
 import { ChatList } from '../ChatList';
-import { ChatListItemType } from '../../../../types';
+import { ChatListItemType, ChatType } from '../../../../types';
 import './ChatListPage.css';
-import { findUserById } from '../../../../mock';
 
 type Props = {
-  activeUserId: number;
-  activeChat: ChatListItemType | null;
-  setActiveChat: (chat: ChatListItemType | null) => void;
+  activeChat: ChatType | null;
+  setActiveChat: (chat: ChatType | null) => void;
 };
 
-const ChatListPage: React.FC<Props> = ({ activeUserId, activeChat, setActiveChat }) => {
-  const activeUser = findUserById(activeUserId);
+const ChatListPage: React.FC<Props> = ({ activeChat, setActiveChat }) => {
 
   return (
     <Layout className='main'>
-        <Header activeUser={activeUser}/>
+        <Header />
         <ChatList
           activeChat={activeChat}
           setActiveChat={setActiveChat}
@@ -26,4 +25,4 @@ const ChatListPage: React.FC<Props> = ({ activeUserId, activeChat, setActiveChat
   );
 };
 
-export default ChatListPage;
+export default observer(ChatListPage);

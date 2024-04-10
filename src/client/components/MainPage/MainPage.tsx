@@ -4,14 +4,18 @@ import Splitter, { GutterTheme, SplitDirection } from '@devbookhq/splitter'
 
 import { ChatListPage } from '../chatListPage';
 import { ChatPage, EmptyPanel } from '../chatPage';
-import { ChatListItemType } from '../../../types';
+import { ChatListItemType, ChatType } from '../../../types';
 import { findChatById } from '../../../mock';
 import './MainPage.css';
+import { chatsStore, messagesStore } from '../../stores';
 
 const { Content } = Layout;
 
 const MainPage: React.FC = () => {
-  const [activeChat, setActiveChat] = useState<ChatListItemType | null>(null);
+  const { selectedItem, loadItems: loadChats, createChat } = chatsStore;
+  const { loadItems: loadMessages, sendMessage } = messagesStore;
+
+  const [activeChat, setActiveChat] = useState<ChatType | null>(null);
   const [panelSizes, setPanelSizes] = useState<number[]>([]); // TODO: можно записывать в localStorage
 
   const handleEscapePress = (event: KeyboardEvent) => {
@@ -21,11 +25,12 @@ const MainPage: React.FC = () => {
   };
 
   useEffect(() => {
-      document.addEventListener('keydown', handleEscapePress);
+    loadChats();   
 
-      return () => {
-          document.removeEventListener('keydown', handleEscapePress);
-      };
+    document.addEventListener('keydown', handleEscapePress);
+    return () => {
+      document.removeEventListener('keydown', handleEscapePress);
+    };
   }, []);
 
   const handleResizeFinished = (pairIdx: number, newSizes: number[]) => setPanelSizes(newSizes);
@@ -33,6 +38,9 @@ const MainPage: React.FC = () => {
 
   return (
     <Layout style={{ height: "100vh" }}>
+      <button onClick={async () => {
+        sendMessage(2, 'aa');
+      }}>click</button>
       <Content>
         <Splitter
           initialSizes={panelSizes}
@@ -43,13 +51,12 @@ const MainPage: React.FC = () => {
           onResizeFinished={handleResizeFinished}
         >
           <ChatListPage
-            activeUserId={activeUserId}
             activeChat={activeChat}
             setActiveChat={setActiveChat}
           />
           {activeChat
-          ? <ChatPage chat={findChatById(activeChat.id)} activeUserId={activeUserId}/>
-          : <EmptyPanel />
+            ? <ChatPage chat={findChatById(activeChat.id)} activeUserId={activeUserId}/>
+            : <EmptyPanel />
           }
         </Splitter>
       </Content>

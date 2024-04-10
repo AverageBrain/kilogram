@@ -5,16 +5,15 @@ import { SearchOutlined, MenuOutlined } from '@ant-design/icons';
 import './Header.css';
 import { useModal } from '../../../../hooks/useModal';
 import { Profile } from '../../Profile';
-import { UserType } from '../../../../types';
 import { authApiClient } from '../../../hands';
+import { authUserStore } from '../../../stores';
 
 const { Header: HeaderAD } = Layout;
 
-type Props = {
-  activeUser: UserType;
-}
 
-const Header: React.FC<Props> = ({ activeUser }) => {
+const Header: React.FC = () => {
+  const { selectedItem } = authUserStore;
+
   const { isOpenModal, showModal, closeModal } = useModal();
 
   const handleLogout = async () => {
@@ -53,7 +52,7 @@ const Header: React.FC<Props> = ({ activeUser }) => {
           />
       </HeaderAD>
 
-      <Profile user={activeUser} isOpenModal={isOpenModal} toggle={closeModal} />
+      {selectedItem && <Profile user={selectedItem} isOpenModal={isOpenModal} toggle={closeModal} />}
     </>
   );
 };
