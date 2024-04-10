@@ -7,6 +7,7 @@ import * as types from '../../src/types';
 import {UserService} from "../services/UserService";
 import {convertPrismaUser} from "./UserController";
 import {groupBy} from "../utils";
+import {use} from "passport";
 
 
 const chatService = new ChatService()
@@ -51,6 +52,18 @@ export class ChatController {
         if (toUser === null) {
             throw new Error("User not find")
         }
+        const alreadyChat = await prisma.userChat.findFirst({
+            where: {
+                AND: [
+                    { userId: user.id },
+                    { chat: { members: { some: { userId: toUser.id } } } }
+                ]
+            }
+        })
+        if (alreadyChat) {
+            throw new Error("Chat already created")
+        }
+
 
         const chat = await prisma.chat.create({data: {}})
         await Promise.all([
