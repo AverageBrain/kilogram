@@ -28,10 +28,12 @@ export class ChatController {
             throw new Error("User must be authorized")
         }
 
-        const userChat = chatService.getChatWithUserAccess(message.chatId, user.id)
+        const userChat = await chatService.getChatWithUserAccess(message.chatId, user.id)
         if (userChat === null) {
             throw new Error("User have not access to chat")
         }
+        userChat.updatedAt = new Date()
+        await prisma.userChat.update({data: userChat, where: {id: userChat.id}})
 
         return prisma.message.create({data: {chatId: message.chatId, text: message.text, userId: user.id}});
     }
@@ -93,7 +95,8 @@ export class ChatController {
             throw new Error("User must be authorized")
         }
         const userChats: UserChat[] = await prisma.userChat.findMany(
-            {where: {AND: [{id: {lt: afterId}}, {userId: user.id}]}, take: 10, orderBy: {id: "desc"}});
+            {where: {AND: [{id: {lt: afterId}}, {userId: user.id}]}, take: 10, orderBy: {updatedAt: 'desc'}}
+        );
 
 
         const chatsIds = userChats.map(i => i.chatId);
