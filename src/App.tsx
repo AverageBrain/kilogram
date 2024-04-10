@@ -4,9 +4,8 @@ import { isEmpty } from 'lodash';
 import { Spin } from 'antd';
 import { observer } from 'mobx-react-lite';
 
-import { MainPage } from './client/components';
+import { LogInPage, MainPage } from './client/components';
 import { authUserStore } from './client/stores';
-import Auth from './Auth';
 
 const App: React.FC = () => {
   const {
@@ -21,10 +20,10 @@ const App: React.FC = () => {
 
   return (
     loading
-    ? <Spin />
-    : isEmpty(selectedItem)
-      ? <Auth />
-      : <MainPage />
+      ? <Spin />
+      : isEmpty(selectedItem)
+        ? <LogInPage />
+        : <MainPage />
   );
 }
 
