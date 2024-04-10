@@ -80,25 +80,28 @@ export class ChatController {
             throw new Error("User must be authorized")
         }
         const userChats: UserChat[] = await prisma.userChat.findMany(
-            {where: {AND: [{id: {lt: afterId}}, {userId: user.id}]}, take: 10, orderBy: {id: "desc"}})
-        const chatsIds = userChats.map(i => i.chatId)
-        const userIds = userChats.map(i => i.userId)
-        const [chats, users] = await Promise.all([
-            await prisma.chat.findMany({where: {id: {in: chatsIds}}, include: {messages: {take: 1}}}),
-            await prisma.user.findMany({where: {id: {in: userIds}}}),
-        ])
+            {where: {AND: [{id: {lt: afterId}}, {userId: user.id}]}, take: 10, orderBy: {id: "desc"}});
+        
+        
+
+        const chatsIds = userChats.map(i => i.chatId);
+        const chats = await prisma.chat.findMany({where: {id: {in: chatsIds}}, include: {messages: {take: -1}, members: true}});
+    
+        const userIds = chats.map((chat) => chat.members[0].userId === user.id ? chat.members[1].userId : chat.members[0].userId);
+        const users = await prisma.user.findMany({where: {id: {in: userIds}}});
 
         const usersById = groupBy(users, i => i.id)
         const chatsById = groupBy(chats, i => i.id)
 
-
         return userChats.map(c => {
-            const chat = chatsById[c.chatId][0]
+            const chat = chatsById[c.chatId][0];
+            const otherUserId = chat.members[0].userId === user.id ? chat.members[1].userId : chat.members[0].userId;
+
             return {
                 id: chat.id,
                 createdAt: chat.createdAt,
                 updatedAt: chat.updatedAt,
-                user: convertPrismaUser(usersById[c.userId][0]),
+                user: convertPrismaUser(usersById[otherUserId][0]),
                 messages: chat.messages as types.MessageType[]
             } as types.ChatType
         })
@@ -119,7 +122,7 @@ export class ChatController {
         }
 
         return prisma.message.findMany({
-            where: {AND: [{id: {lt: chatMessages.afterId}}, {chatId: chatMessages.chatId}]},
+            where: { chatId: chatMessages.chatId },
             take: 10,
             orderBy: {id: "desc"}
         });

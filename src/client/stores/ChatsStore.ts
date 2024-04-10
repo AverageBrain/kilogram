@@ -14,6 +14,7 @@ class ChatsStore extends BaseStore<ChatType> {
 
             loadItems: action.bound,
             createChat: action.bound,
+            setSelectedChat: action.bound,
         });
     }
 
@@ -46,6 +47,12 @@ class ChatsStore extends BaseStore<ChatType> {
       } finally {
         this.disableLoading();
       }
+    }
+
+    setSelectedChat(chat?: ChatType) {
+      runInAction(() => {
+        this.selectedItem = chat;
+      });
     }
 }
 

@@ -1,28 +1,18 @@
 import React from 'react';
 import { Layout } from 'antd';
-import { observer } from 'mobx-react-lite';
 
 import { Header } from '../Header';
 import { ChatList } from '../ChatList';
-import { ChatListItemType, ChatType } from '../../../../types';
 import './ChatListPage.css';
 
-type Props = {
-  activeChat: ChatType | null;
-  setActiveChat: (chat: ChatType | null) => void;
-};
 
-const ChatListPage: React.FC<Props> = ({ activeChat, setActiveChat }) => {
-
+const ChatListPage: React.FC = () => {
   return (
     <Layout className='main'>
         <Header />
-        <ChatList
-          activeChat={activeChat}
-          setActiveChat={setActiveChat}
-        />
+        <ChatList />
     </Layout>
   );
 };
 
-export default observer(ChatListPage);
+export default ChatListPage;

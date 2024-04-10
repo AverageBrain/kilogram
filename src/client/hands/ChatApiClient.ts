@@ -19,7 +19,7 @@ class UserApiClient extends BaseApiClient {
         chatId: number,
         afterId: number, // first message were already in Chat
     ): Promise<MessageType[]> {
-        return this.axiosPost("/chat/messages", {chatId: chatId, afterId: afterId})
+        return this.axiosPost("/chat/messages", { chatMessages: { chatId: chatId, afterId: afterId }})
     }
 }
 

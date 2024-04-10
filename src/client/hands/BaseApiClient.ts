@@ -16,7 +16,6 @@ export abstract class BaseApiClient {
     }
 
     async axiosGet<T>(url: string): Promise<T> {
-        console.log("YES")
         return (await axiosClient.get<T>(url)).data
     }
 
