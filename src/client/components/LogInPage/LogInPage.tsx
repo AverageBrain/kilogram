@@ -13,7 +13,7 @@ const LogInPage: React.FC = () => {
   return (
     <Layout style={{ height: "100vh" }}>
       <Content className="container">
-        <Card className="card">
+        <div className="card">
           <div className="circle">
             KILOGRAM
           </div>
@@ -24,9 +24,9 @@ const LogInPage: React.FC = () => {
             icon={<GithubOutlined style={{ fontSize: '30px'}} />}
             onClick={handleLogIn}
           >
-              Войти через Гитхаб
+              Войти через Github
           </Button>
-        </Card>
+        </div>
       </Content>
     </Layout>
   );
