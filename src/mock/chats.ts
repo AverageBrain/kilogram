@@ -18,6 +18,7 @@ export const chats: ChatType[] = [
     messages: [
       {
         id: 10,
+        chatId: 9,
         userId: 2,
         createdAt: new Date('2024-03-30T12:38:31'),
         updatedAt: new Date('2024-03-30T12:38:31'),
@@ -25,6 +26,7 @@ export const chats: ChatType[] = [
       },
       {
         id: 11,
+        chatId: 9,
         userId: 2,
         createdAt: new Date('2024-03-30T12:38:31'),
         updatedAt: new Date('2024-03-30T12:38:31'),
@@ -32,6 +34,7 @@ export const chats: ChatType[] = [
       },
       {
         id: 12,
+        chatId: 9,
         userId: 2,
         createdAt: new Date('2024-03-30T12:38:31'),
         updatedAt: new Date('2024-03-30T12:38:31'),
@@ -47,6 +50,7 @@ export const chats: ChatType[] = [
     messages: [
       {
         id: 13,
+        chatId: 10,
         userId: 2,
         createdAt: new Date('2024-03-30T12:38:31'),
         updatedAt: new Date('2024-03-30T12:38:31'),
@@ -54,6 +58,7 @@ export const chats: ChatType[] = [
       },
       {
         id: 14,
+        chatId: 10,
         userId: 1,
         createdAt: new Date('2024-03-30T12:38:31'),
         updatedAt: new Date('2024-03-30T12:38:31'),
@@ -61,6 +66,7 @@ export const chats: ChatType[] = [
       },
       {
         id: 15,
+        chatId: 10,
         userId: 1,
         createdAt: new Date('2024-03-30T12:38:31'),
         updatedAt: new Date('2024-03-30T12:38:31'),
@@ -76,6 +82,7 @@ export const chats: ChatType[] = [
     messages: [
       {
         id: 13,
+        chatId: 11,
         userId: 1,
         createdAt: new Date('2024-03-30T12:38:31'),
         updatedAt: new Date('2024-03-30T12:38:31'),
@@ -83,6 +90,7 @@ export const chats: ChatType[] = [
       },
       {
         id: 14,
+        chatId: 11,
         userId: 3,
         createdAt: new Date('2024-03-30T12:38:31'),
         updatedAt: new Date('2024-03-30T12:38:31'),
@@ -90,6 +98,7 @@ export const chats: ChatType[] = [
       },
       {
         id: 15,
+        chatId: 11,
         userId: 3,
         createdAt: new Date('2024-03-30T12:38:31'),
         updatedAt: new Date('2024-03-30T12:38:31'),

@@ -1,14 +1,13 @@
-import {Controller, Get, Redirect, Req, Res, UseBefore} from 'routing-controllers';
-import passport from "passport";
+import {Controller, Get, Req, UseBefore} from 'routing-controllers';
+import passport from 'passport';
 import express from 'express';
 
 
 @Controller()
 export class AuthController {
-    @Get("/auth/github")
+    @Get('/auth/github')
     @UseBefore(passport.authenticate('github'))
-    authWithGithub(@Req() request: express.Request) {
-    }
+    authWithGithub(@Req() request: express.Request) {}
 
     // @Get("/auth/github/callback")
     // @UseBefore(passport.authenticate('github', {failureRedirect: '/'}))
@@ -17,8 +16,8 @@ export class AuthController {
     // }
 
     @Get('/logout')
-    @Redirect("/")
     logout(@Req() request: express.Request) {
         request.logout(err => err ? "" : "")
+        return {};
     }
 }

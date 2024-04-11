@@ -37,6 +37,8 @@ model UserChat {
   chatId    Int
   chat      Chat     @relation(fields: [chatId], references: [id])
   user      User     @relation(fields: [userId], references: [id])
+
+  @@unique([userId, chatId])
 }
 
 model Message {

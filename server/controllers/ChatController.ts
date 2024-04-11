@@ -7,6 +7,7 @@ import * as types from '../../src/types';
 import {UserService} from "../services/UserService";
 import {convertPrismaUser} from "./UserController";
 import {groupBy} from "../utils";
+import {use} from "passport";
 
 
 const chatService = new ChatService()
@@ -27,12 +28,14 @@ export class ChatController {
             throw new Error("User must be authorized")
         }
 
-        const userChat = chatService.getChatWithUserAccess(message.chatId, user.id)
+        const userChat = await chatService.getChatWithUserAccess(message.chatId, user.id)
         if (userChat === null) {
             throw new Error("User have not access to chat")
         }
+        userChat.updatedAt = new Date()
+        await prisma.userChat.update({data: userChat, where: {id: userChat.id}})
 
-        return prisma.message.create({ data: { chatId: message.chatId, text: message.text, userId: user.id }});
+        return prisma.message.create({data: {chatId: message.chatId, text: message.text, userId: user.id}});
     }
 
     @Post("/create")
@@ -51,6 +54,18 @@ export class ChatController {
         if (toUser === null) {
             throw new Error("User not find")
         }
+        const alreadyChat = await prisma.userChat.findFirst({
+            where: {
+                AND: [
+                    { userId: user.id },
+                    { chat: { members: { some: { userId: toUser.id } } } }
+                ]
+            }
+        })
+        if (alreadyChat) {
+            throw new Error("Chat already created")
+        }
+
 
         const chat = await prisma.chat.create({data: {}})
         await Promise.all([
@@ -80,25 +95,26 @@ export class ChatController {
             throw new Error("User must be authorized")
         }
         const userChats: UserChat[] = await prisma.userChat.findMany(
-            {where: {AND: [{id: {lt: afterId}}, {userId: user.id}]}, take: 10, orderBy: {id: "desc"}})
-        const chatsIds = userChats.map(i => i.chatId)
-        const userIds = userChats.map(i => i.userId)
-        const [chats, users] = await Promise.all([
-            await prisma.chat.findMany({where: {id: {in: chatsIds}}, include: {messages: {take: 1}}}),
-            await prisma.user.findMany({where: {id: {in: userIds}}}),
-        ])
+            {where: {AND: [{id: {lt: afterId}}, {userId: user.id}]}, take: 10, orderBy: {updatedAt: 'desc'}}
+        );
 
-        const usersById = groupBy(users, i => i.id)
+
+        const chatsIds = userChats.map(i => i.chatId);
+        const chats = await prisma.chat.findMany({
+            where: {id: {in: chatsIds}},
+            include: {messages: {take: -1}, members: {include: {user: true}}}
+        });
         const chatsById = groupBy(chats, i => i.id)
-
 
         return userChats.map(c => {
             const chat = chatsById[c.chatId][0]
+            const otherUserChat = chat.members[0].userId === user.id ? chat.members[1] : chat.members[0]
+
             return {
                 id: chat.id,
                 createdAt: chat.createdAt,
                 updatedAt: chat.updatedAt,
-                user: convertPrismaUser(usersById[c.userId][0]),
+                user: convertPrismaUser(otherUserChat.user),
                 messages: chat.messages as types.MessageType[]
             } as types.ChatType
         })
@@ -119,7 +135,7 @@ export class ChatController {
         }
 
         return prisma.message.findMany({
-            where: {AND: [{id: {lt: chatMessages.afterId}}, {chatId: chatMessages.chatId}]},
+            where: {chatId: chatMessages.chatId},
             take: 10,
             orderBy: {id: "desc"}
         });

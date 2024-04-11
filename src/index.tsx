@@ -3,13 +3,13 @@ import ReactDOM from 'react-dom/client';
 import './index.css';
 import App from './App';
 // import reportWebVitals from './reportWebVitals';
-import {AuthApiClient} from "./types/hands/AuthApiClient";
+import { authApiClient } from './client/hands';
 
 
 const pathname = '/api/auth/github/callback'
 if (window.location.pathname === pathname) {
     const url = window.location.href.replace(window.location.origin + '/api', '')
-    new AuthApiClient().authGithubCallback(url).then(() => {
+    authApiClient.authGithubCallback(url).then(() => {
             window.location.href = '/'
         }
     )

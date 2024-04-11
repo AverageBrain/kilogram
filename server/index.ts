@@ -9,6 +9,7 @@ import {LoggerMiddleware} from "./middleware/LoggingMiddleware";
 import express from "express";
 import {User as PrismaUser} from "@prisma/client";
 import {AuthController} from "./controllers/AuthController";
+import { ChatController } from "./controllers/ChatController";
 import connect_pg_simple from "connect-pg-simple";
 import cors from "cors";
 import passport from "passport";
@@ -52,7 +53,8 @@ useExpressServer(app, {
     routePrefix: '/api',
     controllers: [
         AuthController,
-        UserController
+        UserController,
+        ChatController,
     ],
     middlewares: [
         LoggerMiddleware,

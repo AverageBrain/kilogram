@@ -1,13 +1,13 @@
 import { BaseApiClient } from "./BaseApiClient";
-import { ChatType, MessageType} from "../types";
+import { ChatType, MessageType} from "../../types/types";
 
-export class UserApiClient extends BaseApiClient {
+class UserApiClient extends BaseApiClient {
     sendMessage(chatId: number, text: string): Promise<MessageType> {
         return this.axiosPost("/chat/send", {message: {chatId: chatId, text: text}})
     }
 
     createChat(userId: number): Promise<ChatType> {
-        return this.axiosPost("/chat/create", {message: {chatId: userId}})
+        return this.axiosPost("/chat/create", { createChat: { userId } })
     }
 
     getMyChats(afterId: number = -1): Promise<ChatType[]> {
@@ -19,6 +19,8 @@ export class UserApiClient extends BaseApiClient {
         chatId: number,
         afterId: number, // first message were already in Chat
     ): Promise<MessageType[]> {
-        return this.axiosPost("/chat/messages", {chatId: chatId, afterId: afterId})
+        return this.axiosPost("/chat/messages", { chatMessages: { chatId: chatId, afterId: afterId }})
     }
 }
+
+export default new UserApiClient();

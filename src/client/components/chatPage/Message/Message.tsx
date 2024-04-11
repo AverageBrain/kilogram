@@ -2,17 +2,20 @@ import React from 'react';
 import clsx from 'clsx';
 import moment from 'moment';
 import ReactMarkdown from 'react-markdown'
+import { observer } from 'mobx-react-lite';
 
 import { MessageType } from '../../../../types'
 import './Message.css';
+import { authUserStore } from '../../../stores';
 
 type Props = {
   message: MessageType;
-  activeUserId: number;
 }
 
-const Message: React.FC<Props> = ({ message, activeUserId }) => {
-  const isActivePerson = activeUserId === message.userId;
+const Message: React.FC<Props> = ({ message }) => {
+  const { selectedItem } = authUserStore;
+
+  const isActivePerson = selectedItem?.id === message.userId;
 
   return (
     <div className={clsx('message', isActivePerson ? 'my-message' : 'partner-message')}>
@@ -27,4 +30,4 @@ const Message: React.FC<Props> = ({ message, activeUserId }) => {
   );
 };
 
-export default Message;
+export default observer(Message);
