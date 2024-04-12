@@ -142,7 +142,7 @@ export class ChatController {
         @Req() request: express.Request,
         @BodyParam('chatMessages') chatMessages: {
             chatId: number,
-            afterId: number, // first message can be get in "/chats/:afterId"
+            offset: number, // first message can be get in "/chats/:afterId"
         }
     ): Promise<types.MessageType[]> {
         const user = request.user?.prismaUser
@@ -152,7 +152,8 @@ export class ChatController {
 
         return prisma.message.findMany({
             where: {chatId: chatMessages.chatId},
-            take: 10,
+            skip: chatMessages.offset,
+            take: 15,
             orderBy: {id: "desc"}
         });
     }

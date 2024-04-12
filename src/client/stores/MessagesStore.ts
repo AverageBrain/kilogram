@@ -19,11 +19,11 @@ class MessagesStore extends BaseStore<MessageType> {
         });
     }
 
-    async loadItems(chatId: number, afterId: number = -1): Promise<void> {
+    async loadItems(chatId: number, offset: number = 0): Promise<void> {
       try {
         this.enableLoading();
       
-        const data = await chatApiClient.getMessages(chatId, afterId);
+        const data = await chatApiClient.getMessages(chatId, offset);
   
         runInAction(() => {
           this.items = data;

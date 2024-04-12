@@ -1,3 +1,8 @@
 .messages {
-    height: 679px;
+    max-height: 679px;
+    overflow: scroll;
+
+    &::-webkit-scrollbar {
+        display: none;
+    }
 }
