@@ -1,7 +1,9 @@
-import {action, makeObservable, override, runInAction} from 'mobx';
-import {MessageType, UserType} from '../../types';
+import { action, makeObservable, override, runInAction } from 'mobx';
+
+import { UserType } from '../../types';
 import BaseStore from './BaseStore';
-import {userApiClient} from '../hands';
+import { userApiClient } from '../hands';
+import { processSSEMessage } from '../utils';
 
 class AuthUserStore extends BaseStore<UserType> {
     constructor() {
@@ -22,7 +24,9 @@ class AuthUserStore extends BaseStore<UserType> {
 
             const data = await userApiClient.getMe();
 
-            userApiClient.getNewMessage(this.processSSEMessage)
+            if (data) {
+                userApiClient.setMessagesSource(processSSEMessage);
+            }
 
             runInAction(() => {
                 this.selectedItem = data;
@@ -31,14 +35,6 @@ class AuthUserStore extends BaseStore<UserType> {
             console.warn(e);
         } finally {
             this.disableLoading();
-        }
-    }
-
-    async processSSEMessage(data: any) {
-        if (data['type'] == 'newMessage') {
-            const message: MessageType = data['data']
-            console.log(message)
-            // todo paste message
         }
     }
 }

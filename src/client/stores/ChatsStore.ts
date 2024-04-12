@@ -1,6 +1,8 @@
 
 import { action, makeObservable, override, runInAction } from 'mobx';
-import { ChatType } from '../../types';
+import { partition } from 'lodash';
+
+import { ChatType, MessageType } from '../../types';
 import BaseStore from './BaseStore';
 import { chatApiClient } from '../hands';
 
@@ -15,6 +17,7 @@ class ChatsStore extends BaseStore<ChatType> {
             loadItems: action.bound,
             createChat: action.bound,
             setSelectedChat: action.bound,
+            updateChats: action.bound,
         });
     }
 
@@ -53,6 +56,28 @@ class ChatsStore extends BaseStore<ChatType> {
       runInAction(() => {
         this.selectedItem = chat;
       });
+    }
+
+    async updateChats(message: MessageType) {
+      const [updatedChats, otherChats] = partition(
+        this.items,
+        (item) => item.id === message.chatId,
+      );
+
+      console.log('sse chats', updatedChats, otherChats)
+  
+      if (updatedChats.length === 0) {
+        await this.loadItems();
+      } else {
+        const updatedChat: ChatType = {
+          ...updatedChats[0],
+          messages: [message],
+        };  
+
+        runInAction(() => {
+          this.items = [updatedChat, ...otherChats];
+        });
+      }
     }
 }
 

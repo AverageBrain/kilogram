@@ -29,12 +29,16 @@ export class ChatController {
             throw new Error("User must be authorized")
         }
 
-        const userChat = await chatService.getChatWithUserAccess(message.chatId, user.id)
-        if (userChat == null) {
-            throw new Error("User have not access to chat")
+        const userChats = await prisma.userChat.findMany({where: {chatId: message.chatId}})
+        if (!userChats.find((chat) => chat.userId === user.id) || userChats.length !== 2) {
+            throw new Error("User has no access to the chat")
         }
-        userChat.updatedAt = new Date()
-        await prisma.userChat.update({data: userChat, where: {id: userChat.id}})
+
+        await Promise.all(userChats.map(async (userChat) => {
+            userChat.updatedAt = new Date()
+            return await prisma.userChat.update({data: userChat, where: {id: userChat.id}})
+        }));
+
         const sendMessage = await prisma.message.create({
             data: {
                 chatId: message.chatId,
@@ -43,7 +47,7 @@ export class ChatController {
             }
         })
 
-        const chatUsers = await prisma.userChat.findMany({where: {chatId: userChat.chatId}})
+        const chatUsers = await prisma.userChat.findMany({where: {chatId: userChats[0].chatId}})
 
         chatUsers.forEach(uc => uc.userId != user.id ? sseService.publishMessage(uc.userId, "newMessage", sendMessage) : null)
 
@@ -75,7 +79,7 @@ export class ChatController {
             }
         })
         if (alreadyChat) {
-            throw new Error("Chat already created")
+            throw new Error("Chat already exists")
         }
 
 
@@ -138,7 +142,7 @@ export class ChatController {
         @Req() request: express.Request,
         @BodyParam('chatMessages') chatMessages: {
             chatId: number,
-            afterId: number, // first message can be get in "/chats/:afterId"
+            offset: number, // first message can be get in "/chats/:afterId"
         }
     ): Promise<types.MessageType[]> {
         const user = request.user?.prismaUser
@@ -148,7 +152,8 @@ export class ChatController {
 
         return prisma.message.findMany({
             where: {chatId: chatMessages.chatId},
-            take: 10,
+            skip: chatMessages.offset,
+            take: 15,
             orderBy: {id: "desc"}
         });
     }
