@@ -1,7 +1,7 @@
-import { UserType } from "../types";
+import { UserType } from "../../types/types";
 import { BaseApiClient } from "./BaseApiClient";
 
-export class UserApiClient extends BaseApiClient {
+class UserApiClient extends BaseApiClient {
     getMe(): Promise<UserType> {
         return this.axiosGet<UserType>("/user/me")
     }
@@ -15,3 +15,5 @@ export class UserApiClient extends BaseApiClient {
         return this.axiosGet("user/users/" + afterId)
     }
 }
+
+export default new UserApiClient();

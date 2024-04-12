@@ -1,35 +1,36 @@
 import React, { useEffect, useState } from 'react';
 import { Layout } from 'antd';
 import Splitter, { GutterTheme, SplitDirection } from '@devbookhq/splitter'
+import { observer } from 'mobx-react-lite';
 
 import { ChatListPage } from '../chatListPage';
 import { ChatPage, EmptyPanel } from '../chatPage';
-import { ChatListItemType } from '../../../types';
-import { findChatById } from '../../../mock';
 import './MainPage.css';
+import { chatsStore } from '../../stores';
 
 const { Content } = Layout;
 
 const MainPage: React.FC = () => {
-  const [activeChat, setActiveChat] = useState<ChatListItemType | null>(null);
+  const { selectedItem, loadItems: loadChats, setSelectedChat } = chatsStore;
+
   const [panelSizes, setPanelSizes] = useState<number[]>([]); // TODO: можно записывать в localStorage
 
   const handleEscapePress = (event: KeyboardEvent) => {
     if (event.key === 'Escape') {
-      setActiveChat(null);
+      setSelectedChat(undefined);
     }
   };
 
   useEffect(() => {
-      document.addEventListener('keydown', handleEscapePress);
+    loadChats();   
 
-      return () => {
-          document.removeEventListener('keydown', handleEscapePress);
-      };
+    document.addEventListener('keydown', handleEscapePress);
+    return () => {
+      document.removeEventListener('keydown', handleEscapePress);
+    };
   }, []);
 
   const handleResizeFinished = (pairIdx: number, newSizes: number[]) => setPanelSizes(newSizes);
-  const activeUserId = 1;
 
   return (
     <Layout style={{ height: "100vh" }}>
@@ -42,14 +43,10 @@ const MainPage: React.FC = () => {
           draggerClassName="dragger"
           onResizeFinished={handleResizeFinished}
         >
-          <ChatListPage
-            activeUserId={activeUserId}
-            activeChat={activeChat}
-            setActiveChat={setActiveChat}
-          />
-          {activeChat
-          ? <ChatPage chat={findChatById(activeChat.id)} activeUserId={activeUserId}/>
-          : <EmptyPanel />
+          <ChatListPage />
+          {selectedItem
+            ? <ChatPage />
+            : <EmptyPanel />
           }
         </Splitter>
       </Content>
@@ -57,4 +54,4 @@ const MainPage: React.FC = () => {
   );
 }
 
-export default MainPage;
+export default observer(MainPage);

@@ -1,18 +1,28 @@
-import React, { useRef, useState } from 'react';
+import React, { useState } from 'react';
 import { Form, Input } from 'antd';
 import { SendOutlined } from '@ant-design/icons';
+import { observer } from 'mobx-react-lite';
+
 import './SendForm.css'
+import { chatsStore, messagesStore } from '../../../stores';
 
 const SendMessage: React.FC = () => {
+  const { loadItems, sendMessage } = messagesStore;
+  const { selectedItem: chat } = chatsStore;
+
   const [message, setMessage] = useState('');
-  const inputRef = useRef<HTMLTextAreaElement>(null); 
 
   const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setMessage(e.target.value);
   }
 
-  const handleSubmit = () => {
-    setMessage('');
+  const handleSubmit = async () => {
+    if (chat) {
+      await sendMessage(chat.id, message);      
+      setMessage('');
+
+      await loadItems(chat.id);
+    }
   }
 
   const handleEnter = (e: React.KeyboardEvent<Element>) => {
@@ -25,8 +35,6 @@ const SendMessage: React.FC = () => {
   return (
     <Form className="send-message">
       <Input.TextArea
-        autoFocus
-        ref={inputRef}
         value={message}
         variant="borderless"
         placeholder="Введите сообщение..."
@@ -41,4 +49,4 @@ const SendMessage: React.FC = () => {
   );
 };
 
-export default SendMessage;
+export default observer(SendMessage);

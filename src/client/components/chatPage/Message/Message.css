@@ -23,12 +23,12 @@
   color: grey;
 }
 
-.my-message {
+.partner-message {
   align-self: start;
   border-radius: 10px 10px 10px 0;
 }
 
-.partner-message {
+.my-message {
   align-self: end;
   border-radius: 10px 10px 0 10px;
 }

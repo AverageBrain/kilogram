@@ -1,21 +1,17 @@
 import React from 'react';
+import { observer } from 'mobx-react-lite';
 
-import { ChatType } from '../../../../types'
 import { Message } from '../Message';
+import { messagesStore } from '../../../stores';
 
-type Props =  {
-  chat: ChatType;
-  activeUserId: number;
-}
-
-const MessageList: React.FC<Props> = ({ chat, activeUserId }) => {
+const MessageList: React.FC = () => {
+  const { items } = messagesStore; 
 
   return (
     <section className="messages">
-      {chat.messages.map(curMessage => <Message message={curMessage} activeUserId={activeUserId}/>)}
+      {items.map(curMessage => <Message message={curMessage} />)}
     </section>
-    
   );
 };
 
-export default MessageList;
+export default observer(MessageList);

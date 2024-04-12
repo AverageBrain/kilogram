@@ -1,32 +1,40 @@
 import React from 'react';
 import { List, Avatar } from 'antd';
 import clsx from 'clsx';
+import { observer } from 'mobx-react-lite';
 
-import { ChatListItemType } from '../../../../types';
-import { chatList } from '../../../../mock';
+import { chatsStore, messagesStore } from '../../../stores';
 import './ChatList.css'
+import { ChatType } from '../../../../types';
 
-type Props = {
-  activeChat: ChatListItemType | null;
-  setActiveChat: (chat: ChatListItemType | null) => void;
-};
+const ChatList: React.FC = () => {
+  const { selectedItem, items, setSelectedChat } = chatsStore;
+  const { loadItems } = messagesStore;
 
-const ChatList: React.FC<Props> = ({ activeChat, setActiveChat }) => {
+  const locale = {
+    emptyText: 'У вас нет чатов.',
+  };
+  const handleClick = async (chat: ChatType) => {
+    setSelectedChat(chat);
+    await loadItems(chat.id);
+  };
+
   return (
     <List
+      locale={locale}
       itemLayout="horizontal"
-      dataSource={chatList}
+      dataSource={items}
       renderItem={(chat, index) => (
         <List.Item
           className="chat-list-item"
           key={chat.id}
-          onClick={() => setActiveChat(chat)}
+          onClick={() => {handleClick(chat)}}
         >
           <List.Item.Meta
-            className={clsx('chat-list-item-meta', chat.id === activeChat?.id && 'chat-list-item-meta-active')}
+            className={clsx('chat-list-item-meta', chat.id === selectedItem?.id && 'chat-list-item-meta-active')}
             avatar={<Avatar src={`https://api.dicebear.com/7.x/miniavs/svg?seed=${index}`} />}
-            title={chat.name}
-            description={chat.lastMessage}
+            title={chat.user.name}
+            description={chat.messages[0].text}
           />
         </List.Item>
       )}
@@ -34,4 +42,4 @@ const ChatList: React.FC<Props> = ({ activeChat, setActiveChat }) => {
   );
 };
 
-export default ChatList;
+export default observer(ChatList);

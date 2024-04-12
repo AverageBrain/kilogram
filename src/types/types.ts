@@ -12,6 +12,7 @@ export type UserType = BaseItemType & {
 } 
 
 export type MessageType = BaseItemType & {
+  chatId: number;
   userId: number;
   text: string;
 }
