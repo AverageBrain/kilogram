@@ -3,6 +3,7 @@ import { action, makeObservable, override, runInAction } from 'mobx';
 import { MessageType } from '../../types';
 import BaseStore from './BaseStore';
 import { chatApiClient } from '../hands';
+import { chatsStore } from '.';
 
 class MessagesStore extends BaseStore<MessageType> {
     constructor() {
@@ -14,6 +15,7 @@ class MessagesStore extends BaseStore<MessageType> {
 
             loadItems: action.bound,
             sendMessage: action.bound,
+            updateMessages: action.bound,
         });
     }
 
@@ -38,14 +40,20 @@ class MessagesStore extends BaseStore<MessageType> {
         this.enableLoading();
       
         const data = await chatApiClient.sendMessage(chatId, text);
-        runInAction(() => {
-            this.selectedItem = data;
-        });
+  
+        this.updateMessages(data);
+        chatsStore.updateChats(data);
       } catch (e: any) {
         console.warn(e);
       } finally {
         this.disableLoading();
       }
+    }
+
+    updateMessages(message: MessageType): void {
+      runInAction(() => {
+          this.items = [message, ...this.items];
+      });
     }
 }
 
