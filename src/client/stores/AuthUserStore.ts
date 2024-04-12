@@ -14,6 +14,7 @@ class AuthUserStore extends BaseStore<UserType> {
 
             loadSelectedItem: action.bound,
         });
+        this.loading = true
     }
 
     async loadSelectedItem(): Promise<void> {
