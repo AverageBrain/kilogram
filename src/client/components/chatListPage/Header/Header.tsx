@@ -1,6 +1,8 @@
 import { MenuOutlined, SearchOutlined } from '@ant-design/icons';
 import { Dropdown, Input, Layout, MenuProps } from 'antd';
 import React from 'react';
+import {Layout, Input, Dropdown, MenuProps, Button} from 'antd';
+import { SearchOutlined, MenuOutlined } from '@ant-design/icons';
 
 import { useModal } from '../../../../hooks';
 import { authApiClient } from '../../../hands';
@@ -23,7 +25,7 @@ const Header: React.FC<Props> = ({ value, setSearchTerm, }) => {
 
   const handleLogout = async () => {
     await authApiClient.logout();
-    window.location.href = 'http://localhost:3000/';
+    window.location.href = 'http://localhost:3000/'; // TODO change
   };
 
   const items: MenuProps['items'] = [ // TODO: вместе с логикой вынести в отдельный компонент

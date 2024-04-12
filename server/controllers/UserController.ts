@@ -1,4 +1,4 @@
-import {BodyParam, Get, JsonController, Param, Post, Req} from 'routing-controllers';
+import {BodyParam, Get, JsonController, Param, Post, Req, Res} from 'routing-controllers';
 import * as types from '../../src/types';
 import express from 'express';
 import {prisma} from "../domain/PrismaClient";
@@ -42,7 +42,7 @@ export class UserController {
 
     @Get("/users/:afterId")
     async getUsers(@Param("afterId") afterId: number): Promise<types.UserType[]> {
-        if (afterId === -1) {
+        if (afterId == -1) {
             // first page -- new users
             afterId = await prisma.user.count()
         }
