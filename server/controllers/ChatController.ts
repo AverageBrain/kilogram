@@ -7,10 +7,12 @@ import * as types from '../../src/types';
 import {UserService} from "../services/UserService";
 import {convertPrismaUser} from "./UserController";
 import {groupBy} from "../utils";
+import {SSEService} from "../services/SSEService";
 
 
 const chatService = new ChatService()
 const userService = new UserService()
+const sseService = new SSEService()
 
 @JsonController("/chat")
 export class ChatController {
@@ -33,8 +35,19 @@ export class ChatController {
         }
         userChat.updatedAt = new Date()
         await prisma.userChat.update({data: userChat, where: {id: userChat.id}})
+        const sendMessage = await prisma.message.create({
+            data: {
+                chatId: message.chatId,
+                text: message.text,
+                userId: user.id
+            }
+        })
 
-        return prisma.message.create({data: {chatId: message.chatId, text: message.text, userId: user.id}});
+        const chatUsers = await prisma.userChat.findMany({where: {chatId: userChat.chatId}})
+
+        chatUsers.forEach(uc => uc.userId != user.id ? sseService.publishMessage(uc.userId, "newMessage", sendMessage) : null)
+
+        return sendMessage
     }
 
     @Post("/create")

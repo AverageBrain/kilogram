@@ -1,4 +1,4 @@
-import {BodyParam, Get, JsonController, Param, Post, Req} from 'routing-controllers';
+import {BodyParam, Get, JsonController, Param, Post, Req, Res} from 'routing-controllers';
 import * as types from '../../src/types';
 import express from 'express';
 import {prisma} from "../domain/PrismaClient";
