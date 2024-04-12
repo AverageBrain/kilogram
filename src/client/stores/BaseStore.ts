@@ -7,14 +7,14 @@ class BaseStore<T> {
     items: T[] = [];   
 
     constructor() {
-    makeObservable(this, {
-        loading: observable,
-        selectedItem: observable,
-        items: observable,
+        makeObservable(this, {
+            loading: observable,
+            selectedItem: observable,
+            items: observable,
 
-        enableLoading: action.bound,
-        disableLoading: action.bound,
-    });
+            enableLoading: action.bound,
+            disableLoading: action.bound,
+        });
     }
 
     enableLoading(): void {

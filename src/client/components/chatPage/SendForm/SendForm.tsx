@@ -10,18 +10,16 @@ const SendMessage: React.FC = () => {
   const { loadItems, sendMessage } = messagesStore;
   const { selectedItem: chat } = chatsStore;
 
-  const [message, setMessage] = useState('');
+  const [message, setMessage] = useState(''); // TODO: при смене чата очищать поле/подгружать из localStorage
 
   const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setMessage(e.target.value);
   }
 
   const handleSubmit = async () => {
-    if (chat) {
+    if (chat && message) {
       await sendMessage(chat.id, message);      
       setMessage('');
-
-      await loadItems(chat.id);
     }
   }
 

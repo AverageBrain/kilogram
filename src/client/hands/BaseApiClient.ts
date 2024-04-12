@@ -30,7 +30,7 @@ export abstract class BaseApiClient {
         return (await axiosClient.get<T>(normalizeUrl(url)))
     }
 
-    getNewMessage(callback: (data: any) => void) {
+    setMessagesSource(callback: (data: any) => void) {
         const sse = new EventSource(BASE_SERVER_HOST + 'user/sse', {withCredentials: true});
         sse.onmessage = (ev) => {
             const data = JSON.parse(ev.data)
