@@ -7,7 +7,6 @@ import * as types from '../../src/types';
 import {UserService} from "../services/UserService";
 import {convertPrismaUser} from "./UserController";
 import {groupBy} from "../utils";
-import {use} from "passport";
 
 
 const chatService = new ChatService()
@@ -29,7 +28,7 @@ export class ChatController {
         }
 
         const userChat = await chatService.getChatWithUserAccess(message.chatId, user.id)
-        if (userChat === null) {
+        if (userChat == null) {
             throw new Error("User have not access to chat")
         }
         userChat.updatedAt = new Date()
@@ -51,14 +50,14 @@ export class ChatController {
         }
 
         const toUser = await userService.getUserById(createChat.userId)
-        if (toUser === null) {
+        if (toUser == null) {
             throw new Error("User not find")
         }
         const alreadyChat = await prisma.userChat.findFirst({
             where: {
                 AND: [
-                    { userId: user.id },
-                    { chat: { members: { some: { userId: toUser.id } } } }
+                    {userId: user.id},
+                    {chat: {members: {some: {userId: toUser.id}}}}
                 ]
             }
         })
@@ -86,7 +85,7 @@ export class ChatController {
         @Req() request: express.Request,
         @Param("afterId") afterId: number
     ): Promise<types.ChatType[]> {
-        if (afterId === -1) {
+        if (afterId == -1) {
             // first page -- new users
             afterId = await prisma.user.count()
         }
@@ -95,7 +94,7 @@ export class ChatController {
             throw new Error("User must be authorized")
         }
         const userChats: UserChat[] = await prisma.userChat.findMany(
-            {where: {AND: [{id: {lt: afterId}}, {userId: user.id}]}, take: 10, orderBy: {updatedAt: 'desc'}}
+            {where: {AND: [{userId: user.id}]}, take: 10, orderBy: {updatedAt: 'desc'}}
         );
 
 
@@ -108,7 +107,7 @@ export class ChatController {
 
         return userChats.map(c => {
             const chat = chatsById[c.chatId][0]
-            const otherUserChat = chat.members[0].userId === user.id ? chat.members[1] : chat.members[0]
+            const otherUserChat = chat.members[0].userId == user.id ? chat.members[1] : chat.members[0]
 
             return {
                 id: chat.id,

@@ -42,7 +42,7 @@ export class UserController {
 
     @Get("/users/:afterId")
     async getUsers(@Param("afterId") afterId: number): Promise<types.UserType[]> {
-        if (afterId === -1) {
+        if (afterId == -1) {
             // first page -- new users
             afterId = await prisma.user.count()
         }
