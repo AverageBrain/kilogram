@@ -22,7 +22,7 @@ class AuthUserStore extends BaseStore<UserType> {
 
             const data = await userApiClient.getMe();
 
-            userApiClient.getNewMessage(this.addNewMessage)
+            userApiClient.getNewMessage(this.processSSEMessage)
 
             runInAction(() => {
                 this.selectedItem = data;
@@ -34,7 +34,7 @@ class AuthUserStore extends BaseStore<UserType> {
         }
     }
 
-    async addNewMessage(data: any) {
+    async processSSEMessage(data: any) {
         if (data['type'] == 'newMessage') {
             const message: MessageType = data['data']
             console.log(message)
