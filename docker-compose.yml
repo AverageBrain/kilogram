@@ -10,7 +10,6 @@ services:
       - database_bridge
 
   client:
-    image: phoenixnazarov/kilogram-client
     build:
       context: .
       dockerfile: client.Dockerfile
@@ -22,7 +21,6 @@ services:
       - "3001:80"
 
   server:
-    image: kilogram/server
     build:
       context: .
       dockerfile: server.Dockerfile
