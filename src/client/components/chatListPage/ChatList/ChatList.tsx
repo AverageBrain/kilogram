@@ -7,14 +7,22 @@ import { chatsStore, messagesStore } from '../../../stores';
 import './ChatList.css'
 import { ChatType } from '../../../../types';
 
-const ChatList: React.FC = () => {
-  const { selectedItem, items, setSelectedChat } = chatsStore;
+type Props = {
+  data: ChatType[];
+  setSearchTerm: (value: string) => void;
+}
+
+const ChatList: React.FC<Props> = ({ data, setSearchTerm }) => {
+  const { selectedItem, setSelectedChat } = chatsStore;
   const { loadItems } = messagesStore;
+  console.log(data);
 
   const locale = {
     emptyText: 'У вас нет чатов.',
   };
+
   const handleClick = async (chat: ChatType) => {
+    setSearchTerm('');
     setSelectedChat(chat);
     await loadItems(chat.id);
   };
@@ -23,7 +31,7 @@ const ChatList: React.FC = () => {
     <List
       locale={locale}
       itemLayout="horizontal"
-      dataSource={items}
+      dataSource={data}
       renderItem={(chat, index) => (
         <List.Item
           className="chat-list-item"
@@ -34,7 +42,7 @@ const ChatList: React.FC = () => {
             className={clsx('chat-list-item-meta', chat.id === selectedItem?.id && 'chat-list-item-meta-active')}
             avatar={<Avatar src={`https://api.dicebear.com/7.x/miniavs/svg?seed=${index}`} />}
             title={chat.user.name}
-            description={chat.messages[0].text}
+            description={chat.messages.length > 0 ? chat.messages[0].text : '@' + chat.user.username}
           />
         </List.Item>
       )}

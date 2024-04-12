@@ -1,17 +1,22 @@
+import { MenuOutlined, SearchOutlined } from '@ant-design/icons';
+import { Dropdown, Input, Layout, MenuProps } from 'antd';
 import React from 'react';
-import { Layout, Input, Dropdown, MenuProps } from 'antd';
-import { SearchOutlined, MenuOutlined } from '@ant-design/icons';
 
-import './Header.css';
-import { useModal } from '../../../../hooks/useModal';
-import { Profile } from '../../Profile';
+import { useModal } from '../../../../hooks';
 import { authApiClient } from '../../../hands';
 import { authUserStore } from '../../../stores';
+import { Profile } from '../../Profile';
+import './Header.css';
 
 const { Header: HeaderAD } = Layout;
 
+type Props = {
+  // setIsSearcing: (value: string) => void;
+  value: string,
+  setSearchTerm: (value: string) => void;
+}
 
-const Header: React.FC = () => {
+const Header: React.FC<Props> = ({ value, setSearchTerm, }) => {
   const { selectedItem } = authUserStore;
 
   const { isOpenModal, showModal, closeModal } = useModal();
@@ -48,6 +53,8 @@ const Header: React.FC = () => {
             className="search"
             variant="borderless"
             placeholder="Поиск контактов"
+            value={value}
+            onChange={e => setSearchTerm(e.target.value)}
             prefix={<SearchOutlined style={ {color: '#516460' }}/>}
           />
       </HeaderAD>
