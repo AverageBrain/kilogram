@@ -9,7 +9,7 @@ export type UserType = BaseItemType & {
   username: string;
   bio?: string;
   lastSeen?: string;
-} 
+}
 
 export type MessageType = BaseItemType & {
   chatId: number;
@@ -17,12 +17,14 @@ export type MessageType = BaseItemType & {
   text: string;
 }
 
-export type ChatListItemType = BaseItemType & { 
+export type ChatListItemType = BaseItemType & {
   name: string;
   lastMessage: string;
 }
 
-export type ChatType = BaseItemType & { 
-  user: UserType;
+export type ChatType = BaseItemType & {
+  users: UserType[]; // users not contains self user
+  joinKey?: String; // only for group
   messages: MessageType[];
+  type: 'chat' | 'group';
 }
