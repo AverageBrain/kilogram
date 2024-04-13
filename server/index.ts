@@ -66,7 +66,7 @@ useExpressServer(app, {
 app.get(
     '/api/auth/github/callback',
     passport.authenticate('github', {failureRedirect: '/'}),
-    (req, res) => res.sendStatus(200)
+    (req, res) => res.redirect('/')
 );
 
 const sseService = new SSEService()
@@ -92,4 +92,4 @@ app.get("/api/user/sse", (req, res) => {
 });
 
 console.log("Server started")
-app.listen(3001);
+app.listen(3002);

@@ -54,7 +54,7 @@ export class ChatController {
         return sendMessage
     }
 
-    @Post("/create")
+    @Post("/create/chat")
     async createChat(
         @Req() request: express.Request,
         @BodyParam('createChat') createChat: {
@@ -93,9 +93,44 @@ export class ChatController {
             id: chat.id,
             messages: [],
             updatedAt: chat.updatedAt,
-            user: convertPrismaUser(toUser)
+            users: [convertPrismaUser(toUser)],
+            type: 'chat'
         }
     }
+
+    @Post("/create/group")
+    async createGroup(
+        @Req() request: express.Request,
+        @BodyParam('createChat') createGroup: {
+            userIds: number[]
+        }
+    ): Promise<types.ChatType> {
+        const user = request.user?.prismaUser
+        if (!user) {
+            throw new Error("User must be authorized")
+        }
+
+        const toUsers = await userService.getUsersById(createGroup.userIds)
+        const group = await prisma.chat.create({data: {type: 'group'}})
+
+        const createManyPosts = toUsers.map((user) =>
+            prisma.userChat.create({
+                data: {userId: user.id, chatId: group.id},
+            }),
+        );
+
+
+        await Promise.all(createManyPosts)
+        return {
+            createdAt: group.createdAt,
+            id: group.id,
+            messages: [],
+            updatedAt: group.updatedAt,
+            users: toUsers.map(i => convertPrismaUser(i)),
+            type: 'group'
+        }
+    }
+
 
     @Get("/chats/:afterId")
     async getMyChats(
@@ -124,14 +159,15 @@ export class ChatController {
 
         return userChats.map(c => {
             const chat = chatsById[c.chatId][0]
-            const otherUserChat = chat.members[0].userId == user.id ? chat.members[1] : chat.members[0]
+            const othersUserChat = chat.members.filter(i => i.userId != user.id)
 
             return {
                 id: chat.id,
                 createdAt: chat.createdAt,
                 updatedAt: chat.updatedAt,
-                user: convertPrismaUser(otherUserChat.user),
-                messages: chat.messages as types.MessageType[]
+                users: othersUserChat.map(i => convertPrismaUser(i.user)),
+                messages: chat.messages as types.MessageType[],
+                type: chat.type
             } as types.ChatType
         })
     }

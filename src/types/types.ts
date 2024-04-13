@@ -23,6 +23,7 @@ export type ChatListItemType = BaseItemType & {
 }
 
 export type ChatType = BaseItemType & { 
-  user: UserType;
+  users: UserType[]; // users not contains self user
   messages: MessageType[];
+  type: 'chat' | 'group';
 }
