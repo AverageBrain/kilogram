@@ -70,7 +70,6 @@ class ChatsStore extends BaseStore<ChatType> {
         this.items,
         (item) => item.id === message.chatId,
       );
-
       if (updatedChats.length === 0) {
         await this.loadItems();
       } else {

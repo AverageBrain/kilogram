@@ -142,7 +142,7 @@ export class ChatController {
         @Req() request: express.Request,
         @BodyParam('chatMessages') chatMessages: {
             chatId: number,
-            offset: number, // first message can be get in "/chats/:afterId"
+            afterId: number, // first message can be get in "/chats/:afterId"
         }
     ): Promise<types.MessageType[]> {
         const user = request.user?.prismaUser
@@ -150,11 +150,16 @@ export class ChatController {
             throw new Error("User must be authorized")
         }
 
+        
+        if (chatMessages.afterId === -1) {
+            chatMessages.afterId = await prisma.message.count();
+        }
+
         return prisma.message.findMany({
-            where: {chatId: chatMessages.chatId},
-            skip: chatMessages.offset,
+            // where: {chatId: chatMessages.chatId,  id: {lt: chatMessages.afterId}}
+            where: {chatId: chatMessages.chatId,  id: {lt: chatMessages.afterId}},
             take: 15,
-            orderBy: {id: "desc"}
+            orderBy: {id: "desc"},
         });
     }
 
