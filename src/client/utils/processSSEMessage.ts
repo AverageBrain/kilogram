@@ -6,7 +6,7 @@ export const processSSEMessage = async (data: any) => {
         const message: MessageType = data['data']
 
         if (chatsStore.selectedItem?.id === message?.chatId) {
-            messagesStore.updateMessages(message);
+            messagesStore.updateMessages([message]);
         }
         chatsStore.updateChats(message);
     }
