@@ -16,7 +16,7 @@ type Props = {
 const SearchResults: React.FC<Props> = ({ setSearchTerm, isSearching, results }) => {
   const { selectedItem, setSelectedChat } = chatsStore;
   const { setSelectedUser } = userStore;
-  const { loadItems } = messagesStore;
+  const { loadItems, clearMessages } = messagesStore;
 
   const locale = {
     emptyText: isSearching === 'proccesing' ? 'Происходит поиск...' : 'Нет данных',
@@ -30,6 +30,8 @@ const SearchResults: React.FC<Props> = ({ setSearchTerm, isSearching, results })
       await loadItems(chat.id);
     } else {
       setSelectedUser(user);
+      setSelectedChat(undefined);
+      clearMessages();
     }
   };
 
