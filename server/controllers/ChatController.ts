@@ -42,7 +42,7 @@ export class ChatController {
             throw new Error("User must be authorized")
         }
 
-        return chatService.sendMessage(user, message)
+        return convertPrismaMessage(await chatService.sendMessage(user, message), [])
     }
 
     @Post("/send/delay")
@@ -77,7 +77,7 @@ export class ChatController {
                 chatId: delayMessage.chatId,
                 text: delayMessage.text,
                 userId: user.id,
-                inTime: delayMessage.inTime
+                inTime: delayMessage.inTime,
             }
         })
     }
