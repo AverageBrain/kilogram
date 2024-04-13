@@ -15,6 +15,16 @@ export type MessageType = BaseItemType & {
   chatId: number;
   userId: number;
   text: string;
+  reactions?: MessageReactionType[]
+}
+
+export type MessageReactionType = BaseItemType & {
+  reactionType: ReactionType;
+  userId: number;
+}
+
+export type ReactionType = BaseItemType & {
+  emoji: string
 }
 
 export type DelayMessageType = MessageType & {

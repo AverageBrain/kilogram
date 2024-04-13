@@ -9,15 +9,16 @@ datasource db {
 }
 
 model User {
-  id           Int            @id @default(autoincrement())
-  createdAt    DateTime       @default(now())
-  updatedAt    DateTime       @updatedAt
-  username     String         @unique @default("")
-  name         String         @default("")
-  githubId     String?        @unique
-  avatarKey    String?        @default("")
-  messages     Message[]
-  chats        UserChat[]
+  id               Int               @id @default(autoincrement())
+  createdAt        DateTime          @default(now())
+  updatedAt        DateTime          @updatedAt
+  username         String            @unique @default("")
+  name             String            @default("")
+  githubId         String?           @unique
+  avatarKey        String?           @default("")
+  messages         Message[]
+  chats            UserChat[]
+  messageReactions MessageReaction[]
   DelayMessage DelayMessage[]
 }
 
@@ -54,8 +55,35 @@ model Message {
   chatId    Int
   text      String
   imageKey  String   @default("")
-  chat      Chat     @relation(fields: [chatId], references: [id])
-  user      User     @relation(fields: [userId], references: [id])
+
+  chat      Chat              @relation(fields: [chatId], references: [id])
+  user      User              @relation(fields: [userId], references: [id])
+  reactions MessageReaction[]
+}
+
+model ReactionType {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  code  String @unique
+  emoji String @default("")
+
+  messageReactions MessageReaction[]
+}
+
+model MessageReaction {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  reactionTypeId Int
+  messageId      Int
+  userId         Int
+
+  reactionType ReactionType @relation(fields: [reactionTypeId], references: [id])
+  message      Message      @relation(fields: [messageId], references: [id])
+  user         User         @relation(fields: [userId], references: [id])
 }
 
 model DelayMessage {

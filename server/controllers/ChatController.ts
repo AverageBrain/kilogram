@@ -1,5 +1,5 @@
 import {BodyParam, Get, JsonController, Param, Post, Req} from "routing-controllers";
-import {UserChat} from "@prisma/client";
+import {Message, UserChat} from "@prisma/client";
 import express from "express";
 import {ChatService} from "../services/ChatService";
 import {prisma} from "../domain/PrismaClient";
@@ -7,12 +7,25 @@ import * as types from '../../src/types';
 import {UserService} from "../services/UserService";
 import {convertPrismaUser} from "./UserController";
 import {groupBy} from "../utils";
-import {SSEService} from "../services/SSEService";
 import {makeRandomString} from "../utils/makeid";
+import {MessageReactionType} from "../../src/types/types";
 
 
 const chatService = new ChatService()
 const userService = new UserService()
+
+export function convertPrismaMessage(prismaMessage: Message, reactions: MessageReactionType[]): types.MessageType {
+    return {
+        id: prismaMessage.id,
+        createdAt: prismaMessage.createdAt,
+        updatedAt: prismaMessage.updatedAt,
+        chatId: prismaMessage.userId,
+        userId: prismaMessage.chatId,
+        text: prismaMessage.text,
+        reactions: reactions
+    }
+}
+
 
 @JsonController("/chat")
 export class ChatController {
@@ -29,7 +42,7 @@ export class ChatController {
             throw new Error("User must be authorized")
         }
 
-        return chatService.sendMessage(user, message)
+        return convertPrismaMessage(await chatService.sendMessage(user, message), [])
     }
 
     @Post("/send/delay")
@@ -54,13 +67,17 @@ export class ChatController {
         if (delayMessage.inTime < new Date()) {
             throw new Error("InTime must be grate current date")
         }
+        await Promise.all(userChats.map(async (userChat) => {
+            userChat.updatedAt = new Date()
+            return prisma.userChat.update({data: userChat, where: {id: userChat.id}});
+        }));
 
         return prisma.delayMessage.create({
             data: {
                 chatId: delayMessage.chatId,
                 text: delayMessage.text,
                 userId: user.id,
-                inTime: delayMessage.inTime
+                inTime: delayMessage.inTime,
             }
         })
     }
@@ -235,7 +252,10 @@ export class ChatController {
         const chatsIds = userChats.map(i => i.chatId);
         const chats = await prisma.chat.findMany({
             where: {id: {in: chatsIds}},
-            include: {messages: {take: -1}, members: {include: {user: true}}}
+            include: {
+                messages: {take: -1, include: {reactions: {include: {reactionType: true}}}},
+                members: {include: {user: true}}
+            }
         });
         const chatsById = groupBy(chats, i => i.id)
 
@@ -248,7 +268,7 @@ export class ChatController {
                 createdAt: chat.createdAt,
                 updatedAt: chat.updatedAt,
                 users: othersUserChat.map(i => convertPrismaUser(i.user)),
-                messages: chat.messages as types.MessageType[],
+                messages: chat.messages.map(i => convertPrismaMessage(i, i.reactions)) as types.MessageType[],
                 type: chat.type,
                 joinKey: chat.joinKey,
             } as types.ChatType
@@ -269,12 +289,61 @@ export class ChatController {
             throw new Error("User must be authorized")
         }
 
-        return prisma.message.findMany({
+        const messages = await prisma.message.findMany({
             where: {chatId: chatMessages.chatId},
             skip: chatMessages.offset,
             take: 15,
-            orderBy: {id: "desc"}
-        });
+            orderBy: {id: "desc"},
+            include: {reactions: {include: {reactionType: true}}}
+        })
+        return messages.map(i => convertPrismaMessage(i, i.reactions))
+    }
+
+
+    @Post('/reaction')
+    async setReaction(
+        @Req() request: express.Request,
+        @BodyParam('reactionMessage') reactionMessageIn: {
+            messageId: number,
+            reactionTypeId: number
+        }
+    ): Promise<MessageReactionType> {
+        const user = request.user?.prismaUser
+        if (!user) {
+            throw new Error("User must be authorized")
+        }
+
+        const message = await prisma.message.findUnique({where: {id: reactionMessageIn.messageId}})
+
+        if (message == null) {
+            throw new Error("Message not founded")
+        }
+
+        const reactionType = await prisma.reactionType.findUnique({where: {id: reactionMessageIn.reactionTypeId}})
+        if (reactionType == null) {
+            throw new Error("ReactionType not founded")
+        }
+
+        const reactionMessage = await prisma.messageReaction.create({
+            data: {
+                userId: user.id,
+                reactionTypeId: reactionType.id,
+                messageId: message.id
+            }
+        })
+
+        return {
+            id: reactionMessage.id,
+            createdAt: reactionType.createdAt,
+            updatedAt: reactionType.updatedAt,
+            reactionType: {
+                id: reactionType.id,
+                createdAt: reactionType.createdAt,
+                updatedAt: reactionType.updatedAt,
+                emoji: reactionType.emoji
+            },
+            userId: user.id,
+        }
     }
 
 }
