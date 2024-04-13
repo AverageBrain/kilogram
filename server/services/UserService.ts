@@ -13,4 +13,9 @@ export class UserService {
     async getUserById(userId: number): Promise<User | null> {
         return prisma.user.findUnique({where: {id: userId}})
     }
+
+    async getUsersById(usersId: number[]): Promise<User[]> {
+        return prisma.user.findMany({where: {id: {in: usersId}}})
+    }
+
 }

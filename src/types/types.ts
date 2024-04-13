@@ -27,12 +27,19 @@ export type ReactionType = BaseItemType & {
   emoji: string
 }
 
+export type DelayMessageType = MessageType & {
+  inTime: Date
+}
+
+
 export type ChatListItemType = BaseItemType & {
   name: string;
   lastMessage: string;
 }
 
 export type ChatType = BaseItemType & {
-  user: UserType;
+  users: UserType[]; // users not contains self user
+  joinKey?: String; // only for group
   messages: MessageType[];
+  type: 'chat' | 'group';
 }

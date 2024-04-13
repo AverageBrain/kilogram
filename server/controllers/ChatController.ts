@@ -7,13 +7,12 @@ import * as types from '../../src/types';
 import {UserService} from "../services/UserService";
 import {convertPrismaUser} from "./UserController";
 import {groupBy} from "../utils";
-import {SSEService} from "../services/SSEService";
+import {makeRandomString} from "../utils/makeid";
 import {MessageReactionType} from "../../src/types/types";
 
 
 const chatService = new ChatService()
 const userService = new UserService()
-const sseService = new SSEService()
 
 export function convertPrismaMessage(prismaMessage: Message, reactions: MessageReactionType[]): types.MessageType {
     return {
@@ -43,32 +42,84 @@ export class ChatController {
             throw new Error("User must be authorized")
         }
 
-        const userChats = await prisma.userChat.findMany({where: {chatId: message.chatId}})
+        return chatService.sendMessage(user, message)
+    }
+
+    @Post("/send/delay")
+    async sendDelayMessage(
+        @Req() request: express.Request,
+        @BodyParam('delayMessage') delayMessage: {
+            chatId: number
+            text: string
+            inTime: Date
+        }
+    ): Promise<types.DelayMessageType> {
+        const user = request.user?.prismaUser
+        if (!user) {
+            throw new Error("User must be authorized")
+        }
+
+        const userChats = await prisma.userChat.findMany({where: {chatId: delayMessage.chatId}})
         if (!userChats.find((chat) => chat.userId === user.id) || userChats.length !== 2) {
             throw new Error("User has no access to the chat")
         }
 
+        if (delayMessage.inTime < new Date()) {
+            throw new Error("InTime must be grate current date")
+        }
         await Promise.all(userChats.map(async (userChat) => {
             userChat.updatedAt = new Date()
             return prisma.userChat.update({data: userChat, where: {id: userChat.id}});
         }));
 
-        const sendMessage = await prisma.message.create({
+        return prisma.delayMessage.create({
             data: {
-                chatId: message.chatId,
-                text: message.text,
-                userId: user.id
+                chatId: delayMessage.chatId,
+                text: delayMessage.text,
+                userId: user.id,
+                inTime: delayMessage.inTime
             }
         })
-
-        const chatUsers = await prisma.userChat.findMany({where: {chatId: userChats[0].chatId}})
-
-        chatUsers.forEach(uc => uc.userId != user.id ? sseService.publishMessage(uc.userId, "newMessage", sendMessage) : null)
-
-        return convertPrismaMessage(sendMessage, [])
     }
 
-    @Post("/create")
+    @Post("/remove/delay")
+    async removeDelayMessage(
+        @Req() request: express.Request,
+        @BodyParam('delayMessage') delayMessage: {
+            delayMessageId: number
+        }
+    ): Promise<types.DelayMessageType> {
+        const user = request.user?.prismaUser
+        if (!user) {
+            throw new Error("User must be authorized")
+        }
+
+        const removedDelayMessage = await prisma.delayMessage.findUnique({where: {id: delayMessage.delayMessageId}})
+        if (removedDelayMessage == null) {
+            throw new Error("Delayed message not found")
+        }
+
+        if (removedDelayMessage.userId != user.id) {
+            throw new Error("Access denied")
+        }
+
+        return prisma.delayMessage.delete({where: {id: removedDelayMessage.id}})
+    }
+
+    @Get("/messages/delay/all")
+    async getAllDelayMessage(
+        @Req() request: express.Request
+    ): Promise<types.DelayMessageType[]> {
+        const user = request.user?.prismaUser
+        if (!user) {
+            throw new Error("User must be authorized")
+        }
+
+        return prisma.delayMessage.findMany({where: {userId: user.id}})
+    }
+
+
+    @Post("/create/chat")
     async createChat(
         @Req() request: express.Request,
         @BodyParam('createChat') createChat: {
@@ -107,9 +158,78 @@ export class ChatController {
             id: chat.id,
             messages: [],
             updatedAt: chat.updatedAt,
-            user: convertPrismaUser(toUser)
+            users: [convertPrismaUser(toUser)],
+            type: 'chat'
         }
     }
+
+    @Post("/create/group")
+    async createGroup(
+        @Req() request: express.Request,
+        @BodyParam('createGroup') createGroup: {
+            userIds: number[]
+        }
+    ): Promise<types.ChatType> {
+        const user = request.user?.prismaUser
+        if (!user) {
+            throw new Error("User must be authorized")
+        }
+
+        createGroup.userIds = createGroup.userIds.filter(i => i != user.id)
+        const toUsers = await userService.getUsersById(createGroup.userIds)
+        const group = await prisma.chat.create({data: {type: 'group', joinKey: makeRandomString(20)}})
+
+        const createManyUserChat = toUsers.map((user) =>
+            prisma.userChat.create({
+                data: {userId: user.id, chatId: group.id},
+            }),
+        )
+        await Promise.all(createManyUserChat)
+
+        return {
+            createdAt: group.createdAt,
+            id: group.id,
+            messages: [],
+            updatedAt: group.updatedAt,
+            users: toUsers.filter(i => i.id != user.id).map(i => convertPrismaUser(i)),
+            joinKey: group.joinKey ? group.joinKey : undefined,
+            type: 'group'
+        }
+    }
+
+    @Post("/join/group")
+    async joinGroup(
+        @Req() request: express.Request,
+        @BodyParam('joinGroup') joinGroup: {
+            joinKey: string
+        }
+    ): Promise<types.ChatType> {
+        const user = request.user?.prismaUser
+        if (!user) {
+            throw new Error("User must be authorized")
+        }
+
+        const group = await prisma.chat.findUnique({where: {joinKey: joinGroup.joinKey}})
+        if (group == null) {
+            throw new Error("JoinKey not connected any group")
+        }
+        const alreadyUsersChat = await prisma.userChat.findMany({where: {chatId: group.id}, include: {user: true}})
+
+        await prisma.userChat.create({
+            data: {userId: user.id, chatId: group.id},
+        })
+
+        return {
+            createdAt: group.createdAt,
+            id: group.id,
+            messages: [],
+            updatedAt: group.updatedAt,
+            users: alreadyUsersChat.map(i => convertPrismaUser(i.user)),
+            joinKey: group.joinKey ? group.joinKey : undefined,
+            type: 'group'
+        }
+    }
+
 
     @Get("/chats/:afterId")
     async getMyChats(
@@ -141,14 +261,16 @@ export class ChatController {
 
         return userChats.map(c => {
             const chat = chatsById[c.chatId][0]
-            const otherUserChat = chat.members[0].userId == user.id ? chat.members[1] : chat.members[0]
+            const othersUserChat = chat.members.filter(i => i.userId != user.id)
 
             return {
                 id: chat.id,
                 createdAt: chat.createdAt,
                 updatedAt: chat.updatedAt,
-                user: convertPrismaUser(otherUserChat.user),
-                messages: chat.messages.map(i => convertPrismaMessage(i, i.reactions)) as types.MessageType[]
+                users: othersUserChat.map(i => convertPrismaUser(i.user)),
+                messages: chat.messages.map(i => convertPrismaMessage(i, i.reactions)) as types.MessageType[],
+                type: chat.type,
+                joinKey: chat.joinKey,
             } as types.ChatType
         })
     }
