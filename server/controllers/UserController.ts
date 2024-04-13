@@ -1,9 +1,10 @@
-import {BodyParam, Get, JsonController, Param, Post, Req, Res} from 'routing-controllers';
+import {BodyParam, Get, JsonController, Param, Post, QueryParam, Req, Res} from 'routing-controllers';
 import * as types from '../../src/types';
 import express from 'express';
 import {prisma} from "../domain/PrismaClient";
 import {User} from "@prisma/client";
-
+import {UserAvatarService} from "../services/UserAvatarService";
+import {UploadedFile} from "express-fileupload"
 
 export function convertPrismaUser(prismaUser: User): types.UserType {
     return {
@@ -14,7 +15,6 @@ export function convertPrismaUser(prismaUser: User): types.UserType {
         username: prismaUser.username
     }
 }
-
 
 @JsonController("/user")
 export class UserController {
@@ -69,5 +69,37 @@ export class UserController {
             return users.map(i => convertPrismaUser(i));
         }
         return [];
+    }
+
+    @Post("/uploadAvatar")
+    async uploadAvatar(
+        @Res() response: express.Response,
+        @Req() request: express.Request,
+        @BodyParam("username") username: string,
+    ) {
+        const files = request.files
+        let result
+
+        if (files === undefined || files === null) {
+            result = await UserAvatarService.createAvatar(username)
+        } else {
+            const avatar: UploadedFile | UploadedFile[] = files.avatar;
+            if (Array.isArray(avatar)) throw Error("Можно загружать только один аватар")
+
+            result = await UserAvatarService.createAvatar(username, avatar)
+        }
+
+        return result === null ? response.sendStatus(400) : response.sendStatus(200)
+    }
+
+    @Get("/avatar")
+    async getAvatar(
+        @Res() response: express.Response,
+        @QueryParam("username") username: string,
+    ) {
+        const byte64Avatar = await UserAvatarService.getAvatar(username)
+        const avatar = Buffer.from(byte64Avatar, 'base64').toString()
+
+        return response.set('Content-Type', 'image/svg+xml').send(avatar)
     }
 }
