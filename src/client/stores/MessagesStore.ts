@@ -16,6 +16,7 @@ class MessagesStore extends BaseStore<MessageType> {
             loadItems: action.bound,
             sendMessage: action.bound,
             updateMessages: action.bound,
+            clearMessages: action.bound,
         });
     }
 
@@ -54,6 +55,10 @@ class MessagesStore extends BaseStore<MessageType> {
       } finally {
         this.disableLoading();
       }
+    }
+
+    clearMessages(): void {
+      this.items = [];
     }
 
     updateMessages(messages: MessageType[]): void {

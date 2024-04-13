@@ -1,44 +1,45 @@
-import React from 'react';
-import { List, Avatar } from 'antd';
-import clsx from 'clsx';
+import React, { useEffect, useState } from 'react';
 import { observer } from 'mobx-react-lite';
 
-import { chatsStore, messagesStore } from '../../../stores';
 import './ChatList.css'
-import { ChatType } from '../../../../types';
+import { UserType } from '../../../../types';
+import { useDebounce } from '../../../../hooks';
+import { userApiClient } from '../../../hands';
+import SearchResults from './SearchResults';
+import Chats from './Chats';
 
-const ChatList: React.FC = () => {
-  const { selectedItem, items, setSelectedChat } = chatsStore;
-  const { loadItems } = messagesStore;
+type Props = {
+  searchTerm: string;
+  setSearchTerm: (value: string) => void;
+}
 
-  const locale = {
-    emptyText: 'У вас нет чатов.',
-  };
-  const handleClick = async (chat: ChatType) => {
-    setSelectedChat(chat);
-    await loadItems(chat.id);
-  };
+const ChatList: React.FC<Props> = ({ setSearchTerm, searchTerm }) => {
+  const [isSearching, setIsSearcing] = useState('');
+  
+  const [results, setResults] = useState(new Array<UserType>());
+
+  const debouncedSearchTerm = useDebounce(searchTerm, 500);
+
+  useEffect(
+    () => {
+      if (debouncedSearchTerm) {
+        setIsSearcing('proccesing');
+        userApiClient.findUsers(debouncedSearchTerm).then(results => {
+          setIsSearcing('found');
+
+          setResults(results);
+        });
+      } else {
+        setIsSearcing('');
+        setResults([]);
+      }
+    }, [debouncedSearchTerm]
+  )
 
   return (
-    <List
-      locale={locale}
-      itemLayout="horizontal"
-      dataSource={items}
-      renderItem={(chat, index) => (
-        <List.Item
-          className="chat-list-item"
-          key={chat.id}
-          onClick={() => {handleClick(chat)}}
-        >
-          <List.Item.Meta
-            className={clsx('chat-list-item-meta', chat.id === selectedItem?.id && 'chat-list-item-meta-active')}
-            avatar={<Avatar src={`https://api.dicebear.com/7.x/miniavs/svg?seed=${index}`} />}
-            title={chat.user.name}
-            description={chat.messages.length > 0 ? chat.messages[0].text : ''}
-          />
-        </List.Item>
-      )}
-    />
+    isSearching ? 
+      <SearchResults results={results} isSearching={isSearching} setSearchTerm={setSearchTerm} /> : 
+      <Chats setSearchTerm={setSearchTerm} />
   );
 };
 
