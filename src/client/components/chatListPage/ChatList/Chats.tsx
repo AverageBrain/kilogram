@@ -38,7 +38,7 @@ const Chats: React.FC<Props> = ({ setSearchTerm }) => {
           <List.Item.Meta
             className={clsx('chat-list-item-meta', chat.id === selectedItem?.id && 'chat-list-item-meta-active')}
             avatar={<Avatar src={`https://api.dicebear.com/7.x/miniavs/svg?seed=${index}`} />}
-            title={chat.user.name}
+            title={chat.users[0].name}
             description={chat.messages.length > 0 ? chat.messages[0].text : 'У вас нет сообщений'}
           />
         </List.Item>
