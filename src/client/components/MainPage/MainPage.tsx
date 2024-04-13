@@ -6,18 +6,22 @@ import { observer } from 'mobx-react-lite';
 import { ChatListPage } from '../chatListPage';
 import { ChatPage, EmptyPanel } from '../chatPage';
 import './MainPage.css';
-import { chatsStore } from '../../stores';
+import { chatsStore, messagesStore, userStore } from '../../stores';
 
 const { Content } = Layout;
 
 const MainPage: React.FC = () => {
   const { selectedItem, loadItems: loadChats, setSelectedChat } = chatsStore;
+  const { selectedUser, setSelectedUser } = userStore;
+  const { clearMessages } = messagesStore;
 
   const [panelSizes, setPanelSizes] = useState<number[]>([]); // TODO: можно записывать в localStorage
 
   const handleEscapePress = (event: KeyboardEvent) => {
     if (event.key === 'Escape') {
       setSelectedChat(undefined);
+      setSelectedUser(undefined);
+      clearMessages();
     }
   };
 
@@ -44,8 +48,8 @@ const MainPage: React.FC = () => {
           onResizeFinished={handleResizeFinished}
         >
           <ChatListPage />
-          {selectedItem
-            ? <ChatPage />
+          {selectedItem || selectedUser
+            ? <ChatPage key={selectedItem?.id} />
             : <EmptyPanel />
           }
         </Splitter>

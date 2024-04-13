@@ -6,7 +6,7 @@ import {prisma} from "../domain/PrismaClient";
 import * as types from '../../src/types';
 import {UserService} from "../services/UserService";
 import {convertPrismaUser} from "./UserController";
-import {groupBy} from "../utils";
+import {getIdCondition, groupBy} from "../utils";
 import {SSEService} from "../services/SSEService";
 
 
@@ -102,10 +102,7 @@ export class ChatController {
         @Req() request: express.Request,
         @Param("afterId") afterId: number
     ): Promise<types.ChatType[]> {
-        if (afterId == -1) {
-            // first page -- new users
-            afterId = await prisma.user.count()
-        }
+        const idCondition = getIdCondition(afterId);
         const user = request.user?.prismaUser
         if (!user) {
             throw new Error("User must be authorized")
@@ -142,7 +139,7 @@ export class ChatController {
         @Req() request: express.Request,
         @BodyParam('chatMessages') chatMessages: {
             chatId: number,
-            offset: number, // first message can be get in "/chats/:afterId"
+            afterId: number, // first message can be get in "/chats/:afterId"
         }
     ): Promise<types.MessageType[]> {
         const user = request.user?.prismaUser
@@ -150,11 +147,13 @@ export class ChatController {
             throw new Error("User must be authorized")
         }
 
+        
+        const idCondition = getIdCondition(chatMessages.afterId);
+        
         return prisma.message.findMany({
-            where: {chatId: chatMessages.chatId},
-            skip: chatMessages.offset,
+            where: {chatId: chatMessages.chatId,  id: idCondition},
             take: 15,
-            orderBy: {id: "desc"}
+            orderBy: {id: "desc"},
         });
     }
 

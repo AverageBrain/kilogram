@@ -16,20 +16,27 @@ class MessagesStore extends BaseStore<MessageType> {
             loadItems: action.bound,
             sendMessage: action.bound,
             updateMessages: action.bound,
+            clearMessages: action.bound,
         });
     }
 
-    async loadItems(chatId: number, offset: number = 0): Promise<void> {
+    async loadItems(chatId: number, afterId: number = -1, update?: boolean): Promise<boolean> {
       try {
         this.enableLoading();
       
-        const data = await chatApiClient.getMessages(chatId, offset);
+        const data = await chatApiClient.getMessages(chatId, afterId);
   
         runInAction(() => {
-          this.items = data;
+          if (update) {
+            this.items = [...this.items, ...data];
+          } else {
+            this.items = data;
+          }
         });
+        return data.length > 0;
       } catch (e: any) {
         console.warn(e);
+        return false;
       } finally {
         this.disableLoading();
       }
@@ -41,7 +48,7 @@ class MessagesStore extends BaseStore<MessageType> {
       
         const data = await chatApiClient.sendMessage(chatId, text);
   
-        this.updateMessages(data);
+        this.updateMessages([data]);
         chatsStore.updateChats(data);
       } catch (e: any) {
         console.warn(e);
@@ -50,9 +57,13 @@ class MessagesStore extends BaseStore<MessageType> {
       }
     }
 
-    updateMessages(message: MessageType): void {
+    clearMessages(): void {
+      this.items = [];
+    }
+
+    updateMessages(messages: MessageType[]): void {
       runInAction(() => {
-          this.items = [message, ...this.items];
+          this.items = [...messages, ...this.items];
       });
     }
 }

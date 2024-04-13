@@ -15,6 +15,9 @@ class UserApiClient extends BaseApiClient {
         return this.axiosGet("/user/users/" + afterId)
     }
 
+    findUsers(prefix: string): Promise<UserType[]> {
+        return this.axiosGet("user/users/find/" + prefix);
+    }
 }
 
 export default new UserApiClient();
