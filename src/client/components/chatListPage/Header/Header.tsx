@@ -1,5 +1,5 @@
 import React from 'react';
-import { Layout, Input, Dropdown, MenuProps } from 'antd';
+import {Layout, Input, Dropdown, MenuProps, Button} from 'antd';
 import { SearchOutlined, MenuOutlined } from '@ant-design/icons';
 
 import './Header.css';
@@ -18,7 +18,7 @@ const Header: React.FC = () => {
 
   const handleLogout = async () => {
     await authApiClient.logout();
-    window.location.href = 'http://localhost:3000/';
+    window.location.href = 'http://localhost:3000/'; // TODO change
   };
 
   const items: MenuProps['items'] = [ // TODO: вместе с логикой вынести в отдельный компонент

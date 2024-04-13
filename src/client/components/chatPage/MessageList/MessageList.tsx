@@ -3,13 +3,14 @@ import { observer } from 'mobx-react-lite';
 
 import { Message } from '../Message';
 import { messagesStore } from '../../../stores';
+import './MessageList.css';
 
 const MessageList: React.FC = () => {
   const { items } = messagesStore; 
 
   return (
     <section className="messages">
-      {items.map(curMessage => <Message message={curMessage} />)}
+      {items.map((curMessage, key) => <Message key={key} message={curMessage} />)}
     </section>
   );
 };

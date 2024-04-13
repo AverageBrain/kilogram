@@ -34,7 +34,7 @@ const ChatList: React.FC = () => {
             className={clsx('chat-list-item-meta', chat.id === selectedItem?.id && 'chat-list-item-meta-active')}
             avatar={<Avatar src={`https://api.dicebear.com/7.x/miniavs/svg?seed=${index}`} />}
             title={chat.user.name}
-            description={chat.messages[0].text}
+            description={chat.messages.length > 0 ? chat.messages[0].text : ''}
           />
         </List.Item>
       )}

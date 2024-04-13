@@ -9,10 +9,11 @@ import {LoggerMiddleware} from "./middleware/LoggingMiddleware";
 import express from "express";
 import {User as PrismaUser} from "@prisma/client";
 import {AuthController} from "./controllers/AuthController";
-import { ChatController } from "./controllers/ChatController";
+import {ChatController} from "./controllers/ChatController";
 import connect_pg_simple from "connect-pg-simple";
 import cors from "cors";
 import passport from "passport";
+import {SSEService} from "./services/SSEService";
 
 const pgSession = connect_pg_simple(expressSession)
 
@@ -68,6 +69,27 @@ app.get(
     (req, res) => res.sendStatus(200)
 );
 
+const sseService = new SSEService()
+app.get("/api/user/sse", (req, res) => {
+    res.writeHead(200, {
+        "Connection": "keep-alive",
+        "Cache-Control": "no-cache",
+        "Content-Type": "text/event-stream",
+    });
+
+    const userId = req.user?.prismaUser?.id
+    if (userId == undefined) {
+        throw new Error("User must be authorized")
+    }
+    const callback = (data: string) => res.write(`data: ${data}\n\n`);
+
+    const listenId = sseService.registerListen(userId, callback)
+
+    res.on("close", () => {
+        sseService.unregisterListen(userId, listenId)
+        res.end();
+    });
+});
 
 console.log("Server started")
 app.listen(3001);

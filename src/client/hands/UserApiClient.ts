@@ -1,5 +1,5 @@
 import { UserType } from "../../types/types";
-import { BaseApiClient } from "./BaseApiClient";
+import {BASE_SERVER_HOST, BaseApiClient} from "./BaseApiClient";
 
 class UserApiClient extends BaseApiClient {
     getMe(): Promise<UserType> {
@@ -12,8 +12,9 @@ class UserApiClient extends BaseApiClient {
 
     getUsers(afterId: number = -1): Promise<UserType[]> {
         // if first page, afterId = -1
-        return this.axiosGet("user/users/" + afterId)
+        return this.axiosGet("/user/users/" + afterId)
     }
+
 }
 
 export default new UserApiClient();
