@@ -19,15 +19,15 @@ const SendMessage: React.FC = () => {
   }
 
   const handleSubmit = async () => {
+    if (chat && message) {
+      await sendMessage(chat.id, message);      
+      setMessage('');
+    }
     if (!chat && user && message) {
       const chat = await chatApiClient.createChat(user.id);
       await sendMessage(chat.id, message);
       setSelectedChat(chat);
       setSelectedUser(undefined);
-      setMessage('');
-    }
-    if (chat && message) {
-      await sendMessage(chat.id, message);      
       setMessage('');
     }
   }
