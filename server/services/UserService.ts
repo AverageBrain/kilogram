@@ -1,12 +1,25 @@
 import {prisma} from "../domain/PrismaClient";
 import {User} from "@prisma/client";
+import {UserAvatarService} from "./UserAvatarService";
 
 export class UserService {
     async getOrCreateUserByGithub(githubId: string, name: string, username: string): Promise<User> {
         const user = await prisma.user.findUnique({where: {githubId: githubId}})
         if (user == null) {
-            return prisma.user.create({data: {username: username, githubId: githubId, name: name}});
+            const avatarKey = await UserAvatarService.createAvatar(username)
+
+            if (avatarKey === null) throw Error("Не удалось создать аватар для нового пользователя - повторите попытку")
+
+            return prisma.user.create({
+                data: {
+                    username: username,
+                    githubId: githubId,
+                    name: name,
+                    avatarKey: avatarKey
+                }
+            });
         }
+
         return user
     }
 
