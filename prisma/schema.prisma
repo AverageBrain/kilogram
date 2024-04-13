@@ -12,9 +12,10 @@ model User {
   id        Int        @id @default(autoincrement())
   createdAt DateTime   @default(now())
   updatedAt DateTime   @updatedAt
-  username  String     @default("")
+  username  String     @default("") @unique
   name      String     @default("")
   githubId  String?    @unique
+  avatarKey String?    @default("")
   messages  Message[]
   chats     UserChat[]
 }
@@ -25,6 +26,7 @@ model Chat {
   updatedAt DateTime   @updatedAt
   name      String     @default("")
   type      String     @default("chat")
+  avatarKey String     @default("")
   messages  Message[]
   members   UserChat[]
 }
@@ -48,6 +50,7 @@ model Message {
   userId    Int
   chatId    Int
   text      String
+  imageKey  String   @default("")
   chat      Chat     @relation(fields: [chatId], references: [id])
   user      User     @relation(fields: [userId], references: [id])
 }
