@@ -60,7 +60,7 @@ class ChatsStore extends BaseStore<ChatType> {
 
     getChatByUser(user: UserType) {
       for (let item of this.items) {
-        if (item.user.id === user.id)
+        if (item.users[0].id === user.id)
           return item;
       }
     }

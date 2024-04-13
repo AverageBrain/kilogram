@@ -14,7 +14,7 @@ const ChatHeader: React.FC = () => {
 
   const { isOpenModal, showModal, closeModal } = useModal();
 
-  const curUser = chat ? chat.user : user ? user : undefined;
+  const curUser = chat ? chat.users[0] : user ? user : undefined;
 
   return curUser
     ? (

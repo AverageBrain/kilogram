@@ -14,7 +14,8 @@ export const chats: ChatType[] = [
     id: 9,
     createdAt: new Date('2024-03-30T12:38:31'),
     updatedAt: new Date('2024-03-30T12:38:31'),
-    user: findUserById(2), 
+    users: [findUserById(2)],
+    type: 'chat',
     messages: [
       {
         id: 10,
@@ -46,7 +47,8 @@ export const chats: ChatType[] = [
     id: 10,
     createdAt: new Date('2024-03-30T12:38:31'),
     updatedAt: new Date('2024-03-30T12:38:31'),
-    user: findUserById(1), 
+    users: [findUserById(1)],
+    type: 'chat',
     messages: [
       {
         id: 13,
@@ -78,7 +80,8 @@ export const chats: ChatType[] = [
     id: 11,
     createdAt: new Date('2024-03-30T12:38:31'),
     updatedAt: new Date('2024-03-30T12:38:31'),
-    user: findUserById(3), 
+    users: [findUserById(3)],
+    type: 'chat',
     messages: [
       {
         id: 13,
