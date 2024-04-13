@@ -14,6 +14,7 @@ import connect_pg_simple from "connect-pg-simple";
 import cors from "cors";
 import passport from "passport";
 import {SSEService} from "./services/SSEService";
+import {DelayMessageJob} from "./job/DelayMessageJob";
 
 const pgSession = connect_pg_simple(expressSession)
 
@@ -90,6 +91,8 @@ app.get("/api/user/sse", (req, res) => {
         res.end();
     });
 });
+
+new DelayMessageJob().run()
 
 console.log("Server started")
 app.listen(3002);

@@ -17,6 +17,11 @@ export type MessageType = BaseItemType & {
   text: string;
 }
 
+export type DelayMessageType = MessageType & {
+  inTime: Date
+}
+
+
 export type ChatListItemType = BaseItemType & {
   name: string;
   lastMessage: string;

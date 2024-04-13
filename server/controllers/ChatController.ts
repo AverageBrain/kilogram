@@ -13,7 +13,6 @@ import {makeRandomString} from "../utils/makeid";
 
 const chatService = new ChatService()
 const userService = new UserService()
-const sseService = new SSEService()
 
 @JsonController("/chat")
 export class ChatController {
@@ -30,30 +29,78 @@ export class ChatController {
             throw new Error("User must be authorized")
         }
 
-        const userChats = await prisma.userChat.findMany({where: {chatId: message.chatId}})
+        return chatService.sendMessage(user, message)
+    }
+
+    @Post("/send/delay")
+    async sendDelayMessage(
+        @Req() request: express.Request,
+        @BodyParam('delayMessage') delayMessage: {
+            chatId: number
+            text: string
+            inTime: Date
+        }
+    ): Promise<types.DelayMessageType> {
+        const user = request.user?.prismaUser
+        if (!user) {
+            throw new Error("User must be authorized")
+        }
+
+        const userChats = await prisma.userChat.findMany({where: {chatId: delayMessage.chatId}})
         if (!userChats.find((chat) => chat.userId === user.id) || userChats.length !== 2) {
             throw new Error("User has no access to the chat")
         }
 
-        await Promise.all(userChats.map(async (userChat) => {
-            userChat.updatedAt = new Date()
-            return await prisma.userChat.update({data: userChat, where: {id: userChat.id}})
-        }));
+        if (delayMessage.inTime < new Date()) {
+            throw new Error("InTime must be grate current date")
+        }
 
-        const sendMessage = await prisma.message.create({
+        return prisma.delayMessage.create({
             data: {
-                chatId: message.chatId,
-                text: message.text,
-                userId: user.id
+                chatId: delayMessage.chatId,
+                text: delayMessage.text,
+                userId: user.id,
+                inTime: delayMessage.inTime
             }
         })
-
-        const chatUsers = await prisma.userChat.findMany({where: {chatId: userChats[0].chatId}})
-
-        chatUsers.forEach(uc => uc.userId != user.id ? sseService.publishMessage(uc.userId, "newMessage", sendMessage) : null)
-
-        return sendMessage
     }
+
+    @Post("/remove/delay")
+    async removeDelayMessage(
+        @Req() request: express.Request,
+        @BodyParam('delayMessage') delayMessage: {
+            delayMessageId: number
+        }
+    ): Promise<types.DelayMessageType> {
+        const user = request.user?.prismaUser
+        if (!user) {
+            throw new Error("User must be authorized")
+        }
+
+        const removedDelayMessage = await prisma.delayMessage.findUnique({where: {id: delayMessage.delayMessageId}})
+        if (removedDelayMessage == null) {
+            throw new Error("Delayed message not found")
+        }
+
+        if (removedDelayMessage.userId != user.id) {
+            throw new Error("Access denied")
+        }
+
+        return prisma.delayMessage.delete({where: {id: removedDelayMessage.id}})
+    }
+
+    @Get("/messages/delay/all")
+    async getAllDelayMessage(
+        @Req() request: express.Request
+    ): Promise<types.DelayMessageType[]> {
+        const user = request.user?.prismaUser
+        if (!user) {
+            throw new Error("User must be authorized")
+        }
+
+        return prisma.delayMessage.findMany({where: {userId: user.id}})
+    }
+
 
     @Post("/create/chat")
     async createChat(
