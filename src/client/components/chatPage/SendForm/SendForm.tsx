@@ -4,11 +4,13 @@ import { SendOutlined } from '@ant-design/icons';
 import { observer } from 'mobx-react-lite';
 
 import './SendForm.css'
-import { chatsStore, messagesStore } from '../../../stores';
+import { chatsStore, messagesStore, userStore } from '../../../stores';
+import { chatApiClient } from '../../../hands';
 
 const SendMessage: React.FC = () => {
-  const { loadItems, sendMessage } = messagesStore;
-  const { selectedItem: chat } = chatsStore;
+  const { sendMessage } = messagesStore;
+  const { selectedItem: chat, setSelectedChat } = chatsStore;
+  const { selectedUser: user, setSelectedUser } = userStore;
 
   const [message, setMessage] = useState(''); // TODO: при смене чата очищать поле/подгружать из localStorage
 
@@ -17,6 +19,13 @@ const SendMessage: React.FC = () => {
   }
 
   const handleSubmit = async () => {
+    if (!chat && user && message) {
+      const chat = await chatApiClient.createChat(user.id);
+      await sendMessage(chat.id, message);
+      setSelectedChat(chat);
+      setSelectedUser(undefined);
+      setMessage('');
+    }
     if (chat && message) {
       await sendMessage(chat.id, message);      
       setMessage('');

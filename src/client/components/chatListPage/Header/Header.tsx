@@ -1,8 +1,6 @@
 import { MenuOutlined, SearchOutlined } from '@ant-design/icons';
 import { Dropdown, Input, Layout, MenuProps } from 'antd';
 import React from 'react';
-import {Layout, Input, Dropdown, MenuProps, Button} from 'antd';
-import { SearchOutlined, MenuOutlined } from '@ant-design/icons';
 
 import { useModal } from '../../../../hooks';
 import { authApiClient } from '../../../hands';

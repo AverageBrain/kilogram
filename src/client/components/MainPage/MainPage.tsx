@@ -6,12 +6,13 @@ import { observer } from 'mobx-react-lite';
 import { ChatListPage } from '../chatListPage';
 import { ChatPage, EmptyPanel } from '../chatPage';
 import './MainPage.css';
-import { chatsStore } from '../../stores';
+import { chatsStore, userStore } from '../../stores';
 
 const { Content } = Layout;
 
 const MainPage: React.FC = () => {
   const { selectedItem, loadItems: loadChats, setSelectedChat } = chatsStore;
+  const { selectedUser } = userStore;
 
   const [panelSizes, setPanelSizes] = useState<number[]>([]); // TODO: можно записывать в localStorage
 
@@ -44,7 +45,7 @@ const MainPage: React.FC = () => {
           onResizeFinished={handleResizeFinished}
         >
           <ChatListPage />
-          {selectedItem
+          {selectedItem || selectedUser
             ? <ChatPage />
             : <EmptyPanel />
           }

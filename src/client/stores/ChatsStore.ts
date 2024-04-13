@@ -2,7 +2,7 @@
 import { action, makeObservable, override, runInAction } from 'mobx';
 import { partition } from 'lodash';
 
-import { ChatType, MessageType } from '../../types';
+import { ChatType, MessageType, UserType } from '../../types';
 import BaseStore from './BaseStore';
 import { chatApiClient } from '../hands';
 
@@ -56,6 +56,13 @@ class ChatsStore extends BaseStore<ChatType> {
       runInAction(() => {
         this.selectedItem = chat;
       });
+    }
+
+    getChatByUser(user: UserType) {
+      for (let item of this.items) {
+        if (item.user.id === user.id)
+          return item;
+      }
     }
 
     async updateChats(message: MessageType) {

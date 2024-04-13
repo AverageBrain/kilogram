@@ -49,4 +49,19 @@ export class UserController {
         const users: User[] = await prisma.user.findMany({where: {id: {lt: afterId}}, take: 10, orderBy: {id: "desc"}})
         return users.map(i => convertPrismaUser(i))
     }
+
+    @Get("/users/find/:prefix")
+    async findUsers(@Param("prefix") prefix: string): Promise<types.UserType[]> {
+        if (!prefix) {
+            return [];
+        }
+        const users: User[] = await prisma.user.findMany({
+            where: {
+                username: {
+                    startsWith: prefix,
+                }
+            }
+        })
+        return users.map(i => convertPrismaUser(i));
+    }
 }
