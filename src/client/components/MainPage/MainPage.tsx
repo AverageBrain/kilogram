@@ -45,7 +45,7 @@ const MainPage: React.FC = () => {
         >
           <ChatListPage />
           {selectedItem
-            ? <ChatPage />
+            ? <ChatPage key={selectedItem?.id} />
             : <EmptyPanel />
           }
         </Splitter>

@@ -1,18 +1,26 @@
-import React from 'react';
+import React, { useEffect } from 'react';
+import { observer } from 'mobx-react-lite';
 
 import { SendForm } from '../SendForm';
 import { ChatHeader } from '../ChatHeader';
-import { MessageList } from '../MessageList';
 import './ChatPage.css'
+import InfiniteScroll from '../InfiniteScroll';
+import { messagesStore } from '../../../stores';
 
 const ChatPage: React.FC = () => {
+  const { resetItems } = messagesStore;
+
+  useEffect(() => () => {
+    resetItems();
+  });
+
   return (
     <div className="chat">
       <ChatHeader />
-      <MessageList />
+      <InfiniteScroll />
       <SendForm />
     </div>
   );
 };
 
-export default ChatPage;
+export default observer(ChatPage);
