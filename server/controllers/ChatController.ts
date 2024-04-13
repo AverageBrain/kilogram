@@ -7,12 +7,10 @@ import * as types from '../../src/types';
 import {UserService} from "../services/UserService";
 import {convertPrismaUser} from "./UserController";
 import {groupBy} from "../utils";
-import {SSEService} from "../services/SSEService";
 
 
 const chatService = new ChatService()
 const userService = new UserService()
-const sseService = new SSEService()
 
 @JsonController("/chat")
 export class ChatController {
@@ -29,29 +27,7 @@ export class ChatController {
             throw new Error("User must be authorized")
         }
 
-        const userChats = await prisma.userChat.findMany({where: {chatId: message.chatId}})
-        if (!userChats.find((chat) => chat.userId === user.id) || userChats.length !== 2) {
-            throw new Error("User has no access to the chat")
-        }
-
-        await Promise.all(userChats.map(async (userChat) => {
-            userChat.updatedAt = new Date()
-            return await prisma.userChat.update({data: userChat, where: {id: userChat.id}})
-        }));
-
-        const sendMessage = await prisma.message.create({
-            data: {
-                chatId: message.chatId,
-                text: message.text,
-                userId: user.id
-            }
-        })
-
-        const chatUsers = await prisma.userChat.findMany({where: {chatId: userChats[0].chatId}})
-
-        chatUsers.forEach(uc => uc.userId != user.id ? sseService.publishMessage(uc.userId, "newMessage", sendMessage) : null)
-
-        return sendMessage
+        return chatService.sendMessage(user, message)
     }
 
     @Post("/send/delay")
@@ -71,6 +47,10 @@ export class ChatController {
         const userChats = await prisma.userChat.findMany({where: {chatId: delayMessage.chatId}})
         if (!userChats.find((chat) => chat.userId === user.id) || userChats.length !== 2) {
             throw new Error("User has no access to the chat")
+        }
+
+        if (delayMessage.inTime < new Date()) {
+            throw new Error("InTime must be grate current date")
         }
 
         return prisma.delayMessage.create({
