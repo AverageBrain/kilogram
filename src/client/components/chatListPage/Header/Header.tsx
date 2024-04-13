@@ -7,6 +7,7 @@ import { authApiClient } from '../../../hands';
 import { authUserStore } from '../../../stores';
 import { Profile } from '../../Profile';
 import './Header.css';
+import {BASE_LOGOUT_HOST} from "../../../hands/BaseApiClient";
 
 const { Header: HeaderAD } = Layout;
 
@@ -23,7 +24,7 @@ const Header: React.FC<Props> = ({ value, setSearchTerm, }) => {
 
   const handleLogout = async () => {
     await authApiClient.logout();
-    window.location.href = 'http://localhost:3000/'; // TODO change
+    window.location.href = BASE_LOGOUT_HOST;
   };
 
   const items: MenuProps['items'] = [ // TODO: вместе с логикой вынести в отдельный компонент
@@ -41,11 +42,11 @@ const Header: React.FC<Props> = ({ value, setSearchTerm, }) => {
       onClick: handleLogout,
     },
   ];
-  
+
   return (
     <>
       <HeaderAD className="header">
-          <Dropdown menu={{ items }} trigger={['click']}> 
+          <Dropdown menu={{ items }} trigger={['click']}>
             <MenuOutlined className="icon" />
           </Dropdown>
           <Input
