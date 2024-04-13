@@ -1,4 +1,22 @@
-import { UserType } from '../types';
+import { UserType, ChatType } from '../types';
+import { chats } from './chats';
+
+const toChat = (user: UserType): ChatType => {
+  return {
+    id: chats.length + 1,
+    createdAt: user.createdAt,
+    updatedAt: user.updatedAt,
+    user,
+    messages: [],
+  }
+}
+
+export const searchUsersByUsername = async (prefix: string) => {
+  const filteredUsers = users
+    .filter(user => user.username.startsWith(prefix))
+    .map(user => toChat(user));
+  return filteredUsers;
+};
 
 export const users: UserType[] = [
   {

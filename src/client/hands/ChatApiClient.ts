@@ -38,9 +38,9 @@ class UserApiClient extends BaseApiClient {
 
     getMessages(
         chatId: number,
-        offset: number,
+        afterId: number,
     ): Promise<MessageType[]> {
-        return this.axiosPost("/chat/messages", {chatMessages: {chatId, offset}})
+        return this.axiosPost("/chat/messages", {chatMessages: {chatId, afterId}})
     }
 
     setReaction(

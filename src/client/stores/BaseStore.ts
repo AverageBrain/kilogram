@@ -14,6 +14,13 @@ class BaseStore<T> {
 
             enableLoading: action.bound,
             disableLoading: action.bound,
+            resetItems: action.bound,
+        });
+    }
+
+    resetItems(): void {
+        runInAction(() => {
+            this.items = [];
         });
     }
 

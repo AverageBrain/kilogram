@@ -40,13 +40,34 @@ export class UserController {
         return convertPrismaUser(localUser)
     }
 
-    @Get("/users/:afterId")
-    async getUsers(@Param("afterId") afterId: number): Promise<types.UserType[]> {
-        if (afterId == -1) {
-            // first page -- new users
-            afterId = await prisma.user.count()
+    @Get("/users/find/:prefix")
+    async findUsers(@Req() request: express.Request, @Param("prefix") prefix: string): Promise<types.UserType[]> {
+        if (!prefix) {
+            return [];
         }
-        const users: User[] = await prisma.user.findMany({where: {id: {lt: afterId}}, take: 10, orderBy: {id: "desc"}})
-        return users.map(i => convertPrismaUser(i))
+        const sessionUser = request.user;
+        if (sessionUser?.prismaUser) {
+            const users: User[] = await prisma.user.findMany({
+                where: {
+                    AND: [
+                        { 
+                            username: {
+                                startsWith: prefix,
+                            }, 
+                        },
+                        {
+                            NOT: {
+                                id: {
+                                    equals: sessionUser?.prismaUser?.id,
+                                }
+                            }
+                        }
+                    ]
+     
+                }
+            })
+            return users.map(i => convertPrismaUser(i));
+        }
+        return [];
     }
 }
