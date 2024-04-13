@@ -71,8 +71,6 @@ class ChatsStore extends BaseStore<ChatType> {
         (item) => item.id === message.chatId,
       );
 
-      console.log('sse chats', updatedChats, otherChats)
-  
       if (updatedChats.length === 0) {
         await this.loadItems();
       } else {

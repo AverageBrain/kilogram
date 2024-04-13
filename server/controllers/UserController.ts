@@ -41,17 +41,33 @@ export class UserController {
     }
 
     @Get("/users/find/:prefix")
-    async findUsers(@Param("prefix") prefix: string): Promise<types.UserType[]> {
+    async findUsers(@Req() request: express.Request, @Param("prefix") prefix: string): Promise<types.UserType[]> {
         if (!prefix) {
             return [];
         }
-        const users: User[] = await prisma.user.findMany({
-            where: {
-                username: {
-                    startsWith: prefix,
+        const sessionUser = request.user;
+        if (sessionUser?.prismaUser) {
+            const users: User[] = await prisma.user.findMany({
+                where: {
+                    AND: [
+                        { 
+                            username: {
+                                startsWith: prefix,
+                            }, 
+                        },
+                        {
+                            NOT: {
+                                id: {
+                                    equals: sessionUser?.prismaUser?.id,
+                                }
+                            }
+                        }
+                    ]
+     
                 }
-            }
-        })
-        return users.map(i => convertPrismaUser(i));
+            })
+            return users.map(i => convertPrismaUser(i));
+        }
+        return [];
     }
 }

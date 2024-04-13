@@ -15,8 +15,7 @@ type Props = {
 
 const ChatList: React.FC<Props> = ({ setSearchTerm, searchTerm }) => {
   const [isSearching, setIsSearcing] = useState('');
-  console.log(isSearching);
-
+  
   const [results, setResults] = useState(new Array<UserType>());
 
   const debouncedSearchTerm = useDebounce(searchTerm, 500);
