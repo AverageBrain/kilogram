@@ -38,6 +38,7 @@
     "react-markdown": "^9.0.1",
     "react-modal": "^3.16.1",
     "react-scripts": "5.0.1",
+    "redis": "^4.6.13",
     "routing-controllers": "^0.10.4",
     "ts-loader": "^9.5.1",
     "tsx": "^4.7.2",
