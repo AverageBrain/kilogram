@@ -101,7 +101,7 @@ export class ChatController {
     @Post("/create/group")
     async createGroup(
         @Req() request: express.Request,
-        @BodyParam('createChat') createGroup: {
+        @BodyParam('createGroup') createGroup: {
             userIds: number[]
         }
     ): Promise<types.ChatType> {
