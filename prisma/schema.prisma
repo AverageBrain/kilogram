@@ -25,6 +25,7 @@ model Chat {
   updatedAt DateTime   @updatedAt
   name      String     @default("")
   type      String     @default("chat")
+  joinKey   String?    @unique
   messages  Message[]
   members   UserChat[]
 }

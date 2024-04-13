@@ -8,6 +8,7 @@ import {UserService} from "../services/UserService";
 import {convertPrismaUser} from "./UserController";
 import {groupBy} from "../utils";
 import {SSEService} from "../services/SSEService";
+import {makeRandomString} from "../utils/makeid";
 
 
 const chatService = new ChatService()
@@ -110,23 +111,57 @@ export class ChatController {
             throw new Error("User must be authorized")
         }
 
+        createGroup.userIds = createGroup.userIds.filter(i => i != user.id)
         const toUsers = await userService.getUsersById(createGroup.userIds)
-        const group = await prisma.chat.create({data: {type: 'group'}})
+        const group = await prisma.chat.create({data: {type: 'group', joinKey: makeRandomString(20)}})
 
-        const createManyPosts = toUsers.map((user) =>
+        const createManyUserChat = toUsers.map((user) =>
             prisma.userChat.create({
                 data: {userId: user.id, chatId: group.id},
             }),
-        );
+        )
+        await Promise.all(createManyUserChat)
 
-
-        await Promise.all(createManyPosts)
         return {
             createdAt: group.createdAt,
             id: group.id,
             messages: [],
             updatedAt: group.updatedAt,
-            users: toUsers.map(i => convertPrismaUser(i)),
+            users: toUsers.filter(i => i.id != user.id).map(i => convertPrismaUser(i)),
+            joinKey: group.joinKey ? group.joinKey : undefined,
+            type: 'group'
+        }
+    }
+
+    @Post("/join/group")
+    async joinGroup(
+        @Req() request: express.Request,
+        @BodyParam('joinGroup') joinGroup: {
+            joinKey: string
+        }
+    ): Promise<types.ChatType> {
+        const user = request.user?.prismaUser
+        if (!user) {
+            throw new Error("User must be authorized")
+        }
+
+        const group = await prisma.chat.findUnique({where: {joinKey: joinGroup.joinKey}})
+        if (group == null) {
+            throw new Error("JoinKey not connected any group")
+        }
+        const alreadyUsersChat = await prisma.userChat.findMany({where: {chatId: group.id}, include: {user: true}})
+
+        await prisma.userChat.create({
+            data: {userId: user.id, chatId: group.id},
+        })
+
+        return {
+            createdAt: group.createdAt,
+            id: group.id,
+            messages: [],
+            updatedAt: group.updatedAt,
+            users: alreadyUsersChat.map(i => convertPrismaUser(i.user)),
+            joinKey: group.joinKey ? group.joinKey : undefined,
             type: 'group'
         }
     }
@@ -167,7 +202,8 @@ export class ChatController {
                 updatedAt: chat.updatedAt,
                 users: othersUserChat.map(i => convertPrismaUser(i.user)),
                 messages: chat.messages as types.MessageType[],
-                type: chat.type
+                type: chat.type,
+                joinKey: chat.joinKey,
             } as types.ChatType
         })
     }

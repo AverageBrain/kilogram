@@ -1,5 +1,5 @@
 import {BaseApiClient} from "./BaseApiClient";
-import {ChatType, MessageType} from "../../types/types";
+import {ChatType, MessageType} from "../../types";
 
 class UserApiClient extends BaseApiClient {
     sendMessage(chatId: number, text: string): Promise<MessageType> {
@@ -11,7 +11,11 @@ class UserApiClient extends BaseApiClient {
     }
 
     createGroup(userIds: number[]): Promise<ChatType> {
-        return this.axiosPost("/chat/create/chat", {createGroup: {userIds}})
+        return this.axiosPost("/chat/create/group", {createGroup: {userIds}})
+    }
+
+    joinGroup(joinKey: string): Promise<ChatType> {
+        return this.axiosPost("/chat/join/group", {joinGroup: {joinKey}})
     }
 
     getMyChats(afterId: number = -1): Promise<ChatType[]> {
