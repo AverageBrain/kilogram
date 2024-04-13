@@ -19,8 +19,8 @@ export function convertPrismaMessage(prismaMessage: Message, reactions: MessageR
         id: prismaMessage.id,
         createdAt: prismaMessage.createdAt,
         updatedAt: prismaMessage.updatedAt,
-        chatId: prismaMessage.userId,
-        userId: prismaMessage.chatId,
+        chatId: prismaMessage.chatId,
+        userId: prismaMessage.userId,
         text: prismaMessage.text,
         reactions: reactions
     }
