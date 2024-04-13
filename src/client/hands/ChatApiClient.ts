@@ -1,13 +1,26 @@
-import { BaseApiClient } from "./BaseApiClient";
-import { ChatType, MessageType} from "../../types/types";
+import {BaseApiClient} from "./BaseApiClient";
+import {ChatType, DelayMessageType, MessageType} from "../../types/types";
 
 class UserApiClient extends BaseApiClient {
     sendMessage(chatId: number, text: string): Promise<MessageType> {
-        return this.axiosPost("/chat/send", {message: {chatId: chatId, text: text}})
+        return this.axiosPost("/chat/send", {message: {chatId, text}})
     }
 
+    sendDelayMessage(chatId: number, text: string, inTime: Date): Promise<DelayMessageType> {
+        return this.axiosPost("/chat/send/delay", {delayMessage: {chatId, text, inTime}})
+    }
+
+    removeDelayMessage(delayMessageId: number): Promise<DelayMessageType> {
+        return this.axiosPost("/chat/remove/delay", {delayMessage: {delayMessageId}})
+    }
+
+    getAllDelayMessage(delayMessageId: number): Promise<DelayMessageType[]> {
+        return this.axiosGet("/chat/messages/delay/all")
+    }
+
+
     createChat(userId: number): Promise<ChatType> {
-        return this.axiosPost("/chat/create", { createChat: { userId } })
+        return this.axiosPost("/chat/create", {createChat: {userId}})
     }
 
     getMyChats(afterId: number = -1): Promise<ChatType[]> {
@@ -19,7 +32,7 @@ class UserApiClient extends BaseApiClient {
         chatId: number,
         offset: number,
     ): Promise<MessageType[]> {
-        return this.axiosPost("/chat/messages", { chatMessages: { chatId, offset }})
+        return this.axiosPost("/chat/messages", {chatMessages: {chatId, offset}})
     }
 }
 

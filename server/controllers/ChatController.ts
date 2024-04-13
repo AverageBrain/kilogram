@@ -54,6 +54,72 @@ export class ChatController {
         return sendMessage
     }
 
+    @Post("/send/delay")
+    async sendDelayMessage(
+        @Req() request: express.Request,
+        @BodyParam('delayMessage') delayMessage: {
+            chatId: number
+            text: string
+            inTime: Date
+        }
+    ): Promise<types.DelayMessageType> {
+        const user = request.user?.prismaUser
+        if (!user) {
+            throw new Error("User must be authorized")
+        }
+
+        const userChats = await prisma.userChat.findMany({where: {chatId: delayMessage.chatId}})
+        if (!userChats.find((chat) => chat.userId === user.id) || userChats.length !== 2) {
+            throw new Error("User has no access to the chat")
+        }
+
+        return prisma.delayMessage.create({
+            data: {
+                chatId: delayMessage.chatId,
+                text: delayMessage.text,
+                userId: user.id,
+                inTime: delayMessage.inTime
+            }
+        })
+    }
+
+    @Post("/remove/delay")
+    async removeDelayMessage(
+        @Req() request: express.Request,
+        @BodyParam('delayMessage') delayMessage: {
+            delayMessageId: number
+        }
+    ): Promise<types.DelayMessageType> {
+        const user = request.user?.prismaUser
+        if (!user) {
+            throw new Error("User must be authorized")
+        }
+
+        const removedDelayMessage = await prisma.delayMessage.findUnique({where: {id: delayMessage.delayMessageId}})
+        if (removedDelayMessage == null) {
+            throw new Error("Delayed message not found")
+        }
+
+        if (removedDelayMessage.userId != user.id) {
+            throw new Error("Access denied")
+        }
+
+        return prisma.delayMessage.delete({where: {id: removedDelayMessage.id}})
+    }
+
+    @Get("/messages/delay/all")
+    async getAllDelayMessage(
+        @Req() request: express.Request
+    ): Promise<types.DelayMessageType[]> {
+        const user = request.user?.prismaUser
+        if (!user) {
+            throw new Error("User must be authorized")
+        }
+
+        return prisma.delayMessage.findMany({where: {userId: user.id}})
+    }
+
+
     @Post("/create")
     async createChat(
         @Req() request: express.Request,

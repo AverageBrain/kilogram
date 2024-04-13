@@ -9,26 +9,28 @@ datasource db {
 }
 
 model User {
-  id        Int        @id @default(autoincrement())
-  createdAt DateTime   @default(now())
-  updatedAt DateTime   @updatedAt
-  username  String     @default("") @unique
-  name      String     @default("")
-  githubId  String?    @unique
-  avatarKey String?    @default("")
-  messages  Message[]
-  chats     UserChat[]
+  id           Int            @id @default(autoincrement())
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
+  username     String         @unique @default("")
+  name         String         @default("")
+  githubId     String?        @unique
+  avatarKey    String?        @default("")
+  messages     Message[]
+  chats        UserChat[]
+  DelayMessage DelayMessage[]
 }
 
 model Chat {
-  id        Int        @id @default(autoincrement())
-  createdAt DateTime   @default(now())
-  updatedAt DateTime   @updatedAt
-  name      String     @default("")
-  type      String     @default("chat")
-  avatarKey String     @default("")
-  messages  Message[]
-  members   UserChat[]
+  id              Int            @id @default(autoincrement())
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
+  name            String         @default("")
+  type            String         @default("chat")
+  avatarKey       String         @default("")
+  messages        Message[]
+  members         UserChat[]
+  delayedMessages DelayMessage[]
 }
 
 model UserChat {
@@ -51,6 +53,19 @@ model Message {
   chatId    Int
   text      String
   imageKey  String   @default("")
+  chat      Chat     @relation(fields: [chatId], references: [id])
+  user      User     @relation(fields: [userId], references: [id])
+}
+
+model DelayMessage {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  userId    Int
+  chatId    Int
+  text      String
+  imageKey  String   @default("")
+  inTime    DateTime
   chat      Chat     @relation(fields: [chatId], references: [id])
   user      User     @relation(fields: [userId], references: [id])
 }
