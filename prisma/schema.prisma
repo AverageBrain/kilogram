@@ -1,0 +1,108 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../node_modules/.prisma/client"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id               Int               @id @default(autoincrement())
+  createdAt        DateTime          @default(now())
+  updatedAt        DateTime          @updatedAt
+  username         String            @unique @default("")
+  name             String            @default("")
+  githubId         String?           @unique
+  avatarKey        String?           @default("")
+  messages         Message[]
+  chats            UserChat[]
+  messageReactions MessageReaction[]
+  DelayMessage DelayMessage[]
+}
+
+model Chat {
+  id              Int            @id @default(autoincrement())
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
+  name            String         @default("")
+  type            String         @default("chat")
+  joinKey   String?    @unique
+  avatarKey       String         @default("")
+  messages        Message[]
+  members         UserChat[]
+  delayedMessages DelayMessage[]
+}
+
+model UserChat {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  userId    Int
+  chatId    Int
+  chat      Chat     @relation(fields: [chatId], references: [id])
+  user      User     @relation(fields: [userId], references: [id])
+
+  @@unique([userId, chatId])
+}
+
+model Message {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  userId    Int
+  chatId    Int
+  text      String
+  imageKey  String   @default("")
+
+  chat      Chat              @relation(fields: [chatId], references: [id])
+  user      User              @relation(fields: [userId], references: [id])
+  reactions MessageReaction[]
+}
+
+model ReactionType {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  code  String @unique
+  emoji String @default("")
+
+  messageReactions MessageReaction[]
+}
+
+model MessageReaction {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  reactionTypeId Int
+  messageId      Int
+  userId         Int
+
+  reactionType ReactionType @relation(fields: [reactionTypeId], references: [id])
+  message      Message      @relation(fields: [messageId], references: [id])
+  user         User         @relation(fields: [userId], references: [id])
+}
+
+model DelayMessage {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  userId    Int
+  chatId    Int
+  text      String
+  imageKey  String   @default("")
+  inTime    DateTime
+  chat      Chat     @relation(fields: [chatId], references: [id])
+  user      User     @relation(fields: [userId], references: [id])
+}
+
+model ExpressSession {
+  sid    String   @id(map: "session_pkey") @db.VarChar
+  sess   Json     @db.Json
+  expire DateTime @db.Timestamp(6)
+
+  @@index([expire], map: "IDX_session_expire")
+}
