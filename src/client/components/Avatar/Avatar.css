@@ -1,0 +1,18 @@
+.ant-avatar {
+  display: block !important;
+  height: 100%;
+  width: 100%;
+
+  .anticon {
+    height: 100%;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    svg {
+      height: 70%;
+      width: 70%;
+    }
+  }
+}

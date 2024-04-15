@@ -1,11 +1,12 @@
 import React from 'react';
-import { List, Avatar } from 'antd';
+import { List } from 'antd';
 import clsx from 'clsx';
 import { observer } from 'mobx-react-lite';
 
 import { chatsStore, messagesStore, userStore } from '../../../stores';
 import './ChatList.css'
 import { UserType } from '../../../../types';
+import { Avatar } from '../../Avatar';
 
 type Props = {
   results: UserType[];
@@ -49,7 +50,7 @@ const SearchResults: React.FC<Props> = ({ setSearchTerm, isSearching, results })
         >
           <List.Item.Meta
             className={clsx('chat-list-item-meta', user.id === selectedItem?.id && 'chat-list-item-meta-active')}
-            avatar={<Avatar src={`https://api.dicebear.com/7.x/miniavs/svg?seed=${index}`} />}
+            avatar={<Avatar user={user} />}
             title={user.name}
             description={user.username}
           />

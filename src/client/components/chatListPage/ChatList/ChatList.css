@@ -1,6 +1,21 @@
 .chat-list-item {
   padding: 0 !important;
   border-bottom: none !important;
+
+  .ant-list-item-meta-avatar {
+    height: 40px;
+    width: 40px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    img {
+      height: 100%;
+      width: 100%;
+      display: block;
+      border-radius: 50%;
+    }
+  } 
 }
 
 .chat-list-item-meta {
