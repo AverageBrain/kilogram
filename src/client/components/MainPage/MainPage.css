@@ -4,4 +4,8 @@
 
 .splitter {
   height: 100vh;
+
+  [class*="splitter-gutter"] {
+    cursor: default;
+  }
 }
