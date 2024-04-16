@@ -40,10 +40,10 @@ const MainPage: React.FC = () => {
     <Layout style={{ height: "100vh" }}>
       <Content>
         <Splitter className='splitter'>
-          <SplitterPanel className="flex align-items-center justify-content-center" size={25} minSize={305}>
+          <SplitterPanel size={25} minSize={20}>
             <ChatListPage />
           </SplitterPanel>
-          <SplitterPanel className="flex align-items-center justify-content-center" size={75} minSize={500}>
+          <SplitterPanel size={75} minSize={55}>
             {selectedItem || selectedUser
               ? <ChatPage key={selectedItem?.id} />
               : <EmptyPanel />
