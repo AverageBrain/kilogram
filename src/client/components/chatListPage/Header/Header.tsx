@@ -1,5 +1,5 @@
 import { MenuOutlined, SearchOutlined } from '@ant-design/icons';
-import { Dropdown, Input, Layout, MenuProps } from 'antd';
+import { Dropdown, Input, Layout, MenuProps, Space } from 'antd';
 import React from 'react';
 
 import { useModal } from '../../../../hooks';
@@ -50,13 +50,12 @@ const Header: React.FC<Props> = ({ value, setSearchTerm, }) => {
             <MenuOutlined className="icon" />
           </Dropdown>
           <Input
-            allowClear
+            allowClear={true}
             className="search"
             variant="borderless"
-            placeholder="Поиск контактов"
+            placeholder="Поиск контактов..."
             value={value}
             onChange={e => setSearchTerm(e.target.value)}
-            prefix={<SearchOutlined style={ {color: '#516460' }}/>}
           />
       </HeaderAD>
 

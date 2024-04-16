@@ -4,6 +4,7 @@ import { observer } from 'mobx-react-lite';
 import { chatsStore, messagesStore } from '../../../stores';
 import { Message } from '../Message';
 import './InfiniteScroll.css';
+import { Spin } from 'antd';
 
 const InfiniteScroll: React.FC = () => {
   const { items, loadItems, loading } = messagesStore;
@@ -40,7 +41,13 @@ const InfiniteScroll: React.FC = () => {
     return (
       <div className="messages">
         {items.map((curMessage) => <Message key={curMessage.id} message={curMessage} />)}
-        <div ref={target}>{loading && 'Загрузка...'}</div>
+        <div className='loading-bar' ref={target}>
+          {loading && 
+            <div className='loading'>
+              <Spin />
+            </div>
+          }
+        </div>
       </div>
     );
 };

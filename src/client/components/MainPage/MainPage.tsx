@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Layout } from 'antd';
-import Splitter, { GutterTheme, SplitDirection } from '@devbookhq/splitter'
+import { Splitter, SplitterPanel } from 'primereact/splitter'
 import { observer } from 'mobx-react-lite';
 
 import { ChatListPage } from '../chatListPage';
@@ -39,19 +39,16 @@ const MainPage: React.FC = () => {
   return (
     <Layout style={{ height: "100vh" }}>
       <Content>
-        <Splitter
-          initialSizes={panelSizes}
-          direction={SplitDirection.Horizontal}
-          minWidths={[350, 500]}
-          gutterTheme={GutterTheme.Light}
-          draggerClassName="dragger"
-          onResizeFinished={handleResizeFinished}
-        >
-          <ChatListPage />
-          {selectedItem || selectedUser
-            ? <ChatPage key={selectedItem?.id} />
-            : <EmptyPanel />
-          }
+        <Splitter className='splitter'>
+          <SplitterPanel className="flex align-items-center justify-content-center" size={25} minSize={305}>
+            <ChatListPage />
+          </SplitterPanel>
+          <SplitterPanel className="flex align-items-center justify-content-center" size={75} minSize={500}>
+            {selectedItem || selectedUser
+              ? <ChatPage key={selectedItem?.id} />
+              : <EmptyPanel />
+            }
+          </SplitterPanel>
         </Splitter>
       </Content>
     </Layout>

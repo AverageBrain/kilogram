@@ -1,3 +1,7 @@
 .dragger {
   display: none;
 }
+
+.splitter {
+  height: 100vh;
+}
