@@ -16,17 +16,19 @@
       border-radius: 50%;
     }
   } 
-}
-
-.chat-list-item-meta {
-  padding: 10px;
-  cursor: pointer;
-
-  &:hover {
-    background-color: #ddf1f1;
+  
+  .chat-list-item-meta {
+    padding: 10px;
+    cursor: pointer;
+  
+    &:hover {
+      background-color: #ddf1f1;
+    }
   }
+  
+  .chat-list-item-meta-active {
+    background-color: #00CCC940 !important;
+  }
+  
 }
 
-.chat-list-item-meta-active {
-  background-color: #00CCC940 !important;
-}

@@ -9,17 +9,17 @@ import { UserType } from '../../../types';
 type Props = {
   user: UserType;
   isOpenModal: boolean;
-  toggle: () => void;
+  closeModal: () => void;
 }
 
-export const Profile: React.FC<Props> = ( { user, isOpenModal, toggle } ) => {
+export const Profile: React.FC<Props> = ( { user, isOpenModal, closeModal } ) => {
   return (
     <Modal 
       isOpen={isOpenModal} 
-      onRequestClose={toggle}
+      onRequestClose={closeModal}
       closeTimeoutMS={500}>
         <div className={'profile-modal'}>
-          <ProfileHeader toggle={toggle}/>
+          <ProfileHeader toggle={closeModal}/>
           <MainInfo user={user}/>
           <AdditionalInfo user={user} />
 

@@ -28,7 +28,7 @@ const ChatHeader: React.FC = () => {
           </div>
         </HeaderAD>
 
-        <Profile user={curUser} isOpenModal={isOpenModal} toggle={closeModal} />
+        <Profile user={curUser} isOpenModal={isOpenModal} closeModal={closeModal} />
       </>
     )
     : <></>;
