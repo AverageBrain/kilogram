@@ -12,7 +12,7 @@ export const MainInfo: React.FC<Props> = ({ user }) => {
   return (
     <div className='main-info'>
       <div className='avatar'>
-        <Avatar user={user} />
+        <Avatar userId={user.id} size={80} />
       </div>
       <div className='text-info'>
         <span className='name'>{user.name}</span>

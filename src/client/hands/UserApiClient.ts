@@ -19,8 +19,8 @@ class UserApiClient extends BaseApiClient {
         return this.axiosGet('user/users');
     }
 
-    getAvatar(username: string): Promise<any> {
-        return this.axiosGet('user/avatar/' + username);
+    getAvatar(id: number): Promise<any> {
+        return this.axiosGet('user/avatar/' + id);
     }
 }
 

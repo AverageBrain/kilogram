@@ -113,15 +113,12 @@ export class UserController {
         return result === null ? response.sendStatus(400) : response.sendStatus(200)
     }
 
-    @Get("/avatar/:username")
+    @Get("/avatar/:id")
     async getAvatar(
         @Res() response: express.Response,
-        @Param("username") username: string,
+        @Param("id") id: number,
     ) {
-        if (!username) {
-            throw new Error("Username required")
-        }
-        const byte64Avatar = await UserAvatarService.getAvatar(username)
+        const byte64Avatar = await UserAvatarService.getAvatar(id)
         const avatar = Buffer.from(byte64Avatar, 'base64').toString()
 
         return response.set('Content-Type', 'image/svg+xml').send(avatar)

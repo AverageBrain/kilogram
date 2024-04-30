@@ -71,10 +71,10 @@ const UsersList: React.FC<Props> = ({
                   count={<CheckCircleFilled style={{ color: '#FF686B' }} />}
                   offset={[0, 35]}
                 >
-                  <Avatar user={user} />
+                  <Avatar userId={user.id} />
                 </Badge>
               )
-              : <Avatar user={user} />}
+              : <Avatar userId={user.id} />}
             title={user.name}
             description={user.lastSeen? user.lastSeen : 'был в сети недавно'}
           />

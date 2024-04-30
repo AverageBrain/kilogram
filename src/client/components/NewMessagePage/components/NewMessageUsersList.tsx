@@ -71,7 +71,7 @@ export const NewMessageUsersList: React.FC<Props> = ({ searchTerm, setSearchTerm
         >
           <List.Item.Meta
             className={'chat-list-item-meta'}
-            avatar={<Avatar user={user} />}
+            avatar={<Avatar userId={user.id} />}
             title={user.name}
             description={user.lastSeen? user.lastSeen : 'был в сети недавно'}
           />

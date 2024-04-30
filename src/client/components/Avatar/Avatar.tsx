@@ -6,16 +6,19 @@ import { userApiClient } from '../../hands';
 import './Avatar.css';
 
 type Props = {
-  user: UserType;
+  userId: number;
+  size?: number;
 }
 
-// TODO: подумать, как не загружать постоянно аватарки
-const Avatar: React.FC<Props> = ({ user }) => {
+// TODO: подумать, как не загружать постоянно аватарки, тк, например, для каждого сообщения не загружать заново
+const Avatar: React.FC<Props> = ({ userId, size }) => {
   const [ photoStatus, setPhotoStatus ] = useState('loading');
   const [ image, setImage ] = useState('');
 
+  const avatarSize = size ?? 40;
+
   useEffect(() => {
-    userApiClient.getAvatar(user.username)
+    userApiClient.getAvatar(userId)
       .then(response => {
         setImage(response);
         setPhotoStatus('loaded');
@@ -29,11 +32,11 @@ const Avatar: React.FC<Props> = ({ user }) => {
 
   return (
 // TODO: настроить hitboxes
-    <>
-      {photoStatus === 'loading' && <div style={{ width: '40px', height: '40px' }}><Spin /></div>}
+    <div style={{ width: avatarSize, height: avatarSize }}>
+      {photoStatus === 'loading' && <Spin />}
       {photoStatus === 'loaded' && <img src={`data:image/svg+xml;utf8,${encodeURIComponent(image)}`} />}
-      {photoStatus === 'error-occurred' && <AvatarD icon={<UserOutlined />} />}
-    </>
+      {photoStatus === 'error-occurred' && <AvatarD icon={<UserOutlined />} size={avatarSize} />}
+    </div>
   );
 }
 

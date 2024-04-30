@@ -4,5 +4,8 @@ export type {
   ChatListItemType,
   ChatType,
   DelayMessageType,
-  TypeOfChat,
+} from './types';
+
+export {
+  TypeOfChat
 } from './types';
