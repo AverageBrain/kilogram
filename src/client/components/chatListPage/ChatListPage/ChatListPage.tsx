@@ -4,6 +4,7 @@ import { Layout } from 'antd';
 import { Header } from '../Header';
 import { ChatList } from '../ChatList';
 import './ChatListPage.css';
+import { NewChatButton } from '../NewChatButton/NewChatButton';
 
 const ChatListPage: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState('');
@@ -12,6 +13,7 @@ const ChatListPage: React.FC = () => {
     <Layout className='main'>
         <Header value={searchTerm} setSearchTerm={setSearchTerm}/>
         <ChatList searchTerm={searchTerm} setSearchTerm={setSearchTerm}/>
+        <NewChatButton />
     </Layout>
   );
 };

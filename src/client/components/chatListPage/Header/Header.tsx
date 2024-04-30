@@ -59,7 +59,7 @@ const Header: React.FC<Props> = ({ value, setSearchTerm, }) => {
           />
       </HeaderAD>
 
-      {selectedItem && <Profile user={selectedItem} isOpenModal={isOpenModal} toggle={closeModal} />}
+      {selectedItem && <Profile user={selectedItem} isOpenModal={isOpenModal} closeModal={closeModal} />}
     </>
   );
 };
