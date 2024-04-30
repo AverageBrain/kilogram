@@ -1,4 +1,5 @@
 import React from 'react';
+import { observer } from 'mobx-react-lite';
 import { useFormik } from 'formik';
 import Modal from 'react-modal';
 import { CloseOutlined } from '@ant-design/icons';
@@ -15,7 +16,7 @@ type Props = {
 }
 
 const NewGroupModal: React.FC<Props> = ({ isOpenModal, closeModal }) => {
-  const { createGroup } = chatsStore;
+  const { loadItems, createGroup, updateGroups } = chatsStore;
 
   const {
     values,
@@ -29,6 +30,7 @@ const NewGroupModal: React.FC<Props> = ({ isOpenModal, closeModal }) => {
       await createGroup(values.userIds, values.name);
       closeModal();
       resetForm();
+      await loadItems();
     },
   });
 
@@ -55,4 +57,4 @@ const NewGroupModal: React.FC<Props> = ({ isOpenModal, closeModal }) => {
   );
 };
 
-export default NewGroupModal;
+export default observer(NewGroupModal);

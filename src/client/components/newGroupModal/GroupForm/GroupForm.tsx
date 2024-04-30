@@ -1,12 +1,10 @@
 import React, { useState } from 'react';
 import { FormikErrors } from 'formik';
 
-import { Avatar, Input, Space } from 'antd';
+import { Avatar, Input } from 'antd';
 import { GroupFormType } from '../../../types';
-import { useDebounce } from '../../../../hooks';
 import './GroupForm.css';
 
-import { NewMessageUserSearch } from '../../NewMessagePage/components/NewMessageUserSearch';
 import UsersList from '../UsersList';
 
 type Props = {

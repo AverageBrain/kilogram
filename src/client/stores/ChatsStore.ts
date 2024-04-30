@@ -19,6 +19,7 @@ class ChatsStore extends BaseStore<ChatType> {
             setSelectedChat: action.bound,
             updateChats: action.bound,
             createGroup: action.bound,
+            updateGroups: action.bound,
         });
     }
 
@@ -98,6 +99,12 @@ class ChatsStore extends BaseStore<ChatType> {
           this.items = [updatedChat, ...otherChats];
         });
       }
+    }
+
+    async updateGroups(chat: ChatType) {
+      runInAction(() => {
+        this.items = [chat, ...this.items];
+      });
     }
 }
 

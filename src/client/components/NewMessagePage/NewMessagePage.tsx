@@ -12,6 +12,7 @@ type Props = {
 
 export const NewMessagePage: React.FC<Props> = ({ isOpenModal, closeModal }) =>  (
   <Modal 
+    className="modal"
     isOpen={isOpenModal} 
     onRequestClose={closeModal}
     closeTimeoutMS={500}>

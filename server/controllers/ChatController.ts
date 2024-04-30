@@ -271,6 +271,7 @@ export class ChatController {
                 id: chat.id,
                 createdAt: chat.createdAt,
                 updatedAt: chat.updatedAt,
+                name: chat.name,
                 users: othersUserChat.map(i => convertPrismaUser(i.user)),
                 messages: chat.messages.map(i => convertPrismaMessage(i, i.reactions)) as types.MessageType[],
                 type: chat.type,
