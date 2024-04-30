@@ -1,0 +1,14 @@
+.input {
+  border-bottom: 2px solid #FF686B;
+}
+
+.search-bar {
+  padding: 0 16px 10px 16px;
+  
+  .search {
+    padding: 5px 15px !important;
+    background-color: #F2F2F2 !important;
+    border-radius: 16px !important;
+    height: 32px;
+  }
+}

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { memo, useEffect, useState } from 'react';
 import { UserType } from '../../../types';
 import { Avatar as AvatarD, Spin } from 'antd';
 import { UserOutlined } from '@ant-design/icons';
@@ -9,7 +9,8 @@ type Props = {
   user: UserType;
 }
 
-export const Avatar: React.FC<Props> = ({ user }) => {
+// TODO: подумать, как не загружать постоянно аватарки
+const Avatar: React.FC<Props> = ({ user }) => {
   const [ photoStatus, setPhotoStatus ] = useState('loading');
   const [ image, setImage ] = useState('');
 
@@ -27,10 +28,13 @@ export const Avatar: React.FC<Props> = ({ user }) => {
   }, [])
 
   return (
+// TODO: настроить hitboxes
     <>
-      {photoStatus === 'loading' && <Spin />}
+      {photoStatus === 'loading' && <div style={{ width: '40px', height: '40px' }}><Spin /></div>}
       {photoStatus === 'loaded' && <img src={`data:image/svg+xml;utf8,${encodeURIComponent(image)}`} />}
       {photoStatus === 'error-occurred' && <AvatarD icon={<UserOutlined />} />}
     </>
   );
 }
+
+export default memo(Avatar);

@@ -18,6 +18,7 @@ class ChatsStore extends BaseStore<ChatType> {
             createChat: action.bound,
             setSelectedChat: action.bound,
             updateChats: action.bound,
+            createGroup: action.bound,
         });
     }
 
@@ -42,6 +43,21 @@ class ChatsStore extends BaseStore<ChatType> {
         this.enableLoading();
       
         const data = await chatApiClient.createChat(userId);
+        runInAction(() => {
+          this.selectedItem = data;
+        });
+      } catch (e: any) {
+        console.warn(e);
+      } finally {
+        this.disableLoading();
+      }
+    }
+
+    async createGroup(userIds: number[], name: string): Promise<void> {
+      try {
+        this.enableLoading();
+      
+        const data = await chatApiClient.createGroup(userIds, name);
         runInAction(() => {
           this.selectedItem = data;
         });

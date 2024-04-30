@@ -28,6 +28,27 @@ export class UserController {
         return {};
     }
 
+    @Get("/users")
+    async getUsers(
+        @Req() request: express.Request,
+    ): Promise<types.UserType[]> {
+        const sessionUser = request.user?.prismaUser
+        if (!sessionUser) {
+            throw new Error("User must be authorized")
+        }
+
+        const users: User[] = await prisma.user.findMany({
+            where: {
+                NOT: {
+                    id: {
+                        equals: sessionUser.id,
+                    }
+                }
+            }
+        });
+        return users.map(i => convertPrismaUser(i));
+    }
+
     @Post("/edit")
     async editMe(@Req() request: express.Request, @BodyParam("user") user: types.UserType): Promise<types.UserType> {
         const sessionUser = request.user

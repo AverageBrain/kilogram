@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { UserType } from '../../../../types';
 import './MainInfo.css'
 import { Avatar } from '../../Avatar';

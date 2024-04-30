@@ -30,6 +30,7 @@ export const NewMessageUsersList: React.FC<Props> = ({ searchTerm, setSearchTerm
     () => {
       if (debouncedSearchTerm) {
         setIsSearcing('proccesing');
+        // TODO: переписать на стор
         userApiClient.findUsers(debouncedSearchTerm).then(results => {
           setIsSearcing('found');
 

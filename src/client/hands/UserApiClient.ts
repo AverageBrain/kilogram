@@ -4,15 +4,19 @@ import express from 'express';
 
 class UserApiClient extends BaseApiClient {
     getMe(): Promise<UserType> {
-        return this.axiosGet<UserType>("/user/me")
+        return this.axiosGet<UserType>('/user/me');
     }
 
     editMe(user: UserType): Promise<UserType> {
-        return this.axiosPost('/user/edit', user)
+        return this.axiosPost('/user/edit', user);
     }
 
     findUsers(prefix: string): Promise<UserType[]> {
         return this.axiosGet('user/users/find/' + prefix);
+    }
+
+    getUsers(): Promise<UserType[]> {
+        return this.axiosGet('user/users');
     }
 
     getAvatar(username: string): Promise<any> {
