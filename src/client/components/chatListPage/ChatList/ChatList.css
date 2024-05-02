@@ -20,9 +20,18 @@
   .chat-list-item-meta {
     padding: 10px;
     cursor: pointer;
+    height: 68px;
   
     &:hover {
       background-color: #ddf1f1;
+    }
+
+    p {
+      margin: 0;
+
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
     }
   }
   

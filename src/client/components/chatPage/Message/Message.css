@@ -8,10 +8,11 @@
   border: none;
   background-color: white;
   display: flex;
-}
 
-.text {
-  color: #516460;
+  p {
+    color: #516460;
+    margin-bottom: 0;
+  }
 }
 
 .timestep {

@@ -7,7 +7,7 @@
   }
 }
 
-.send-message button {
+.send-button {
   align-self: center;
   border: none;
   font-size: 24px;
@@ -19,12 +19,5 @@
   &:hover {
     color: #06A191;
   }
-}
-
-.send-message textarea {
-  margin-right: 5px;
-  resize: none;
-  border: none;
-  padding: 10px;
 }
 

@@ -40,7 +40,7 @@ const Chats: React.FC<Props> = ({ setSearchTerm }) => {
             className={clsx('chat-list-item-meta', chat.id === selectedItem?.id && 'chat-list-item-meta-active')}
             avatar={<Avatar user={chat.users[0]} />}
             title={chat.users[0].name}
-            description={chat.messages.length > 0 ? chat.messages[0].text : 'У вас нет сообщений'}
+            description={chat.messages.length > 0 ? <div dangerouslySetInnerHTML={{ __html:  chat.messages[0].text }} /> : 'У вас нет сообщений'}
           />
         </List.Item>
       )}
