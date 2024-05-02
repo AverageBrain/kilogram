@@ -50,9 +50,14 @@ const NewGroupModal: React.FC<Props> = ({ isOpenModal, closeModal }) => {
           <div className="icon" onClick={handleClose}><CloseOutlined /></div>
         </header>
         <GroupForm values={values} setFieldValue={setFieldValue} />
-        <Button className="modal-button" type="text" size="large" onClick={submitForm}>
-          Сохранить
-        </Button>
+        <footer>
+          <Button className="modal-button" type="text" size="large" onClick={handleClose}>
+            Отменить
+          </Button>
+          <Button className="modal-button" type="text" size="large" onClick={submitForm}>
+            Сохранить
+          </Button>
+        </footer>
     </Modal>
   );
 };

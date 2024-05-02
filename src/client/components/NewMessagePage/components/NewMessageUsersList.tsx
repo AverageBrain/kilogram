@@ -49,6 +49,7 @@ export const NewMessageUsersList: React.FC<Props> = ({ searchTerm, setSearchTerm
     if (chat) {
       setSelectedChat(chat);
       closeModal();
+      console.log(chat);
       await loadItems(chat.id);
     } else {
       setSelectedUser(user);

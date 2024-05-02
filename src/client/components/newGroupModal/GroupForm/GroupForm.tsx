@@ -6,6 +6,7 @@ import { GroupFormType } from '../../../types';
 import './GroupForm.css';
 
 import UsersList from '../UsersList';
+import clsx from 'clsx';
 
 type Props = {
   values: GroupFormType,
@@ -17,10 +18,19 @@ type Props = {
 }
 
 const GroupForm: React.FC<Props> = ({ values, setFieldValue }) =>  {
-  const [searchTerm, setSearchTerm] = useState('');
+  const [ searchTerm, setSearchTerm ] = useState('');
+  const [ isInputFocused, setIsInputFocused] = useState(false);
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setFieldValue('name', event.target.value);
+  }
+
+  const handleFocus = () => {
+    setIsInputFocused(true);
+  }
+  
+  const handleBlur = () => {
+    setIsInputFocused(false);
   }
 
   return (
@@ -29,29 +39,32 @@ const GroupForm: React.FC<Props> = ({ values, setFieldValue }) =>  {
         <div className="avatar">
           <Avatar />
         </div>
-        <div className="text-info">
-          <span className="input">
-            <Input
-              size="large"
-              variant="borderless"
-              placeholder="Введите название"
-              value={values.name}
-              onChange={handleChange}
-            />
-          </span>
+        <div className="name-input">
+          <div className={clsx("background-box", isInputFocused ? "input-focus": "")}>
+            <div className="input-wrapper">
+              <Input
+                size="large"
+                variant="borderless"
+                placeholder="Введите название группы"
+                value={values.name}
+                onChange={handleChange}
+                onFocus={handleFocus}
+                onBlur={handleBlur}
+              />
+            </div>
+          </div>
+         
         </div>
       </div>
-      <div className="additional-info">
-        <div className="search-bar">
-          <Input
-            allowClear
-            className="search"
-            variant="borderless"
-            placeholder="Поиск контактов..."
-            value={searchTerm}
-            onChange={e => setSearchTerm(e.target.value)}
-          />
-        </div>
+      <div className="search-bar">
+        <Input
+          allowClear
+          className="search"
+          variant="borderless"
+          placeholder="Поиск контактов..."
+          value={searchTerm}
+          onChange={e => setSearchTerm(e.target.value)}
+        />
       </div>
       <UsersList
         searchTerm={searchTerm} 
