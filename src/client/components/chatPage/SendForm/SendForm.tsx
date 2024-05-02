@@ -46,9 +46,12 @@ const SendMessage: React.FC = () => {
   };
 
   return (
-    <Form className="send-message">
+    <div className="send-message">
       <Editor
         stripPastedStyles
+        wrapperClassName="wrapper-class"
+        toolbarClassName="toolbar-class"
+        editorClassName="editor-class"
         placeholder="Введите сообщение..."
         editorState={editorState}
         onEditorStateChange={setEditorState}
@@ -58,8 +61,12 @@ const SendMessage: React.FC = () => {
             options: ['bold', 'italic', 'underline', 'strikethrough', 'monospace'],
           },
           emoji: {
+            popupClassName: 'popover-class',
             emojis: ['☠️', '❤️', '😩'],
           },
+          link: {
+            popupClassName: 'popover-class',
+          }
         }}
         localization={{
           locale: 'ru',
@@ -72,7 +79,7 @@ const SendMessage: React.FC = () => {
             <SendOutlined />
           </button>
       )}
-    </Form>
+    </div>
   );
 };
 

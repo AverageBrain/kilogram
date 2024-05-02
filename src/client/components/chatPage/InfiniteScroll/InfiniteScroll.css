@@ -1,7 +1,7 @@
 .messages {
     /* max-height: 679px; */
     overflow: scroll;
-    
+
     .loading-bar {
         display: flex;
         justify-content: center;

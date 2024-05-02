@@ -1,6 +1,8 @@
 .send-message {
   display: flex;
+  /* height: fit-content; */
   background-color: white;
+  /* margin-bottom: 37px; */
 
   ::-webkit-scrollbar {
     display: none;
@@ -15,9 +17,44 @@
   background: none;
 
   cursor: pointer;
+  margin-bottom: -50px;
+  width: 60px;
 
   &:hover {
     color: #06A191;
   }
 }
 
+.wrapper-class {
+  width: 100%;
+}
+
+.toolbar-class {
+  border: none !important;
+}
+
+.editor-class {
+  padding: 10px;
+  min-height: 90px;
+  max-height: 90px;
+
+  overflow-y: scroll;
+  ::-webkit-scrollbar {
+    display: none;
+  }
+
+  div {
+    margin-top: 0;
+  }
+
+  span {
+    word-break: break-all;
+  }
+}
+
+.popover-class {
+  box-sizing: content-box;
+  transform: scale(1) translateY(-100%);
+  transform-origin: 1em 0% 0px;
+  top: 0%;
+}
