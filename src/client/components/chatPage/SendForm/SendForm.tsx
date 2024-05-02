@@ -12,7 +12,11 @@ import { chatsStore, messagesStore, userStore } from '../../../stores';
 import { chatApiClient } from '../../../hands';
 import './SendForm.css';
 
-const SendMessage: React.FC = () => {
+type Props = {
+  scrollRef: React.RefObject<HTMLDivElement>;
+};
+
+const SendMessage: React.FC<Props> = ({ scrollRef }) => {
   const { sendMessage, loading } = messagesStore;
   const { selectedItem: chat, setSelectedChat } = chatsStore;
   const { selectedUser: user, setSelectedUser } = userStore;
@@ -36,14 +40,12 @@ const SendMessage: React.FC = () => {
     }
 
     setEditorState(EditorState.createEmpty());
+  
+    scrollRef?.current?.scrollTo({
+      top: scrollRef.current.scrollHeight,
+      behavior: "smooth"
+    });
   }
-
-  const handleEnter = (e: React.KeyboardEvent<Element>) => {
-    if (e.key === 'Enter' && !e.shiftKey) {
-      e.preventDefault();
-      handleSubmit();
-    }
-  };
 
   return (
     <div className="send-message">
@@ -62,7 +64,6 @@ const SendMessage: React.FC = () => {
           },
           emoji: {
             popupClassName: 'popover-class',
-            emojis: ['☠️', '❤️', '😩'],
           },
           link: {
             popupClassName: 'popover-class',

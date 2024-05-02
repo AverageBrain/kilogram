@@ -10,6 +10,8 @@ import { messagesStore } from '../../../stores';
 const ChatPage: React.FC = () => {
   const { resetItems } = messagesStore;
 
+  const scrollRef = React.useRef<HTMLDivElement>(null);
+
   useEffect(() => () => {
     resetItems();
   });
@@ -17,8 +19,8 @@ const ChatPage: React.FC = () => {
   return (
     <div className="chat">
       <ChatHeader />
-      <InfiniteScroll />
-      <SendForm />
+      <InfiniteScroll scrollRef={scrollRef} />
+      <SendForm scrollRef={scrollRef} />
     </div>
   );
 };

@@ -1,8 +1,6 @@
 .send-message {
   display: flex;
-  /* height: fit-content; */
   background-color: white;
-  /* margin-bottom: 37px; */
 
   ::-webkit-scrollbar {
     display: none;
@@ -17,7 +15,6 @@
   background: none;
 
   cursor: pointer;
-  margin-bottom: -50px;
   width: 60px;
 
   &:hover {

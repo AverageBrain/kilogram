@@ -1,6 +1,8 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect } from 'react';
 import { isEmpty } from 'lodash';
+import moment from 'moment';
+import 'moment/locale/ru';
 import { Spin } from 'antd';
 import { observer } from 'mobx-react-lite';
 
@@ -16,7 +18,8 @@ const App: React.FC = () => {
 
   useEffect(() => {
     loadSelectedItem();
-  } ,[]);
+    moment.locale('ru');
+} ,[]);
 
   return (
     loading
