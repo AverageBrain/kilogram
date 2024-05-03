@@ -1,4 +1,5 @@
 import { UserType, ChatType } from '../types';
+import { TypeOfChat } from '../types/types';
 import { users } from './users'
 
 export const findUserById = (id: number): UserType => {
@@ -15,7 +16,8 @@ export const chats: ChatType[] = [
     createdAt: new Date('2024-03-30T12:38:31'),
     updatedAt: new Date('2024-03-30T12:38:31'),
     users: [findUserById(2)],
-    type: 'chat',
+    name: 'test1',
+    type: TypeOfChat.Chat,
     messages: [
       {
         id: 10,
@@ -48,7 +50,8 @@ export const chats: ChatType[] = [
     createdAt: new Date('2024-03-30T12:38:31'),
     updatedAt: new Date('2024-03-30T12:38:31'),
     users: [findUserById(1)],
-    type: 'chat',
+    name: 'test2',
+    type: TypeOfChat.Chat,
     messages: [
       {
         id: 13,
@@ -81,7 +84,8 @@ export const chats: ChatType[] = [
     createdAt: new Date('2024-03-30T12:38:31'),
     updatedAt: new Date('2024-03-30T12:38:31'),
     users: [findUserById(3)],
-    type: 'chat',
+    name: 'test3',
+    type: TypeOfChat.Chat,
     messages: [
       {
         id: 13,

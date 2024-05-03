@@ -10,18 +10,15 @@ type Props = {
   closeModal: () => void;
 }
 
-export const NewMessagePage: React.FC<Props> = ({ isOpenModal, closeModal }) => {
-
-  return (
-    <Modal 
-      isOpen={isOpenModal} 
-      onRequestClose={closeModal}
-      closeTimeoutMS={500}>
-        <div className={'new-message-page'}>
-          <NewMessagePageHeader closeModal={closeModal} isOpenModal={isOpenModal}/>
-          <NewMessageMain closeModal={closeModal}/>
-
-        </div>
-    </Modal>
-  );
-};
+export const NewMessagePage: React.FC<Props> = ({ isOpenModal, closeModal }) =>  (
+  <Modal 
+    className="modal"
+    isOpen={isOpenModal} 
+    onRequestClose={closeModal}
+    closeTimeoutMS={500}>
+      <div className="new-message-page">
+        <NewMessagePageHeader closeModal={closeModal} isOpenModal={isOpenModal}/>
+        <NewMessageMain closeModal={closeModal}/>
+      </div>
+  </Modal>
+);

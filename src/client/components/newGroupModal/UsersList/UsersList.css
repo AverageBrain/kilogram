@@ -1,0 +1,8 @@
+.users-list {
+  overflow-y: scroll;
+  flex-grow: 2;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}

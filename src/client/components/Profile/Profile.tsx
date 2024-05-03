@@ -18,11 +18,10 @@ export const Profile: React.FC<Props> = ( { user, isOpenModal, closeModal } ) =>
       isOpen={isOpenModal} 
       onRequestClose={closeModal}
       closeTimeoutMS={500}>
-        <div className={'profile-modal'}>
+        <div className="profile-modal">
           <ProfileHeader toggle={closeModal}/>
           <MainInfo user={user}/>
           <AdditionalInfo user={user} />
-
         </div>
     </Modal>
   );

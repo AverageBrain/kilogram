@@ -5,3 +5,7 @@ export type {
   ChatType,
   DelayMessageType,
 } from './types';
+
+export {
+  TypeOfChat
+} from './types';

@@ -6,6 +6,7 @@ import { FaUser, FaUsers } from "react-icons/fa";
 import './NewChatButton.css';
 import clsx from 'clsx';
 import { NewMessagePage } from '../../NewMessagePage';
+import NewGroupModal from '../../newGroupModal';
 import { useModal } from '../../../../hooks';
 
 export const NewChatButton: React.FC = () => {
@@ -13,13 +14,13 @@ export const NewChatButton: React.FC = () => {
   const [ firstTime, setFirstTime ] = useState(true);
 
   const { 
-    isOpenModal: isNewMessageModal, 
+    isOpenModal: isOpenNewMessageModal, 
     showModal: showNewMessageModal, 
     closeModal: closeNewMessageModal 
   } = useModal();
 
   const { 
-    isOpenModal: isNewgroupModal, 
+    isOpenModal: isOpenNewGroupModal, 
     showModal: showNewGroupModal, 
     closeModal: closeNewGroupModal 
   } = useModal();
@@ -34,6 +35,11 @@ export const NewChatButton: React.FC = () => {
     showNewMessageModal();
   }
 
+  const handleNewGroupClick = () => {
+    setIsClicked(false); 
+    showNewGroupModal();
+  }
+
   return (
     <div className='new-chat-buttons'>
       { !firstTime && 
@@ -43,7 +49,7 @@ export const NewChatButton: React.FC = () => {
             <FaUser size={20}/>
           </div>
           <div className={clsx('extra-buttons', 'new-group', isClicked ? 'show-new-group-button' : 'hide-new-group-button')}
-              >
+              onClick={handleNewGroupClick}>
             <FaUsers size={20}/>
           </div>
         </>
@@ -54,7 +60,8 @@ export const NewChatButton: React.FC = () => {
           <HiPencil className={clsx('pencil', !firstTime && 'rotate')} size={25}/>
         }
       </div>
-      <NewMessagePage isOpenModal={isNewMessageModal} closeModal={closeNewMessageModal} />
+      <NewMessagePage isOpenModal={isOpenNewMessageModal} closeModal={closeNewMessageModal} />
+      <NewGroupModal isOpenModal={isOpenNewGroupModal} closeModal={closeNewGroupModal} />
     </div>
   );
 };

@@ -8,7 +8,7 @@ import {UserService} from "../services/UserService";
 import {convertPrismaUser} from "./UserController";
 import {getIdCondition, groupBy} from "../utils";
 import {makeRandomString} from "../utils/makeid";
-import {MessageReactionType} from "../../src/types/types";
+import {MessageReactionType, TypeOfChat} from "../../src/types/types";
 
 
 const chatService = new ChatService()
@@ -158,8 +158,9 @@ export class ChatController {
             id: chat.id,
             messages: [],
             updatedAt: chat.updatedAt,
+            name: toUser.name,
             users: [convertPrismaUser(toUser)],
-            type: 'chat'
+            type: TypeOfChat.Chat,
         }
     }
 
@@ -167,7 +168,8 @@ export class ChatController {
     async createGroup(
         @Req() request: express.Request,
         @BodyParam('createGroup') createGroup: {
-            userIds: number[]
+            userIds: number[];
+            name: string;
         }
     ): Promise<types.ChatType> {
         const user = request.user?.prismaUser
@@ -177,23 +179,27 @@ export class ChatController {
 
         createGroup.userIds = createGroup.userIds.filter(i => i != user.id)
         const toUsers = await userService.getUsersById(createGroup.userIds)
-        const group = await prisma.chat.create({data: {type: 'group', joinKey: makeRandomString(20)}})
+        const group = await prisma.chat.create({
+            data: { type: TypeOfChat.Group, name: createGroup.name, joinKey: makeRandomString(20) }
+        });
 
         const createManyUserChat = toUsers.map((user) =>
             prisma.userChat.create({
                 data: {userId: user.id, chatId: group.id},
             }),
         )
-        await Promise.all(createManyUserChat)
+        await Promise.all(createManyUserChat);
+        await prisma.userChat.create({data: {userId: user.id, chatId: group.id}});
 
         return {
             createdAt: group.createdAt,
             id: group.id,
             messages: [],
+            name: group.name,
             updatedAt: group.updatedAt,
             users: toUsers.filter(i => i.id != user.id).map(i => convertPrismaUser(i)),
             joinKey: group.joinKey ? group.joinKey : undefined,
-            type: 'group'
+            type: TypeOfChat.Group,
         }
     }
 
@@ -224,9 +230,10 @@ export class ChatController {
             id: group.id,
             messages: [],
             updatedAt: group.updatedAt,
+            name: group.name,
             users: alreadyUsersChat.map(i => convertPrismaUser(i.user)),
             joinKey: group.joinKey ? group.joinKey : undefined,
-            type: 'group'
+            type: TypeOfChat.Group,
         }
     }
 
@@ -264,6 +271,7 @@ export class ChatController {
                 id: chat.id,
                 createdAt: chat.createdAt,
                 updatedAt: chat.updatedAt,
+                name: chat.name,
                 users: othersUserChat.map(i => convertPrismaUser(i.user)),
                 messages: chat.messages.map(i => convertPrismaMessage(i, i.reactions)) as types.MessageType[],
                 type: chat.type,
