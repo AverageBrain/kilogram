@@ -14,6 +14,14 @@
     margin-bottom: 0;
     word-break: break-all;
   }
+
+  img {
+    height: 100%;
+    width: 100%;
+    display: block;
+    border-radius: 50%;
+  }
+  
 }
 
 .timestep {
@@ -41,4 +49,6 @@
   align-items: flex-end;
 
   padding: 5px;
+
+  /* TODO очень много раз повторяется */
 }
