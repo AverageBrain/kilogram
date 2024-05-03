@@ -37,9 +37,15 @@ export type ChatListItemType = BaseItemType & {
   lastMessage: string;
 }
 
+export enum TypeOfChat {
+  Chat = 'chat',
+  Group = 'group',
+}
+
 export type ChatType = BaseItemType & {
+  name: string;
   users: UserType[]; // users not contains self user
-  joinKey?: String; // only for group
+  joinKey?: string; // only for group
   messages: MessageType[];
-  type: 'chat' | 'group';
+  type: TypeOfChat;
 }

@@ -31,7 +31,7 @@
   color: #516460;
 
   header {
-    padding: 20px;
+    padding: 16px 20px;
     display: flex;
     flex-direction: row;
     justify-content: space-between;

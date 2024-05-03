@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { UserType } from '../../../../types';
 import './MainInfo.css'
 import { Avatar } from '../../Avatar';
@@ -12,7 +12,7 @@ export const MainInfo: React.FC<Props> = ({ user }) => {
   return (
     <div className='main-info'>
       <div className='avatar'>
-        <Avatar user={user} />
+        <Avatar userId={user.id} size={80} />
       </div>
       <div className='text-info'>
         <span className='name'>{user.name}</span>

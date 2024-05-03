@@ -5,6 +5,7 @@ import { chatsStore, messagesStore } from '../../../stores';
 import { Message } from '../Message';
 import './InfiniteScroll.css';
 import { Spin } from 'antd';
+import { TypeOfChat } from '../../../../types';
 
 type Props = {
   scrollRef: React.RefObject<HTMLDivElement>;
@@ -43,7 +44,13 @@ const InfiniteScroll: React.FC<Props> = ({ scrollRef }) => {
 
     return (
       <div ref={scrollRef} className="messages">
-        {items.map((curMessage) => <Message key={curMessage.id} message={curMessage} />)}
+        {items.map((curMessage) => (
+          <Message
+            key={curMessage.id}
+            message={curMessage}
+            isGroup={chat?.type === TypeOfChat.Group}
+          />
+        ))}
         <div className='loading-bar' ref={target}>
           {loading && 
             <div className='loading'>

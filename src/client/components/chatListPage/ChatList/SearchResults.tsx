@@ -50,7 +50,7 @@ const SearchResults: React.FC<Props> = ({ setSearchTerm, isSearching, results })
         >
           <List.Item.Meta
             className={clsx('chat-list-item-meta', user.id === selectedItem?.id && 'chat-list-item-meta-active')}
-            avatar={<Avatar user={user} />}
+            avatar={<Avatar userId={user.id} />}
             title={user.name}
             description={user.username}
           />

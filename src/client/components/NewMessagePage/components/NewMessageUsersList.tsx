@@ -30,6 +30,7 @@ export const NewMessageUsersList: React.FC<Props> = ({ searchTerm, setSearchTerm
     () => {
       if (debouncedSearchTerm) {
         setIsSearcing('proccesing');
+        // TODO: переписать на стор
         userApiClient.findUsers(debouncedSearchTerm).then(results => {
           setIsSearcing('found');
 
@@ -48,6 +49,7 @@ export const NewMessageUsersList: React.FC<Props> = ({ searchTerm, setSearchTerm
     if (chat) {
       setSelectedChat(chat);
       closeModal();
+      console.log(chat);
       await loadItems(chat.id);
     } else {
       setSelectedUser(user);
@@ -70,7 +72,7 @@ export const NewMessageUsersList: React.FC<Props> = ({ searchTerm, setSearchTerm
         >
           <List.Item.Meta
             className={'chat-list-item-meta'}
-            avatar={<Avatar user={user} />}
+            avatar={<Avatar userId={user.id} />}
             title={user.name}
             description={user.lastSeen? user.lastSeen : 'был в сети недавно'}
           />

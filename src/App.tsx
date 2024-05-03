@@ -21,6 +21,8 @@ const App: React.FC = () => {
     moment.locale('ru');
 } ,[]);
 
+  moment.locale('ru');
+
   return (
     loading
       ? <Spin />

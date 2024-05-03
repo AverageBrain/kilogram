@@ -18,6 +18,8 @@ class ChatsStore extends BaseStore<ChatType> {
             createChat: action.bound,
             setSelectedChat: action.bound,
             updateChats: action.bound,
+            createGroup: action.bound,
+            updateGroups: action.bound,
         });
     }
 
@@ -52,6 +54,21 @@ class ChatsStore extends BaseStore<ChatType> {
       }
     }
 
+    async createGroup(userIds: number[], name: string): Promise<void> {
+      try {
+        this.enableLoading();
+      
+        const data = await chatApiClient.createGroup(userIds, name);
+        runInAction(() => {
+          this.selectedItem = data;
+        });
+      } catch (e: any) {
+        console.warn(e);
+      } finally {
+        this.disableLoading();
+      }
+    }
+
     setSelectedChat(chat?: ChatType) {
       runInAction(() => {
         this.selectedItem = chat;
@@ -60,7 +77,7 @@ class ChatsStore extends BaseStore<ChatType> {
 
     getChatByUser(user: UserType) {
       for (let item of this.items) {
-        if (item.users[0].id === user.id)
+        if (item.type === 'chat' && item.users[0] && item.users[0].id === user.id)
           return item;
       }
     }
@@ -82,6 +99,12 @@ class ChatsStore extends BaseStore<ChatType> {
           this.items = [updatedChat, ...otherChats];
         });
       }
+    }
+
+    async updateGroups(chat: ChatType) {
+      runInAction(() => {
+        this.items = [chat, ...this.items];
+      });
     }
 }
 

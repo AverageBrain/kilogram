@@ -54,13 +54,13 @@ export class UserAvatarService {
     /**
      * Function gets user's avatar from local storage
      *
-     * @param username - name of user
+     * @param id - id of user
      * @returns Base64 encoded svg file, saved in the S3
      */
-    static async getAvatar(username: string): Promise<string> {
-        const localUser = await prisma.user.findUniqueOrThrow({where: {username: username}})
+    static async getAvatar(id: number): Promise<string> {
+        const localUser = await prisma.user.findUniqueOrThrow({where: { id }})
 
-        if (localUser.avatarKey === null) throw new Error(`Пользователь с username=${username} не имеет аватара`)
+        if (localUser.avatarKey === null) throw new Error(`Пользователь с id=${id} не имеет аватара`)
 
         return FileStorageService.getFileAsString(localUser.avatarKey)
     }

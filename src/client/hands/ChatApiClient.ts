@@ -23,8 +23,8 @@ class UserApiClient extends BaseApiClient {
         return this.axiosPost("/chat/create/chat", {createChat: {userId}})
     }
 
-    createGroup(userIds: number[]): Promise<ChatType> {
-        return this.axiosPost("/chat/create/group", {createGroup: {userIds}})
+    createGroup(userIds: number[], name: string): Promise<ChatType> {
+        return this.axiosPost("/chat/create/group", {createGroup: {userIds, name}})
     }
 
     joinGroup(joinKey: string): Promise<ChatType> {

@@ -34,3 +34,11 @@
   align-self: end;
   border-radius: 10px 10px 0 10px;
 }
+
+.message-meta {
+  display: flex;
+  flex-direction: column-reverse;
+  align-items: flex-end;
+
+  padding: 5px;
+}

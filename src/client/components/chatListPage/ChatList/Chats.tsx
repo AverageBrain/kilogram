@@ -1,11 +1,14 @@
 import React from 'react';
-import { List } from 'antd';
-import clsx from 'clsx';
-import { chatsStore, messagesStore } from '../../../stores';
-import './ChatList.css'
-import { ChatType } from '../../../../types';
 import { observer } from 'mobx-react-lite';
+import { List, Avatar as AvatarAD } from 'antd';
+import clsx from 'clsx';
+
+
+import { chatsStore, messagesStore } from '../../../stores';
+import { ChatType } from '../../../../types';
 import { Avatar } from '../../Avatar';
+import { TypeOfChat } from '../../../../types/types';
+import './ChatList.css'
 
 type Props = {
   setSearchTerm: (value: string) => void;
@@ -30,16 +33,16 @@ const Chats: React.FC<Props> = ({ setSearchTerm }) => {
       locale={locale}
       itemLayout="horizontal"
       dataSource={items}
-      renderItem={(chat, index) => (
+      renderItem={(chat) => (
         <List.Item
-          className="chat-list-item"
           key={chat.id}
+          className="chat-list-item"
           onClick={() => {handleClick(chat)}}
         >
           <List.Item.Meta
             className={clsx('chat-list-item-meta', chat.id === selectedItem?.id && 'chat-list-item-meta-active')}
-            avatar={<Avatar user={chat.users[0]} />}
-            title={chat.users[0].name}
+            avatar={chat.type == TypeOfChat.Chat ? <Avatar userId={chat.users[0].id} /> : <AvatarAD />}
+            title={chat.type == TypeOfChat.Chat ? chat.users[0].name : chat.name}
             description={chat.messages.length > 0 ? <div dangerouslySetInnerHTML={{ __html:  chat.messages[0].text }} /> : 'У вас нет сообщений'}
           />
         </List.Item>
