@@ -18,7 +18,8 @@ const App: React.FC = () => {
 
   useEffect(() => {
     loadSelectedItem();
-  } ,[]);
+    moment.locale('ru');
+} ,[]);
 
   moment.locale('ru');
 

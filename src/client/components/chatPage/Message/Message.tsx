@@ -2,7 +2,6 @@ import React from 'react';
 import clsx from 'clsx';
 import { Flex } from 'antd';
 import moment from 'moment';
-import ReactMarkdown from 'react-markdown'
 import { observer } from 'mobx-react-lite';
 
 import { MessageType } from '../../../../types'
@@ -20,12 +19,10 @@ const Message: React.FC<Props> = ({ message, isGroup }) => {
 
   const isActivePerson = selectedItem?.id === message.userId;
   return (
+
     <>
       <div className={clsx('message', isActivePerson ? 'my-message' : 'partner-message')}>
-        <ReactMarkdown className="text">
-          {message.text}
-        </ReactMarkdown>
-        {/* <br /> */}
+        <div dangerouslySetInnerHTML={{ __html: message.text }} />
         <div className="message-meta">
           <span className="timestep">
             {moment(message.createdAt).format('LT')}

@@ -7,13 +7,16 @@ import './InfiniteScroll.css';
 import { Spin } from 'antd';
 import { TypeOfChat } from '../../../../types';
 
-const InfiniteScroll: React.FC = () => {
+type Props = {
+  scrollRef: React.RefObject<HTMLDivElement>;
+};
+
+const InfiniteScroll: React.FC<Props> = ({ scrollRef }) => {
   const { items, loadItems, loading } = messagesStore;
   const { selectedItem: chat } = chatsStore;
 
   const [hasMore, setHasMore] = useState(true);
   const target = useRef<HTMLDivElement>(null);  
-
   
   const handleObserver = useCallback(async (entries: IntersectionObserverEntry[]) => {
     if (hasMore && !loading && chat && entries[0].isIntersecting) {
@@ -40,7 +43,7 @@ const InfiniteScroll: React.FC = () => {
   }, [target, handleObserver]);
 
     return (
-      <div className="messages">
+      <div ref={scrollRef} className="messages">
         {items.map((curMessage) => (
           <Message
             key={curMessage.id}

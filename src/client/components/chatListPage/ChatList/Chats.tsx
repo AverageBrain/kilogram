@@ -43,7 +43,7 @@ const Chats: React.FC<Props> = ({ setSearchTerm }) => {
             className={clsx('chat-list-item-meta', chat.id === selectedItem?.id && 'chat-list-item-meta-active')}
             avatar={chat.type == TypeOfChat.Chat ? <Avatar userId={chat.users[0].id} /> : <AvatarAD />}
             title={chat.type == TypeOfChat.Chat ? chat.users[0].name : chat.name}
-            description={chat.messages.length > 0 ? chat.messages[0].text : 'У вас нет сообщений'}
+            description={chat.messages.length > 0 ? <div dangerouslySetInnerHTML={{ __html:  chat.messages[0].text }} /> : 'У вас нет сообщений'}
           />
         </List.Item>
       )}

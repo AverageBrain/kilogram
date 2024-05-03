@@ -7,7 +7,7 @@
   }
 }
 
-.send-message button {
+.send-button {
   align-self: center;
   border: none;
   font-size: 24px;
@@ -15,16 +15,43 @@
   background: none;
 
   cursor: pointer;
+  width: 60px;
 
   &:hover {
     color: #06A191;
   }
 }
 
-.send-message textarea {
-  margin-right: 5px;
-  resize: none;
-  border: none;
-  padding: 10px;
+.wrapper-class {
+  width: 100%;
 }
 
+.toolbar-class {
+  border: none !important;
+}
+
+.editor-class {
+  padding: 10px;
+  min-height: 90px;
+  max-height: 90px;
+
+  overflow-y: scroll;
+  ::-webkit-scrollbar {
+    display: none;
+  }
+
+  div {
+    margin-top: 0;
+  }
+
+  span {
+    word-break: break-all;
+  }
+}
+
+.popover-class {
+  box-sizing: content-box;
+  transform: scale(1) translateY(-100%);
+  transform-origin: 1em 0% 0px;
+  top: 0%;
+}
