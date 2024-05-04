@@ -236,7 +236,7 @@ export class ChatController {
         };
     }
 
-    @Post("/group/join/:joinKey")
+    @Post("/group/join")
     async joinGroup(
         @Req() request: express.Request,
         @BodyParam('joinGroup') joinGroup: {
@@ -285,9 +285,8 @@ export class ChatController {
             throw new Error("User must be authorized")
         }
         const userChats: UserChat[] = await prisma.userChat.findMany(
-            {where: {AND: [{userId: user.id}]}, take: 10, orderBy: {updatedAt: 'desc'}}
+            {where: {AND: [{userId: user.id}]}, orderBy: {updatedAt: 'desc'}}
         );
-
 
         const chatsIds = userChats.map(i => i.chatId);
         const chats = await prisma.chat.findMany({

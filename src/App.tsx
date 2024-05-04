@@ -6,8 +6,7 @@ import { observer } from 'mobx-react-lite';
 import moment from 'moment';
 import 'moment/locale/ru';
 
-import AppRouter from './client/components';
-import { authUserStore } from './client/stores';
+import { AppRouter, authUserStore } from './client';
 
 const App: React.FC = () => {
   const {

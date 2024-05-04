@@ -131,7 +131,7 @@ class ChatsStore extends BaseStore<ChatType> {
       });
     } catch (e: any) {
       console.warn(e);
-      this.setResponseError(e.message);
+      this.setResponseError(e.response.data.message);
     } finally {
       this.disableLoading();
     }

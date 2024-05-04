@@ -15,7 +15,7 @@ const AppRouter: React.FC = () => {
           element={<AuthRoutes><MainPage /></AuthRoutes>}
         />
         <Route
-          path="/group/:joinKey"
+          path="/join/:joinKey"
           element={<AuthRoutes><JoinGroupPage /></AuthRoutes>}
         />
         <Route

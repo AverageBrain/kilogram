@@ -23,7 +23,7 @@ const GroupProfile: React.FC<Props> = ({ group, isOpenModal, closeModal }) => {
   
   const handleClick = () => {
     const { origin } = document.location;
-    copyToClipboard(`${origin}/group/${group.joinKey}`);
+    copyToClipboard(`${origin}/join/${group.joinKey}`);
   };
 
   return (
