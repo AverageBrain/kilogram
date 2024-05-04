@@ -18,7 +18,7 @@ const LogInPage: React.FC = () => {
   return (
     <>
       {loggedIn
-        ? <Navigate replace to=".." relative="path" />
+        ? <Navigate replace to="/" relative="path" />
         :  (
           <Layout style={{ height: "100vh" }}>
             <Content className="container">

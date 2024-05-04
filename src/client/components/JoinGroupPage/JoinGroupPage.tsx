@@ -24,10 +24,9 @@ const JoinGroupPage: React.FC = () => {
 
   const handleClick = async () => {
     if (selectedItem && joinKey) {
-    // if (joinKey) {
       await joinGroup(joinKey);
     }
-    navigate('../..', { relative: 'path' });
+    navigate('/', { relative: 'path' });
   };
 
   useEffect(() => {
