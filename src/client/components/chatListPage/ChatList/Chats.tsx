@@ -37,13 +37,15 @@ const Chats: React.FC<Props> = ({ setSearchTerm }) => {
         <List.Item
           key={chat.id}
           className="chat-list-item"
-          onClick={() => {handleClick(chat)}}
+          onClick={() => handleClick(chat)}
         >
           <List.Item.Meta
             className={clsx('chat-list-item-meta', chat.id === selectedItem?.id && 'chat-list-item-meta-active')}
             avatar={chat.type == TypeOfChat.Chat ? <Avatar userId={chat.users[0].id} /> : <AvatarAD />}
             title={chat.type == TypeOfChat.Chat ? chat.users[0].name : chat.name}
-            description={chat.messages.length > 0 ? <div dangerouslySetInnerHTML={{ __html:  chat.messages[0].text }} /> : 'У вас нет сообщений'}
+            description={chat.messages.length > 0
+              ? <div dangerouslySetInnerHTML={{ __html:  `<div class="last-message">${chat.messages[0].text}</div>` }} />
+              : 'У вас нет сообщений'}
           />
         </List.Item>
       )}

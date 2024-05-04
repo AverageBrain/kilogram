@@ -5,7 +5,7 @@ import { observer } from 'mobx-react-lite';
 import DOMPurify from 'dompurify';
 import { EditorState, convertToRaw  } from 'draft-js';
 import draftToHtml from 'draftjs-to-html';
-import { Editor } from 'react-draft-wysiwyg';
+import { Editor, SyntheticKeyboardEvent } from 'react-draft-wysiwyg';
 import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
 
 import { chatsStore, messagesStore, userStore } from '../../../stores';
@@ -28,7 +28,7 @@ const SendMessage: React.FC<Props> = ({ scrollRef }) => {
     const htmlContent = draftToHtml(convertToRaw(contentState));
     const safeHtml = DOMPurify.sanitize(htmlContent);
     
-    if (safeHtml !== '<p></p>') {
+    if (editorState.getCurrentContent().hasText()) {
       if (chat) {
         await sendMessage(chat.id, safeHtml);      
       } else if (user) {
@@ -47,6 +47,14 @@ const SendMessage: React.FC<Props> = ({ scrollRef }) => {
     });
   }
 
+  const handleReturn = (event: SyntheticKeyboardEvent, editorState: EditorState): boolean => {
+    if (event.key === 'Enter' && !event.shiftKey && !event.ctrlKey) {
+      handleSubmit();
+      return true;
+    }
+    return false;
+  }
+
   return (
     <div className="send-message">
       <Editor
@@ -57,6 +65,7 @@ const SendMessage: React.FC<Props> = ({ scrollRef }) => {
         placeholder="Введите сообщение..."
         editorState={editorState}
         onEditorStateChange={setEditorState}
+        handleReturn={handleReturn}
         toolbar={{
           options: ['inline', 'link', 'emoji', 'remove', 'history'],
           inline: {
