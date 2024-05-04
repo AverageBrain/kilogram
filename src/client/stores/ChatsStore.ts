@@ -1,5 +1,11 @@
 
-import { action, makeObservable, override, runInAction } from 'mobx';
+import {
+  action,
+  makeObservable,
+  observable,
+  override,
+  runInAction,
+} from 'mobx';
 import { partition } from 'lodash';
 
 import { ChatType, MessageType, UserType } from '../../types';
@@ -7,105 +13,151 @@ import BaseStore from './BaseStore';
 import { chatApiClient } from '../hands';
 
 class ChatsStore extends BaseStore<ChatType> {
-    constructor() {
-        super();
-        makeObservable(this, {
-            items: override,
-            selectedItem: override,
-            loading: override,
+  constructor() {
+      super();
+      makeObservable(this, {
+          items: override,
+          selectedItem: override,
+          loading: override,
 
-            loadItems: action.bound,
-            createChat: action.bound,
-            setSelectedChat: action.bound,
-            updateChats: action.bound,
-            createGroup: action.bound,
-            updateGroups: action.bound,
-        });
-    }
+          responseError: observable,
 
-    async loadItems(): Promise<void> {
-      try {
-        this.enableLoading();
-      
-        const data = await chatApiClient.getMyChats();
-  
-        runInAction(() => {
-          this.items = data;
-        });
-      } catch (e: any) {
-        console.warn(e);
-      } finally {
-        this.disableLoading();
-      }
-    }
+          loadItems: action.bound,
+          createChat: action.bound,
+          setSelectedChat: action.bound,
+          updateChats: action.bound,
+          createGroup: action.bound,
+          updateGroups: action.bound,
+          getGroupByJoinKey: action.bound,
+          joinGroup: action.bound,
+      });
+  }
 
-    async createChat(userId: number): Promise<void> {
-      try {
-        this.enableLoading();
-      
-        const data = await chatApiClient.createChat(userId);
-        runInAction(() => {
-          this.selectedItem = data;
-        });
-      } catch (e: any) {
-        console.warn(e);
-      } finally {
-        this.disableLoading();
-      }
-    }
+  responseError?: string = undefined;
 
-    async createGroup(userIds: number[], name: string): Promise<void> {
-      try {
-        this.enableLoading();
-      
-        const data = await chatApiClient.createGroup(userIds, name);
-        runInAction(() => {
-          this.selectedItem = data;
-        });
-      } catch (e: any) {
-        console.warn(e);
-      } finally {
-        this.disableLoading();
-      }
-    }
+  async loadItems(): Promise<void> {
+    try {
+      this.enableLoading();
+    
+      const data = await chatApiClient.getMyChats();
 
-    setSelectedChat(chat?: ChatType) {
       runInAction(() => {
-        this.selectedItem = chat;
+        this.items = data;
+      });
+    } catch (e: any) {
+      console.warn(e);
+    } finally {
+      this.disableLoading();
+    }
+  }
+
+  async createChat(userId: number): Promise<void> {
+    try {
+      this.enableLoading();
+    
+      const data = await chatApiClient.createChat(userId);
+      runInAction(() => {
+        this.selectedItem = data;
+      });
+    } catch (e: any) {
+      console.warn(e);
+    } finally {
+      this.disableLoading();
+    }
+  }
+
+  async createGroup(userIds: number[], name: string): Promise<void> {
+    try {
+      this.enableLoading();
+    
+      const data = await chatApiClient.createGroup(userIds, name);
+      runInAction(() => {
+        this.selectedItem = data;
+      });
+    } catch (e: any) {
+      console.warn(e);
+    } finally {
+      this.disableLoading();
+    }
+  }
+
+  setSelectedChat(chat?: ChatType) {
+    runInAction(() => {
+      this.selectedItem = chat;
+    });
+  }
+
+  getChatByUser(user: UserType) {
+    for (let item of this.items) {
+      if (item.type === 'chat' && item.users[0] && item.users[0].id === user.id)
+        return item;
+    }
+  }
+
+  async updateChats(message: MessageType) {
+    const [updatedChats, otherChats] = partition(
+      this.items,
+      (item) => item.id === message.chatId,
+    );
+    if (updatedChats.length === 0) {
+      await this.loadItems();
+    } else {
+      const updatedChat: ChatType = {
+        ...updatedChats[0],
+        messages: [message],
+      };  
+
+      runInAction(() => {
+        this.items = [updatedChat, ...otherChats];
       });
     }
+  }
 
-    getChatByUser(user: UserType) {
-      for (let item of this.items) {
-        if (item.type === 'chat' && item.users[0] && item.users[0].id === user.id)
-          return item;
-      }
-    }
+  updateGroups(chat: ChatType) {
+    runInAction(() => {
+      this.items = [chat, ...this.items];
+    });
+  }
 
-    async updateChats(message: MessageType) {
-      const [updatedChats, otherChats] = partition(
-        this.items,
-        (item) => item.id === message.chatId,
-      );
-      if (updatedChats.length === 0) {
-        await this.loadItems();
-      } else {
-        const updatedChat: ChatType = {
-          ...updatedChats[0],
-          messages: [message],
-        };  
+  async getGroupByJoinKey(joinKey: string): Promise<void> {
+    try {
+      this.enableLoading();
+    
+      const data = await chatApiClient.getGroupByJoinKey(joinKey);
 
-        runInAction(() => {
-          this.items = [updatedChat, ...otherChats];
-        });
-      }
-    }
-
-    async updateGroups(chat: ChatType) {
       runInAction(() => {
-        this.items = [chat, ...this.items];
+        this.selectedItem = data;
+        this.setResponseError('');
       });
+    } catch (e: any) {
+      console.warn(e);
+      this.setResponseError(e.message);
+    } finally {
+      this.disableLoading();
     }
+  }
+
+  async joinGroup(joinKey: string): Promise<void> {
+    try {
+      this.enableLoading();
+    
+      const data = await chatApiClient.joinGroup(joinKey);
+
+      runInAction(() => {
+        this.selectedItem = data;
+      });
+    } catch (e: any) {
+      console.warn(e);
+    } finally {
+      this.disableLoading();
+    }
+  }
+
+  private setResponseError(value: string) {
+    runInAction(() => {
+      this.responseError = value;
+    });
+  }
 }
 
 export default new ChatsStore();

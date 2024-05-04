@@ -1,4 +1,5 @@
-import { action, makeObservable, override, runInAction } from 'mobx';
+import { action, computed, makeObservable, override, runInAction } from 'mobx';
+import { isEmpty } from 'lodash';
 
 import { UserType } from '../../types';
 import BaseStore from './BaseStore';
@@ -13,9 +14,15 @@ class AuthUserStore extends BaseStore<UserType> {
             selectedItem: override,
             loading: override,
 
+            loggedIn: computed,
+
             loadSelectedItem: action.bound,
         });
         this.loading = true
+    }
+
+    get loggedIn(): boolean {
+        return !isEmpty(this.selectedItem);
     }
 
     async loadSelectedItem(): Promise<void> {

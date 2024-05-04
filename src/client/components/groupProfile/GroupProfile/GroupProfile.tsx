@@ -4,7 +4,7 @@ import { Avatar, Button } from 'antd';
 import { CloseOutlined } from '@ant-design/icons';
 
 import { ChatType } from '../../../../types';
-import { getCorrectMemberCase } from '../../../utils';
+import { copyToClipboard, getCorrectMemberCase } from '../../../utils';
 import { authUserStore } from '../../../stores';
 import MembersList from '../MembersList';
 import './GroupProfile.css';
@@ -20,6 +20,11 @@ const GroupProfile: React.FC<Props> = ({ group, isOpenModal, closeModal }) => {
   const { selectedItem } = authUserStore;
 
   const membersCount = group.users.length + 1;
+  
+  const handleClick = () => {
+    const { origin } = document.location;
+    copyToClipboard(`${origin}/group/${group.joinKey}`);
+  };
 
   return (
     <Modal 
@@ -42,7 +47,12 @@ const GroupProfile: React.FC<Props> = ({ group, isOpenModal, closeModal }) => {
             </span>
           </div>
         </div>
-        <Button className="invite-button" type="text" size="large">
+        <Button
+          className="invite-button"
+          type="text"
+          size="large"
+          onClick={handleClick}
+        >
           Скопировать приглашение
         </Button>
         {selectedItem && (<MembersList users={[selectedItem, ...group.users]} />)}
