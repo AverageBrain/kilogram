@@ -62,7 +62,7 @@ const JoinGroupPage: React.FC = () => {
             type="text"
             onClick={handleClick}
           >
-              {selectedItem ? 'Присоединиться в группу' : 'Вернуться на главную страницу'}
+              {selectedItem ? 'Присоединиться в группу' : 'Вернуться на главную'}
           </Button>
         </div>
       </Content>

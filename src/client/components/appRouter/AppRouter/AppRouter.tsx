@@ -5,6 +5,7 @@ import AuthRoutes from '../AuthRoutes';
 import LogInPage from '../../LogInPage';
 import MainPage from '../../MainPage';
 import JoinGroupPage from '../../JoinGroupPage';
+import NotFoundPage from '../../NotFoundPage';
 
 const AppRouter: React.FC = () => {
   return (
@@ -24,7 +25,7 @@ const AppRouter: React.FC = () => {
         />
         <Route
           path="*"
-          element={<div>404</div>}
+          element={<NotFoundPage />}
         />
       </Routes>
     </BrowserRouter>
