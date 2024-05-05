@@ -1,0 +1,14 @@
+.ReactModal__Content footer {
+  padding: 8px;
+  display: flex;
+  justify-content: end;
+  gap: 5px;
+
+  .modal-button {
+    padding: 10px 16px;
+    margin-top: auto;
+    font-weight: 500;
+    align-self: flex-end;
+    line-height: 16px;
+  }
+}

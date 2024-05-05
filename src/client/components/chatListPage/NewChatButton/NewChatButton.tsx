@@ -5,8 +5,8 @@ import { FaUser, FaUsers } from "react-icons/fa";
 
 import './NewChatButton.css';
 import clsx from 'clsx';
-import { NewMessagePage } from '../../NewMessagePage';
-import NewGroupModal from '../../newGroupModal';
+import { NewMessagePage } from '../../modals';
+import { NewGroupModal } from '../../modals';
 import { useModal } from '../../../../hooks';
 
 export const NewChatButton: React.FC = () => {

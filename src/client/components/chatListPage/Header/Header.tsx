@@ -5,7 +5,7 @@ import React from 'react';
 import { useModal } from '../../../../hooks';
 import { authApiClient } from '../../../hands';
 import { authUserStore } from '../../../stores';
-import { Profile } from '../../Profile';
+import { UserProfile } from '../../modals/profiles/userProfile/UserProfile';
 import './Header.css';
 import {BASE_LOGOUT_HOST} from "../../../hands/BaseApiClient";
 
@@ -59,7 +59,7 @@ const Header: React.FC<Props> = ({ value, setSearchTerm, }) => {
           />
       </HeaderAD>
 
-      {selectedItem && <Profile user={selectedItem} isOpenModal={isOpenModal} closeModal={closeModal} />}
+      {selectedItem && <UserProfile user={selectedItem} isOpenModal={isOpenModal} closeModal={closeModal} />}
     </>
   );
 };

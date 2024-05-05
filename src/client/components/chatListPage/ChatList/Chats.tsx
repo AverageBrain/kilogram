@@ -1,6 +1,6 @@
 import React from 'react';
 import { observer } from 'mobx-react-lite';
-import { List, Avatar as AvatarAD } from 'antd';
+import { List } from 'antd';
 import clsx from 'clsx';
 
 
@@ -41,7 +41,7 @@ const Chats: React.FC<Props> = ({ setSearchTerm }) => {
         >
           <List.Item.Meta
             className={clsx('chat-list-item-meta', chat.id === selectedItem?.id && 'chat-list-item-meta-active')}
-            avatar={chat.type == TypeOfChat.Chat ? <Avatar userId={chat.users[0].id} /> : <AvatarAD />}
+            avatar={chat.type == TypeOfChat.Chat ? <Avatar userId={chat.users[0].id} /> : <Avatar />}
             title={chat.type == TypeOfChat.Chat ? chat.users[0].name : chat.name}
             description={chat.messages.length > 0 ? <div dangerouslySetInnerHTML={{ __html:  chat.messages[0].text }} /> : 'У вас нет сообщений'}
           />

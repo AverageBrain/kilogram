@@ -2,11 +2,10 @@ import React from 'react';
 import { Layout } from 'antd';
 import './ChatHeader.css'
 import { useModal } from '../../../../hooks/useModal';
-import { Profile } from '../../Profile';
 import { observer } from 'mobx-react-lite';
 import { chatsStore, userStore } from '../../../stores';
 import { TypeOfChat } from '../../../../types/types';
-import GroupProfile from '../../groupProfile';
+import { GroupProfile, UserProfile } from '../../modals';
 
 const { Header: HeaderAD } = Layout;
 
@@ -34,7 +33,7 @@ const ChatHeader: React.FC = () => {
         </HeaderAD>
         {isGroup
           ? <GroupProfile group={chat} isOpenModal={isOpenModal} closeModal={closeModal} />
-          : <Profile user={curUser} isOpenModal={isOpenModal} closeModal={closeModal} />}
+          : <UserProfile user={curUser} isOpenModal={isOpenModal} closeModal={closeModal} />}
       </>
     )
     : <></>;

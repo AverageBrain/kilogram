@@ -1,12 +1,12 @@
 import React, { memo, useEffect, useState } from 'react';
 import { UserType } from '../../../types';
 import { Avatar as AvatarD, Spin } from 'antd';
-import { UserOutlined } from '@ant-design/icons';
+import { CommentOutlined, UserOutlined } from '@ant-design/icons';
 import { userApiClient } from '../../hands';
 import './Avatar.css';
 
 type Props = {
-  userId: number;
+  userId?: number;
   size?: number;
 }
 
@@ -18,7 +18,8 @@ const Avatar: React.FC<Props> = ({ userId, size }) => {
   const avatarSize = size ?? 40;
 
   useEffect(() => {
-    userApiClient.getAvatar(userId)
+    if (userId) {
+     userApiClient.getAvatar(userId)
       .then(response => {
         setImage(response);
         setPhotoStatus('loaded');
@@ -28,6 +29,9 @@ const Avatar: React.FC<Props> = ({ userId, size }) => {
           console.error('Error occurred while getting an avatar:', error)
         }
       )
+    } else {
+      setPhotoStatus('default-avatar');
+    }
   }, [])
 
   return (
@@ -36,6 +40,14 @@ const Avatar: React.FC<Props> = ({ userId, size }) => {
       {photoStatus === 'loading' && <Spin />}
       {photoStatus === 'loaded' && <img src={`data:image/svg+xml;utf8,${encodeURIComponent(image)}`} />}
       {photoStatus === 'error-occurred' && <AvatarD icon={<UserOutlined />} size={avatarSize} />}
+      {photoStatus === 'default-avatar' && <AvatarD
+          style={{
+            backgroundColor: '#87d068',
+          }}
+          icon={<CommentOutlined />}
+          size={avatarSize}
+        />
+      }
     </div>
   );
 }
