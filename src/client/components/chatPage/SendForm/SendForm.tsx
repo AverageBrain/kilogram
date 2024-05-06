@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
-import { Form, Input, Spin } from 'antd';
+import { Spin } from 'antd';
 import { SendOutlined } from '@ant-design/icons';
 import { observer } from 'mobx-react-lite';
 import DOMPurify from 'dompurify';
 import { EditorState, convertToRaw  } from 'draft-js';
 import draftToHtml from 'draftjs-to-html';
+// import { findEntities } from 'draft-js-utils';
 import { Editor, SyntheticKeyboardEvent } from 'react-draft-wysiwyg';
 import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
 
@@ -18,33 +19,38 @@ type Props = {
 
 const SendMessage: React.FC<Props> = ({ scrollRef }) => {
   const { sendMessage, loading } = messagesStore;
-  const { selectedItem: chat, setSelectedChat } = chatsStore;
+  const { selectedItem: chat, setSelectedChat, getMetadata } = chatsStore;
   const { selectedUser: user, setSelectedUser } = userStore;
 
   const [editorState, setEditorState] = useState<EditorState>(() => EditorState.createEmpty());
 
   const handleSubmit = async () => {
+    // const data = await getMetadata('https://vk.com/wall-100889999_6963');
+    // const data = await getMetadata('https://github.com/RemiixInc/meta-grabber/blob/main/server.js');
+    // console.log(data);
     const contentState = editorState.getCurrentContent();
     const htmlContent = draftToHtml(convertToRaw(contentState));
     const safeHtml = DOMPurify.sanitize(htmlContent);
-    
-    if (editorState.getCurrentContent().hasText()) {
-      if (chat) {
-        await sendMessage(chat.id, safeHtml);      
-      } else if (user) {
-        const chat = await chatApiClient.createChat(user.id);
-        await sendMessage(chat.id, safeHtml);
-        setSelectedChat(chat);
-        setSelectedUser(undefined);
-      }
-    }
 
-    setEditorState(EditorState.createEmpty());
+    // console.log(findEntities(contentState, 'LINK'));
+    
+    // if (editorState.getCurrentContent().hasText()) {
+    //   if (chat) {
+    //     await sendMessage(chat.id, safeHtml);      
+    //   } else if (user) {
+    //     const chat = await chatApiClient.createChat(user.id);
+    //     await sendMessage(chat.id, safeHtml);
+    //     setSelectedChat(chat);
+    //     setSelectedUser(undefined);
+    //   }
+    // }
+
+    // setEditorState(EditorState.createEmpty());
   
-    scrollRef?.current?.scrollTo({
-      top: scrollRef.current.scrollHeight,
-      behavior: "smooth"
-    });
+    // scrollRef?.current?.scrollTo({
+    //   top: scrollRef.current.scrollHeight,
+    //   behavior: "smooth"
+    // });
   }
 
   const handleReturn = (event: SyntheticKeyboardEvent, editorState: EditorState): boolean => {

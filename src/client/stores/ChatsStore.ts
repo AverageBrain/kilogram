@@ -2,7 +2,7 @@
 import { action, makeObservable, override, runInAction } from 'mobx';
 import { partition } from 'lodash';
 
-import { ChatType, MessageType, UserType } from '../../types';
+import { ChatType, MessageType, MetadataType, UserType } from '../../types';
 import BaseStore from './BaseStore';
 import { chatApiClient } from '../hands';
 
@@ -20,6 +20,7 @@ class ChatsStore extends BaseStore<ChatType> {
             updateChats: action.bound,
             createGroup: action.bound,
             updateGroups: action.bound,
+            getMetadata: action.bound,
         });
     }
 
@@ -106,6 +107,20 @@ class ChatsStore extends BaseStore<ChatType> {
         this.items = [chat, ...this.items];
       });
     }
+  
+  async getMetadata(url: string): Promise<MetadataType | void> {
+    try {
+      this.enableLoading();
+    
+      const data = await chatApiClient.getMetadata(url);
+
+      return data;
+    } catch (e: any) {
+      console.warn(e);
+    } finally {
+      this.disableLoading();
+    }
+  }
 }
 
 export default new ChatsStore();

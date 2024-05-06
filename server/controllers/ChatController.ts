@@ -1,6 +1,8 @@
 import {BodyParam, Get, JsonController, Param, Post, Req} from "routing-controllers";
 import {Message, UserChat} from "@prisma/client";
 import express from "express";
+import { load } from 'cheerio';
+
 import {ChatService} from "../services/ChatService";
 import {prisma} from "../domain/PrismaClient";
 import * as types from '../../src/types';
@@ -352,4 +354,19 @@ export class ChatController {
         }
     }
 
+    @Post('/metadata')
+    async getMetadata(
+        @Req() request: express.Request,
+        @BodyParam('url') url: string,
+    ): Promise<types.MetadataType> {
+      const response = await fetch(url);
+      const html = await response.text();
+      const $ = load(html);
+  
+      const title = $('meta[property="og:title"]').attr('content') ?? $('title').text() ?? $('meta[name="title"]').attr('content');
+      const description = $('meta[property="og:description"]').attr('content') ?? $('meta[name="description"]').attr('content');
+      const imageUrl = $('meta[property="og:image"]').attr('content') ?? $('meta[property="og:image:url"]').attr('content');
+  
+      return { title, description, imageUrl };
+    }
 }
