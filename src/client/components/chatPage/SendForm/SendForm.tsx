@@ -3,7 +3,7 @@ import { Spin } from 'antd';
 import { SendOutlined } from '@ant-design/icons';
 import { observer } from 'mobx-react-lite';
 import DOMPurify from 'dompurify';
-import { ContentState, EditorState, convertToRaw  } from 'draft-js';
+import { EditorState, convertToRaw } from 'draft-js';
 import draftToHtml from 'draftjs-to-html';
 import { Editor, SyntheticKeyboardEvent } from 'react-draft-wysiwyg';
 import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
