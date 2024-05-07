@@ -6,6 +6,7 @@ import { GithubOutlined } from '@ant-design/icons';
 
 import { chatsStore } from '../../stores';
 import { getCorrectMemberCase } from '../../utils';
+import './JoinGroupPage.css'
 
 const { Content } = Layout;
 const { Text } = Typography;
@@ -37,33 +38,29 @@ const JoinGroupPage: React.FC = () => {
 
   return (
     <Layout style={{ height: "100vh" }}>
-      <Content className="container">
-        <div className="card">
-          {loading
-            ? <Spin />
-            : responseError === 'JoinKey not connected to any group'
-              ? <Text>Такая группа не существует, проверьте вашу ссылку.</Text>
-              : responseError === 'User already joined the group'
-                ? <Text>Вы уже состоите в данной группе</Text>
-                : selectedItem && (
-                  <Flex gap={16}>
-                    <Avatar size={80} />
-                    <Flex vertical gap={8}>
-                      <Text strong>{selectedItem.name}</Text>
-                      <Text>{selectedItem.users.length} {getCorrectMemberCase(selectedItem.users.length)}</Text>
-                    </Flex>
+      <Content className="container join-group-card">
+        {loading
+          ? <Spin />
+          : responseError === 'JoinKey not connected to any group'
+            ? <Text className="h2">Такая группа не существует, проверьте вашу ссылку.</Text>
+            : responseError === 'User already joined the group'
+              ? <Text className="h2">Вы уже состоите в данной группе</Text>
+              : selectedItem && (
+                  <Flex vertical gap={32} justify="center" align="center">
+                    <Avatar size={250} />
+                    <Text className="h2">{selectedItem.name}</Text>
+                    <Text className="h3">{selectedItem.users.length} {getCorrectMemberCase(selectedItem.users.length)}</Text>
+                    <Button
+                      size="large"
+                      className="join-group-button"
+                      type="text"
+                      onClick={handleClick}
+                    >
+                        {selectedItem ? 'Присоединиться в группу' : 'Вернуться на главную'}
+                    </Button>
                   </Flex>
-                )
-          }
-          <Button
-            size="large"
-            className="button"
-            type="text"
-            onClick={handleClick}
-          >
-              {selectedItem ? 'Присоединиться в группу' : 'Вернуться на главную'}
-          </Button>
-        </div>
+              )
+        }
       </Content>
     </Layout>
   );
