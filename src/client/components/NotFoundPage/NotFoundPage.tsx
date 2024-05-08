@@ -13,7 +13,7 @@ const NotFoundPage: React.FC = () => {
   const handleClick = () => navigate('/');
 
   return (
-    <Layout style={{ height: "100vh" }}>
+    <Layout className="container" style={{ height: "100vh" }}>
       <Content className="not-found-card">
         <Flex vertical gap={32} justify="center">
         <Text className="h1">404</Text>

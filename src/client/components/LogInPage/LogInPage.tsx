@@ -22,10 +22,10 @@ const LogInPage: React.FC = () => {
         ? <Navigate replace to="/" relative="path" />
         :  (
           <Layout className='container' style={{ height: "100vh" }}>
-            <Content className="not-found-card">
+            <Content className="log-in-page">
               <Flex vertical gap={32} justify="center" align="center">
-              <Text className="h1" style={{fontSize: '15vw'}}>KILOGRAM</Text>
-              <Text className="h2" style={{fontSize: '5vw'}}>Добро пожаловать</Text>
+                <Text className="h1">KILOGRAM</Text>
+                <Text className="h2">Добро пожаловать</Text>
                 <Button
                   className="not-found-button"
                   size="large"
