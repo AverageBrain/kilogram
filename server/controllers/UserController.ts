@@ -3,15 +3,17 @@ import * as types from '../../src/types';
 import express from 'express';
 import {prisma} from "../domain/PrismaClient";
 import {User} from "@prisma/client";
+import {RedisStore} from "../services/RedisStore";
 
+const redisStore = new RedisStore()
 
-export function convertPrismaUser(prismaUser: User): types.UserType {
+export function convertPrismaUser(prismaUser: User, userStatus?: boolean): types.UserType {
     return {
         createdAt: prismaUser.createdAt,
         id: prismaUser.id,
         name: prismaUser.name,
         updatedAt: prismaUser.updatedAt,
-        username: prismaUser.username
+        username: prismaUser.username,
     }
 }
 
@@ -47,6 +49,8 @@ export class UserController {
             afterId = await prisma.user.count()
         }
         const users: User[] = await prisma.user.findMany({where: {id: {lt: afterId}}, take: 10, orderBy: {id: "desc"}})
-        return users.map(i => convertPrismaUser(i))
+        const usersStatuses = await redisStore.getStatus(users.map(i => i.id))
+
+        return users.map(i => convertPrismaUser(i, usersStatuses.get(i.id)))
     }
 }

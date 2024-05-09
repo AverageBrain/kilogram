@@ -6,28 +6,40 @@ const client = await createClient({url: 'redis://redis:kilogram@158.160.118.181:
     .on('error', err => console.log('Redis Client Error', err))
     .connect();
 
-const expire: Map<number, any> = new Map();
+const statusExpire: Map<number, any> = new Map();
 
 const sseService = new SSEService()
 
 export class RedisStore {
+    protected onlineKey(userId: number): string {
+        return 'userOnline:' + userId
+    }
+
     async setOnline(userId: number) {
-        if (expire.has(userId)) {
-            clearTimeout(expire.get(userId))
-            expire.delete(userId)
+        if (statusExpire.has(userId)) {
+            clearTimeout(statusExpire.get(userId))
+            statusExpire.delete(userId)
         } else {
             await this.notifyUsers(true, userId)
         }
-        await client.set(userId.toString(), 'true')
+        await client.set(this.onlineKey(userId), 'true')
     }
 
     async setOffline(userId: number) {
-        expire.set(userId, setTimeout(async () => {
-            await client.del(userId.toString())
+        statusExpire.set(userId, setTimeout(async () => {
+            await client.del(this.onlineKey(userId))
             await this.notifyUsers(false, userId)
-        }, 60_000))
+        }, 5_000))
+        const user = await prisma.user.findUnique({where: {id: userId}})
+        if (user) {
+            user.lastSeen = new Date()
+            await prisma.user.update({data: user, where: {id: user.id}})
+        }
     }
 
+    /*
+    * Notify users about online or offline for another users
+    * */
     async notifyUsers(status: boolean, userId: number) {
         const supportUser = await prisma.userChat.findMany({
             where: {AND: [{userId: userId}, {chat: {type: 'chat'}}]},
@@ -41,8 +53,17 @@ export class RedisStore {
                 }))
     }
 
-    async getStatus(userId: number): Promise<boolean> {
-        const res = await client.get('key')
-        return res != null;
+    async getStatus(userIds: number[]): Promise<Map<number, boolean>> {
+        const keys = userIds.map(i => this.onlineKey(i))
+        const statuses = await client.mGet(keys)
+
+        const userStatus = new Map()
+        for (let i = 0; i < userIds.length; i++) {
+            if (statuses[i] == 'true')
+                userStatus.set(userIds[i], true)
+            else
+                userStatus.set(userIds[i], false)
+        }
+        return userStatus
     }
 }

@@ -18,8 +18,9 @@ model User {
   avatarKey        String?           @default("")
   messages         Message[]
   chats            UserChat[]
+  lastSeen         DateTime          @default(now())
   messageReactions MessageReaction[]
-  DelayMessage DelayMessage[]
+  DelayMessage     DelayMessage[]
 }
 
 model Chat {
@@ -28,7 +29,7 @@ model Chat {
   updatedAt       DateTime       @updatedAt
   name            String         @default("")
   type            String         @default("chat")
-  joinKey   String?    @unique
+  joinKey         String?        @unique
   avatarKey       String         @default("")
   messages        Message[]
   members         UserChat[]
