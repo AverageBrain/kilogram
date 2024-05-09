@@ -2,7 +2,7 @@
 import { action, makeObservable, override, runInAction } from 'mobx';
 import { partition } from 'lodash';
 
-import { ChatType, MessageType } from '../../types';
+import { ChatType, MessageType, UserType } from '../../types';
 import BaseStore from './BaseStore';
 import { chatApiClient } from '../hands';
 
@@ -58,14 +58,18 @@ class ChatsStore extends BaseStore<ChatType> {
       });
     }
 
+    getChatByUser(user: UserType) {
+      for (let item of this.items) {
+        if (item.users[0].id === user.id)
+          return item;
+      }
+    }
+
     async updateChats(message: MessageType) {
       const [updatedChats, otherChats] = partition(
         this.items,
         (item) => item.id === message.chatId,
       );
-
-      console.log('sse chats', updatedChats, otherChats)
-  
       if (updatedChats.length === 0) {
         await this.loadItems();
       } else {

@@ -55,7 +55,6 @@ app.use(expressSession({
 
 app.use(myPassport.initialize());
 app.use(myPassport.session());
-app.use(errorHandler)
 
 useExpressServer(app, {
     routePrefix: '/api',

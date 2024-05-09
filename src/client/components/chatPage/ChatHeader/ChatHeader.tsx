@@ -4,28 +4,31 @@ import './ChatHeader.css'
 import { useModal } from '../../../../hooks/useModal';
 import { Profile } from '../../Profile';
 import { observer } from 'mobx-react-lite';
-import { chatsStore } from '../../../stores';
+import { chatsStore, userStore } from '../../../stores';
 
 const { Header: HeaderAD } = Layout;
 
 const ChatHeader: React.FC = () => {
   const { selectedItem: chat } = chatsStore;
+  const { selectedUser: user } = userStore;
 
   const { isOpenModal, showModal, closeModal } = useModal();
 
-  return chat
+  const curUser = chat ? chat.users[0] : user ? user : undefined;
+
+  return curUser
     ? (
       <>
         <HeaderAD className='chat-header'>
           <div className='user-info' onClick={showModal}>
-            <span className='user-name'>{chat.user.name}</span>
+            <span className='user-name'>{curUser.name}</span>
             <span className='last-seen'>
-              {chat.user.lastSeen ? chat.user.lastSeen : 'был в сети недавно'}
+              {curUser.lastSeen ? curUser.lastSeen : 'был в сети недавно'}
             </span>
           </div>
         </HeaderAD>
 
-        <Profile user={chat.user} isOpenModal={isOpenModal} toggle={closeModal} />
+        <Profile user={curUser} isOpenModal={isOpenModal} toggle={closeModal} />
       </>
     )
     : <></>;

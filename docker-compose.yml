@@ -40,7 +40,7 @@ services:
       - database_bridge
       - server_bridge
     ports:
-      - "3002:3001"
+      - "3002:3002"
 
   nginx:
     build:

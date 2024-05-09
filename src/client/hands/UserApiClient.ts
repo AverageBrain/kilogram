@@ -1,5 +1,6 @@
 import { UserType } from "../../types/types";
 import {BASE_SERVER_HOST, BaseApiClient} from "./BaseApiClient";
+import express from 'express';
 
 class UserApiClient extends BaseApiClient {
     getMe(): Promise<UserType> {
@@ -10,11 +11,13 @@ class UserApiClient extends BaseApiClient {
         return this.axiosPost('/user/edit', user)
     }
 
-    getUsers(afterId: number = -1): Promise<UserType[]> {
-        // if first page, afterId = -1
-        return this.axiosGet("/user/users/" + afterId)
+    findUsers(prefix: string): Promise<UserType[]> {
+        return this.axiosGet('user/users/find/' + prefix);
     }
 
+    getAvatar(username: string): Promise<any> {
+        return this.axiosGet('user/avatar/' + username);
+    }
 }
 
 export default new UserApiClient();
