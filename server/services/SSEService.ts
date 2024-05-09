@@ -4,10 +4,12 @@ export type SSECallback = (data: string) => boolean
 const listeners: Map<number, Map<string, SSECallback>> = new Map()
 
 
-const redisStore = new RedisStore()
 
 
 export class SSEService {
+    redisStore = new RedisStore()
+
+
     async registerListen(userId: number, sseCallback: SSECallback): Promise<string> {
         if (!listeners.has(userId)) {
             listeners.set(userId, new Map())
@@ -17,7 +19,7 @@ export class SSEService {
             throw new Error('Unexpected error')
         }
 
-        await redisStore.setOnline(userId)
+        await this.redisStore.setOnline(userId)
 
         while (true) {
             const randomId = Math.floor(Math.random() * 10000000).toString()
@@ -32,7 +34,7 @@ export class SSEService {
 
     async unregisterListen(userId: number, randomId: string) {
         listeners.get(userId)?.delete(randomId)
-        await redisStore.setOffline(userId)
+        await this.redisStore.setOffline(userId)
     }
 
     async publishMessage(toUserId: number, type: string, data: any) {

@@ -15,7 +15,7 @@ import cors from "cors";
 import passport from "passport";
 import {SSEService} from "./services/SSEService";
 import {DelayMessageJob} from "./job/DelayMessageJob";
-import fileUpload from "express-fileupload";
+// import fileUpload from "express-fileupload";
 import {errorHandler} from "./middleware/ErrorHandler";
 
 const pgSession = connect_pg_simple(expressSession)
@@ -35,9 +35,9 @@ const app = express();
 app.use(cors({credentials: true, origin: 'http://localhost:3000'}));
 
 app.use(cookieParser());
-app.use(fileUpload({
-    limits: { fileSize: 50 * 1024 * 1024 },
-}));
+// app.use(fileUpload({
+//     limits: { fileSize: 50 * 1024 * 1024 },
+// }));
 
 
 app.use(expressSession({
@@ -98,7 +98,7 @@ app.get("/api/user/sse", (req, res) => {
     });
 });
 
-// new DelayMessageJob().run()
+new DelayMessageJob().run()
 
 console.log("Server started")
 app.listen(3002);

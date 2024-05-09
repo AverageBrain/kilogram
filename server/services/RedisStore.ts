@@ -2,13 +2,11 @@ import {createClient} from 'redis';
 import {SSEService} from "./SSEService";
 import {prisma} from "../domain/PrismaClient";
 
-const client = await createClient({url: 'redis://redis:kilogram@158.160.118.181:6379'})
+const client = await createClient({url: 'redis://158.160.118.181:6379'})
     .on('error', err => console.log('Redis Client Error', err))
     .connect();
 
 const statusExpire: Map<number, any> = new Map();
-
-const sseService = new SSEService()
 
 export class RedisStore {
     protected onlineKey(userId: number): string {
@@ -41,6 +39,7 @@ export class RedisStore {
     * Notify users about online or offline for another users
     * */
     async notifyUsers(status: boolean, userId: number) {
+        const sseService = new SSEService()
         const supportUser = await prisma.userChat.findMany({
             where: {AND: [{userId: userId}, {chat: {type: 'chat'}}]},
             include: {chat: {include: {members: true}}}
