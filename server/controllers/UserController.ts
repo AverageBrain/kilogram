@@ -5,14 +5,17 @@ import {prisma} from "../domain/PrismaClient";
 import {User} from "@prisma/client";
 import {UserAvatarService} from "../services/UserAvatarService";
 import {UploadedFile} from "express-fileupload"
+import {RedisStore} from "../services/RedisStore";
 
-export function convertPrismaUser(prismaUser: User): types.UserType {
+const redisStore = new RedisStore()
+
+export function convertPrismaUser(prismaUser: User, userStatus?: boolean): types.UserType {
     return {
         createdAt: prismaUser.createdAt,
         id: prismaUser.id,
         name: prismaUser.name,
         updatedAt: prismaUser.updatedAt,
-        username: prismaUser.username
+        username: prismaUser.username,
     }
 }
 
@@ -50,10 +53,10 @@ export class UserController {
             const users: User[] = await prisma.user.findMany({
                 where: {
                     AND: [
-                        { 
+                        {
                             username: {
                                 startsWith: prefix,
-                            }, 
+                            },
                         },
                         {
                             NOT: {
@@ -63,10 +66,12 @@ export class UserController {
                             }
                         }
                     ]
-     
+
                 }
             })
-            return users.map(i => convertPrismaUser(i));
+            const usersStatuses = await redisStore.getStatus(users.map(i => i.id))
+
+        return users.map(i => convertPrismaUser(i, usersStatuses.get(i.id)));
         }
         return [];
     }
