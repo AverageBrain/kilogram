@@ -54,7 +54,6 @@ const GroupForm: React.FC<Props> = ({ values, setFieldValue }) =>  {
               />
             </div>
           </div>
-         
         </div>
       </div>
       <Divider />

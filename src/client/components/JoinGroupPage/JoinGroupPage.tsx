@@ -1,12 +1,11 @@
 import React, { useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { observer } from 'mobx-react-lite';
-import { Avatar, Button, Flex, Layout, Spin, Typography } from 'antd';
-import { GithubOutlined } from '@ant-design/icons';
-
+import { Button, Flex, Layout, Spin, Typography } from 'antd';
 import { chatsStore } from '../../stores';
 import { getCorrectMemberCase } from '../../utils';
 import './JoinGroupPage.css'
+import { Avatar } from '../Avatar';
 
 const { Content } = Layout;
 const { Text } = Typography;

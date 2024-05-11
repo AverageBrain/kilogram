@@ -6,6 +6,7 @@ import { observer } from 'mobx-react-lite';
 import { chatsStore, userStore } from '../../../stores';
 import { TypeOfChat } from '../../../../types/types';
 import { GroupProfile, UserProfile } from '../../modals';
+import { getCorrectMemberCase } from '../../../utils';
 
 const { Header: HeaderAD } = Layout;
 
@@ -17,6 +18,7 @@ const ChatHeader: React.FC = () => {
 
   const isGroup = !!chat && chat.type === TypeOfChat.Group;
   const curUser = chat ? chat.users[0] : user;
+  const membersCount = isGroup ? chat.users.length + 1 : undefined;
 
   return curUser
     ? (
@@ -24,11 +26,14 @@ const ChatHeader: React.FC = () => {
         <HeaderAD className='chat-header'>
           <div className='user-info' onClick={showModal}>
             <span className='user-name'>{isGroup ? chat.name : curUser.name}</span>
-            {!isGroup && (
-              <span className='last-seen'>
-                {curUser.lastSeen ? curUser.lastSeen : 'был в сети недавно'}
-              </span>
-            )}
+            {isGroup 
+              ? <span className='last-seen'>
+                  {membersCount} {getCorrectMemberCase(membersCount)}
+                </span>
+              : (<span className='last-seen'>
+                  {curUser.lastSeen ? curUser.lastSeen : 'был в сети недавно'}
+                </span>)
+            }
           </div>
         </HeaderAD>
         {isGroup

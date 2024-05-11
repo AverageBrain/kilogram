@@ -11,6 +11,19 @@
   padding: 0 !important;
   border-bottom: none !important;
 
+  .ant-list-item-meta-title {
+    color: var(--base-font-color) !important;
+    overflow: hidden !important;
+    white-space: nowrap;
+    text-overflow: ellipsis !important;
+  }
+
+  .ant-list-item-meta-description {    
+    overflow: hidden !important;
+    white-space: nowrap;
+    text-overflow: ellipsis !important;
+  }
+
   .ant-list-item-meta-avatar {
     height: 40px;
     width: 40px;

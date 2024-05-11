@@ -42,7 +42,7 @@ const SearchResults: React.FC<Props> = ({ setSearchTerm, isSearching, results })
       locale={locale}
       itemLayout="horizontal"
       dataSource={results}
-      renderItem={(user, index) => (
+      renderItem={(user) => (
         <List.Item
           className="chat-list-item"
           key={user.id}
