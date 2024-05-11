@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useLocation } from 'react-router-dom';
 import { Layout } from 'antd';
 import { Splitter, SplitterPanel } from 'primereact/splitter'
 import { observer } from 'mobx-react-lite';
@@ -16,6 +17,7 @@ const MainPage: React.FC = () => {
   const { clearMessages } = messagesStore;
 
   const [panelSizes, setPanelSizes] = useState<number[]>([]); // TODO: можно записывать в localStorage
+  const location = useLocation();
 
   const handleEscapePress = (event: KeyboardEvent) => {
     if (event.key === 'Escape') {
@@ -32,7 +34,7 @@ const MainPage: React.FC = () => {
     return () => {
       document.removeEventListener('keydown', handleEscapePress);
     };
-  }, []);
+  }, [location.pathname]);
 
   const handleResizeFinished = (pairIdx: number, newSizes: number[]) => setPanelSizes(newSizes);
 

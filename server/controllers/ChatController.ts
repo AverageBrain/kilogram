@@ -1,4 +1,4 @@
-import {BodyParam, Get, JsonController, Param, Post, Req} from "routing-controllers";
+import {BodyParam, Get, JsonController, Param, Post, Req, Res} from "routing-controllers";
 import {Message, UserChat} from "@prisma/client";
 import express from "express";
 import {ChatService} from "../services/ChatService";
@@ -27,6 +27,7 @@ export function convertPrismaMessage(prismaMessage: Message, reactions: MessageR
 }
 
 
+// TODO: возвращать, а не кидать ошибки
 @JsonController("/chat")
 export class ChatController {
     @Post("/send")
@@ -203,7 +204,39 @@ export class ChatController {
         }
     }
 
-    @Post("/join/group")
+    @Get("/group/:joinKey")
+    async getGroupByJoinKey(
+        @Res() response: express.Response,
+        @Req() request: express.Request,
+        @Param("joinKey") joinKey: string,
+    ) {
+        const user = request.user?.prismaUser;
+        if (!user) {
+            throw new Error("User must be authorized");
+        }
+
+        const group = await prisma.chat.findUnique({ where: { joinKey: joinKey }});
+        if (group === null) {
+            return response.status(400).send({ message: 'JoinKey not connected to any group' });
+        }
+        const alreadyUsersChat = await prisma.userChat.findMany({ where: { chatId: group.id }, include: { user: true }});
+        if (alreadyUsersChat.find((item) => item.userId === user.id)) {
+            return response.status(400).send({ message: 'User already joined the group' });
+        }
+
+        return {
+            createdAt: group.createdAt,
+            id: group.id,
+            messages: [],
+            updatedAt: group.updatedAt,
+            name: group.name,
+            users: alreadyUsersChat.map(i => convertPrismaUser(i.user)),
+            joinKey: group.joinKey ?? undefined,
+            type: TypeOfChat.Group,
+        };
+    }
+
+    @Post("/group/join")
     async joinGroup(
         @Req() request: express.Request,
         @BodyParam('joinGroup') joinGroup: {
@@ -216,10 +249,13 @@ export class ChatController {
         }
 
         const group = await prisma.chat.findUnique({where: {joinKey: joinGroup.joinKey}})
-        if (group == null) {
-            throw new Error("JoinKey not connected any group")
+        if (group === null) {
+            throw new Error("JoinKey not connected to any group")
         }
         const alreadyUsersChat = await prisma.userChat.findMany({where: {chatId: group.id}, include: {user: true}})
+        if (alreadyUsersChat.find((item) => item.userId === user.id)) {
+            throw new Error("User already joined the group")
+        }
 
         await prisma.userChat.create({
             data: {userId: user.id, chatId: group.id},
@@ -232,7 +268,7 @@ export class ChatController {
             updatedAt: group.updatedAt,
             name: group.name,
             users: alreadyUsersChat.map(i => convertPrismaUser(i.user)),
-            joinKey: group.joinKey ? group.joinKey : undefined,
+            joinKey: group.joinKey ?? undefined,
             type: TypeOfChat.Group,
         }
     }
@@ -249,9 +285,8 @@ export class ChatController {
             throw new Error("User must be authorized")
         }
         const userChats: UserChat[] = await prisma.userChat.findMany(
-            {where: {AND: [{userId: user.id}]}, take: 10, orderBy: {updatedAt: 'desc'}}
+            {where: {AND: [{userId: user.id}]}, orderBy: {updatedAt: 'desc'}}
         );
-
 
         const chatsIds = userChats.map(i => i.chatId);
         const chats = await prisma.chat.findMany({

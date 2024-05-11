@@ -3,53 +3,49 @@
     align-items: center;
     justify-content: center;
 
-    background-color: #FF7370;
+    background: var(--light-background-gradiend);
 }
 
-.card {
-    width: 20%;
-    min-width: 300px;
-    background-color: white;
-    padding: 48px;
-    border-radius: 10px;
-
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-
-.button {
+.log-in-page {
     display: flex;
     align-items: center;
     justify-content: center;
-    box-sizing: content-box;
-    min-width: 180px;
-    padding: 7px 15px;
 
-    background-color: #F7E4E4;
+    text-align: center;
 
-    &:hover {
-        background-color: #FACAC9 !important;
+    .h1 {
+        font-weight: bolder;
+        color: #F78579;
+        line-height: 200px;
     }
-    
-    span {
-        display: block;
 
+    .h2 {
+        font-weight: bold;
+        color: #F78579;
+    }
+
+    @media (max-width: 1260px) {
+        .h1 {
+            font-size: 15vw;
+        }
+
+        .h2 {
+            font-size: 5vw;
+        }
+    } 
+
+    @media (min-width: 1260px) {
+        .h1 {
+            font-size: 195px;
+        }
+
+        .h2 {
+            font-size: 65px;
+        }
     }
 }
 
-.circle {
-    width: 200px;
-    height: 200px;
-    border-radius: 50%;
-    margin-bottom: 24px;
-
-    background: linear-gradient(#FF7370, #FFD4D4);
-
-    display: flex;
-    justify-content: center;
-    align-items: center;
-
-    font-size: 24px;
-    font-weight: bold;
+button {
+    min-width: 400px;
+    max-width: 700px;
 }

@@ -30,6 +30,7 @@ const Chats: React.FC<Props> = ({ setSearchTerm }) => {
 
   return (
     <List
+      className="chats"
       locale={locale}
       itemLayout="horizontal"
       dataSource={items}
