@@ -7,7 +7,8 @@ const chatService = new ChatService()
 
 export class DelayMessageJob {
     async checkAndSendInTimeMessage() {
-        const needSendMessages = await prisma.delayMessage.findMany({where: {inTime: {lt: new Date()}}, orderBy: {inTime: "desc"}})
+        const needSendMessages = await prisma.delayMessage.findMany({where: {inTime: {lt: new Date()}},
+            orderBy: [{ inTime: 'desc' }, { id: 'desc' }]})
         needSendMessages.map(async i => {
             try {
                 await this.sendDelayMessage(i)
