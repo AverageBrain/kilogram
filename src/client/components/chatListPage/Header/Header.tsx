@@ -1,5 +1,5 @@
-import { MenuOutlined, SearchOutlined } from '@ant-design/icons';
-import { Dropdown, Input, Layout, MenuProps, Space } from 'antd';
+import { MenuOutlined } from '@ant-design/icons';
+import { Dropdown, Input, Layout, MenuProps } from 'antd';
 import React from 'react';
 
 import { useModal } from '../../../../hooks';

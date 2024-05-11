@@ -18,7 +18,6 @@ class UserApiClient extends BaseApiClient {
         return this.axiosGet("/chat/messages/delay/all")
     }
 
-
     createChat(userId: number): Promise<ChatType> {
         return this.axiosPost("/chat/create/chat", {createChat: {userId}})
     }

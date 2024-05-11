@@ -17,6 +17,7 @@ class MessagesStore extends BaseStore<MessageType> {
             sendMessage: action.bound,
             updateMessages: action.bound,
             clearMessages: action.bound,
+            sendDelayMessage: action.bound,
         });
     }
 
@@ -65,6 +66,18 @@ class MessagesStore extends BaseStore<MessageType> {
       runInAction(() => {
           this.items = [...messages, ...this.items];
       });
+    }
+
+    async sendDelayMessage(chatId: number, text: string, inTime: Date): Promise<void> {
+      try {
+        this.enableLoading();
+      
+        await chatApiClient.sendDelayMessage(chatId, text, inTime);  
+      } catch (e: any) {
+        console.warn(e);
+      } finally {
+        this.disableLoading();
+      }
     }
 }
 

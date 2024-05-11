@@ -15,14 +15,14 @@ export class DelayMessageJob {
                 console.warn('Cant send delay message id: ' + i.id)
             }
         })
-        // setTimeout(this.checkAndSendInTimeMessage, 1000 * 60)
+        setTimeout(this.checkAndSendInTimeMessage, 1000 * 60)
     }
 
     async sendDelayMessage(delayMessage: DelayMessage) {
         const user = await prisma.user.findUniqueOrThrow({where: {id: delayMessage.userId}})
         await chatService.sendMessage(user, delayMessage)
+        await prisma.delayMessage.delete({where: {id: delayMessage.id}})
     }
-
 
     async run() {
         await this.checkAndSendInTimeMessage()

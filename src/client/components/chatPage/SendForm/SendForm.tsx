@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
-import { Spin } from 'antd';
-import { SendOutlined } from '@ant-design/icons';
 import { observer } from 'mobx-react-lite';
+import dayjs from 'dayjs';
 import DOMPurify from 'dompurify';
 import { EditorState, convertToRaw } from 'draft-js';
 import draftToHtml from 'draftjs-to-html';
@@ -10,6 +9,7 @@ import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
 
 import { chatsStore, messagesStore, userStore } from '../../../stores';
 import { chatApiClient } from '../../../hands';
+import SendButton from '../SendButton';
 import { getHTMLMetadata } from './getHTMLMetadata';
 import './SendForm.css';
 
@@ -18,13 +18,13 @@ type Props = {
 };
 
 const SendMessage: React.FC<Props> = ({ scrollRef }) => {
-  const { sendMessage, loading } = messagesStore;
+  const { sendMessage, sendDelayMessage } = messagesStore;
   const { selectedItem: chat, setSelectedChat, getMetadata } = chatsStore;
   const { selectedUser: user, setSelectedUser } = userStore;
 
   const [editorState, setEditorState] = useState<EditorState>(() => EditorState.createEmpty());
 
-  const handleSubmit = async () => {
+  const handleSubmit = async (inTime?: Date) => {
     const contentState = editorState.getCurrentContent();
     const htmlContent = draftToHtml(convertToRaw(contentState));
 
@@ -32,10 +32,10 @@ const SendMessage: React.FC<Props> = ({ scrollRef }) => {
     
     if (editorState.getCurrentContent().hasText()) {
       if (chat) {
-        await sendMessage(chat.id, safeHtml);      
+        inTime ? await sendDelayMessage(chat.id, safeHtml, inTime) : await sendMessage(chat.id, safeHtml);      
       } else if (user) {
-        const chat = await chatApiClient.createChat(user.id);
-        await sendMessage(chat.id, safeHtml);
+        const curChat = await chatApiClient.createChat(user.id);
+        inTime ? await sendDelayMessage(curChat.id, safeHtml, inTime) : await sendMessage(curChat.id, safeHtml);      
         setSelectedChat(chat);
         setSelectedUser(undefined);
       }
@@ -84,13 +84,10 @@ const SendMessage: React.FC<Props> = ({ scrollRef }) => {
           locale: 'ru',
         }}
       />
-      {loading 
-      ? <Spin className="send-button" />
-      : (
-          <button className="send-button" onClick={handleSubmit}>
-            <SendOutlined />
-          </button>
-      )}
+      <SendButton
+        disabledDelay={!editorState.getCurrentContent().hasText()}
+        onSubmit={handleSubmit}
+      />
     </div>
   );
 };

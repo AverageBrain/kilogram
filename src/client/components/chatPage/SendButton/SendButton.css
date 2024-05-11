@@ -1,0 +1,18 @@
+.send-button {
+  align-self: center;
+  border: none;
+  font-size: 24px;
+  color: #516460;
+  background: none;
+
+  cursor: pointer;
+  width: 60px;
+
+  &:hover {
+    color: #06A191;
+  }
+}
+
+[class="ant-picker-time-panel-column"] {
+  scrollbar-width: none !important;
+}

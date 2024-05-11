@@ -67,13 +67,9 @@ export class ChatController {
             throw new Error("User has no access to the chat")
         }
 
-        if (delayMessage.inTime < new Date()) {
-            throw new Error("InTime must be grate current date")
+        if (delayMessage.inTime <= new Date()) {
+            throw new Error("InTime must be grater than current date")
         }
-        await Promise.all(userChats.map(async (userChat) => {
-            userChat.updatedAt = new Date()
-            return prisma.userChat.update({data: userChat, where: {id: userChat.id}});
-        }));
 
         return prisma.delayMessage.create({
             data: {
@@ -120,7 +116,6 @@ export class ChatController {
 
         return prisma.delayMessage.findMany({where: {userId: user.id}})
     }
-
 
     @Post("/create/chat")
     async createChat(
