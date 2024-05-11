@@ -5,13 +5,3 @@
 
   background-color: white;
 }
-
-.messages {
-  display: flex;
-  flex-direction: column-reverse;
-  height: 100%;
-  color: black;
-  padding: 10px;
-  background: linear-gradient(to bottom right, #F8DCDA, #FBCAC4, #FFB5AB, #FCC9C3); /* TODO: вынести в переменную */
-}
-
