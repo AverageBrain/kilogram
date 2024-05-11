@@ -41,10 +41,11 @@ const SendButton: React.FC<Props> = ({ disabledDelay, onSubmit }) => {
 
   const getDisabledTime = (current: dayjs.Dayjs) => {
     const now = dayjs();
-    const disabledHours = current.format('DD.MM.YYYY') === now.format('DD.MM.YYYY')
+    const isToday = current.format('DD.MM.YYYY') === now.format('DD.MM.YYYY');
+    const disabledHours = isToday
       ? () => range(0, now.hour())
       : undefined;
-    const disabledMinutes = (hour: number) => hour === now.hour() ? range(0, now.minute() + 1) : []; 
+    const disabledMinutes = (hour: number) => isToday && hour === now.hour() ? range(0, now.minute() + 1) : []; 
     return {
       disabledHours,
       disabledMinutes,

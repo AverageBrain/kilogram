@@ -1,21 +1,21 @@
 import {BaseApiClient} from "./BaseApiClient";
-import {ChatType, MessageReactionType, DelayMessageType, MessageType, MetadataType} from "../../types/types";
+import {ChatType, MessageReactionType, MessageType, MetadataType} from "../../types/types";
 
 class UserApiClient extends BaseApiClient {
     sendMessage(chatId: number, text: string): Promise<MessageType> {
         return this.axiosPost("/chat/send", {message: {chatId, text}})
     }
 
-    sendDelayMessage(chatId: number, text: string, inTime: Date): Promise<DelayMessageType> {
+    sendDelayMessage(chatId: number, text: string, inTime: Date): Promise<MessageType> {
         return this.axiosPost("/chat/send/delay", {delayMessage: {chatId, text, inTime}})
     }
 
-    removeDelayMessage(delayMessageId: number): Promise<DelayMessageType> {
-        return this.axiosPost("/chat/remove/delay", {delayMessage: {delayMessageId}})
+    removeDelayMessage(delayMessageId: number): Promise<MessageType> {
+        return this.axiosPost("/chat/delete/delay", {delayMessage: {delayMessageId}})
     }
 
-    getAllDelayMessage(delayMessageId: number): Promise<DelayMessageType[]> {
-        return this.axiosGet("/chat/messages/delay/all")
+    getDelayMessages(chatId: number, beforeInTime?: Date): Promise<MessageType[]> {
+        return this.axiosPost("/chat/messages/delay", { chatMessages: { chatId, beforeInTime } })
     }
 
     createChat(userId: number): Promise<ChatType> {

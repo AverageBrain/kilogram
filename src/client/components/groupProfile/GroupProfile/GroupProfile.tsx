@@ -28,7 +28,7 @@ const GroupProfile: React.FC<Props> = ({ group, isOpenModal, closeModal }) => {
 
   return (
     <Modal 
-      className="modal"
+      className="group-profile-modal"
       isOpen={isOpenModal} 
       onRequestClose={closeModal}
       closeTimeoutMS={500}>

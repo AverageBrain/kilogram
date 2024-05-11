@@ -8,7 +8,7 @@ import {prisma} from "../domain/PrismaClient";
 import * as types from '../../src/types';
 import {UserService} from "../services/UserService";
 import {convertPrismaUser} from "./UserController";
-import {getIdCondition, groupBy} from "../utils";
+import {getDateCondition, getIdCondition, groupBy} from "../utils";
 import {makeRandomString} from "../utils/makeid";
 import {MessageReactionType, TypeOfChat} from "../../src/types/types";
 
@@ -56,7 +56,7 @@ export class ChatController {
             text: string
             inTime: Date
         }
-    ): Promise<types.DelayMessageType> {
+    ): Promise<types.MessageType> {
         const user = request.user?.prismaUser
         if (!user) {
             throw new Error("User must be authorized")
@@ -81,13 +81,13 @@ export class ChatController {
         })
     }
 
-    @Post("/remove/delay")
+    @Post("/delete/delay")
     async removeDelayMessage(
         @Req() request: express.Request,
         @BodyParam('delayMessage') delayMessage: {
             delayMessageId: number
         }
-    ): Promise<types.DelayMessageType> {
+    ): Promise<types.MessageType> {
         const user = request.user?.prismaUser
         if (!user) {
             throw new Error("User must be authorized")
@@ -105,16 +105,33 @@ export class ChatController {
         return prisma.delayMessage.delete({where: {id: removedDelayMessage.id}})
     }
 
-    @Get("/messages/delay/all")
-    async getAllDelayMessage(
-        @Req() request: express.Request
-    ): Promise<types.DelayMessageType[]> {
+    @Post("/messages/delay")
+    async getDelayMessages(
+        @Req() request: express.Request,
+        @BodyParam('chatMessages') chatMessages: {
+            chatId: number,
+            beforeInTime?: Date,
+        },
+    ): Promise<types.MessageType[]> {
         const user = request.user?.prismaUser
         if (!user) {
             throw new Error("User must be authorized")
         }
 
-        return prisma.delayMessage.findMany({where: {userId: user.id}})
+        const dateCondition = getDateCondition(chatMessages.beforeInTime);
+
+        return prisma.delayMessage.findMany({
+            where: {chatId: chatMessages.chatId, userId: user.id, inTime: dateCondition},
+            take: 15,
+            orderBy: [
+                {
+                    inTime: 'desc',
+                },
+                {
+                    id: 'desc',
+                },
+            ],
+        })
     }
 
     @Post("/create/chat")

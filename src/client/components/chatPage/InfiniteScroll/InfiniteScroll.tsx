@@ -9,10 +9,11 @@ import { TypeOfChat } from '../../../../types';
 
 type Props = {
   scrollRef: React.RefObject<HTMLDivElement>;
+  shouldLoadDelayed?: boolean;
 };
 
-const InfiniteScroll: React.FC<Props> = ({ scrollRef }) => {
-  const { items, loadItems, loading } = messagesStore;
+const InfiniteScroll: React.FC<Props> = ({ scrollRef, shouldLoadDelayed }) => {
+  const { items, loadMessages, loadDelayedMessages, loading } = messagesStore;
   const { selectedItem: chat } = chatsStore;
 
   const [hasMore, setHasMore] = useState(true);
@@ -20,7 +21,9 @@ const InfiniteScroll: React.FC<Props> = ({ scrollRef }) => {
   
   const handleObserver = useCallback(async (entries: IntersectionObserverEntry[]) => {
     if (hasMore && !loading && chat && entries[0].isIntersecting) {
-      const loadMore = await loadItems(chat?.id, items[items.length - 1]?.id, true);
+      const loadMore = shouldLoadDelayed
+       ? await loadDelayedMessages(chat?.id, items[items.length - 1]?.inTime, true)
+       : await loadMessages(chat?.id, items[items.length - 1]?.id, true);
       setHasMore(loadMore);
     }
   }, [items, hasMore, loading]);

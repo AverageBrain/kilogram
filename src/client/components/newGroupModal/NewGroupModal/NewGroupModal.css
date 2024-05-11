@@ -1,17 +1,47 @@
-.modal {
-  display: flex;
-  flex-direction: column;
-
-  width: 420px;
-  height: 684px;
-}
-
 main {
   /* overflow: hidden; */
   flex-grow: 2;
   position: relative;
   /* min-height: 100%; */
   /* overflow: scroll; */
+}
+
+/* TODO: общая модалка */
+.new-group-modal {
+  display: flex;
+  flex-direction: column;
+
+  width: 420px;
+  height: 684px;
+
+  inset: unset !important;
+  display: flex;
+  border-radius: 10px !important;
+  border: none !important;
+  flex-direction: column;
+  position: absolute;
+  left: 50% !important;
+  top: 50% !important;
+  transform: translate(-50%, -50%);
+  background-color: white;
+  z-index: 1000;
+  padding: 0 !important;
+  color: #516460;
+
+  header {
+    padding: 16px 20px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    font-weight: 500;
+  
+    .icon {
+      display: flex;
+      align-items: center;
+      cursor: pointer;
+      color: #898989;
+    }
+  }
 }
 
 footer {

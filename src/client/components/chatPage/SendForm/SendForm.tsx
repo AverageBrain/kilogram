@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { observer } from 'mobx-react-lite';
-import dayjs from 'dayjs';
+import { CalendarOutlined } from '@ant-design/icons';
 import DOMPurify from 'dompurify';
 import { EditorState, convertToRaw } from 'draft-js';
 import draftToHtml from 'draftjs-to-html';
@@ -15,10 +15,11 @@ import './SendForm.css';
 
 type Props = {
   scrollRef: React.RefObject<HTMLDivElement>;
+  setShouldLoadDelayed: (value: boolean) => void;
 };
 
-const SendMessage: React.FC<Props> = ({ scrollRef }) => {
-  const { sendMessage, sendDelayMessage } = messagesStore;
+const SendMessage: React.FC<Props> = ({ scrollRef, setShouldLoadDelayed }) => {
+  const { sendMessage, sendDelayMessage, clearMessages } = messagesStore;
   const { selectedItem: chat, setSelectedChat, getMetadata } = chatsStore;
   const { selectedUser: user, setSelectedUser } = userStore;
 
@@ -31,6 +32,7 @@ const SendMessage: React.FC<Props> = ({ scrollRef }) => {
     const safeHtml = DOMPurify.sanitize(htmlContent + await getHTMLMetadata(htmlContent, getMetadata));
     
     if (editorState.getCurrentContent().hasText()) {
+      setEditorState(EditorState.createEmpty());
       if (chat) {
         inTime ? await sendDelayMessage(chat.id, safeHtml, inTime) : await sendMessage(chat.id, safeHtml);      
       } else if (user) {
@@ -40,8 +42,6 @@ const SendMessage: React.FC<Props> = ({ scrollRef }) => {
         setSelectedUser(undefined);
       }
     }
-
-    setEditorState(EditorState.createEmpty());
   
     scrollRef?.current?.scrollTo({
       top: scrollRef.current.scrollHeight,
@@ -56,6 +56,11 @@ const SendMessage: React.FC<Props> = ({ scrollRef }) => {
     }
     return false;
   }
+
+  const handleClickDelay = () => {
+    clearMessages();
+    setShouldLoadDelayed(true);
+  };
 
   return (
     <div className="send-message">
@@ -84,6 +89,9 @@ const SendMessage: React.FC<Props> = ({ scrollRef }) => {
           locale: 'ru',
         }}
       />
+      <button className="send-button" onClick={handleClickDelay}>
+        <CalendarOutlined />
+      </button>
       <SendButton
         disabledDelay={!editorState.getCurrentContent().hasText()}
         onSubmit={handleSubmit}

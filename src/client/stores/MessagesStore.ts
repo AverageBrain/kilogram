@@ -13,7 +13,8 @@ class MessagesStore extends BaseStore<MessageType> {
             selectedItem: override,
             loading: override,
 
-            loadItems: action.bound,
+            loadMessages: action.bound,
+            loadDelayedMessages: action.bound,
             sendMessage: action.bound,
             updateMessages: action.bound,
             clearMessages: action.bound,
@@ -21,11 +22,33 @@ class MessagesStore extends BaseStore<MessageType> {
         });
     }
 
-    async loadItems(chatId: number, afterId: number = -1, update?: boolean): Promise<boolean> {
+    async loadMessages(chatId: number, afterId: number = -1, update?: boolean): Promise<boolean> {
       try {
         this.enableLoading();
       
         const data = await chatApiClient.getMessages(chatId, afterId);
+  
+        runInAction(() => {
+          if (update) {
+            this.items = [...this.items, ...data];
+          } else {
+            this.items = data;
+          }
+        });
+        return data.length > 0;
+      } catch (e: any) {
+        console.warn(e);
+        return false;
+      } finally {
+        this.disableLoading();
+      }
+    }
+
+    async loadDelayedMessages(chatId: number, beforeInTime?: Date, update?: boolean): Promise<boolean> {
+      try {
+        this.enableLoading();
+      
+        const data = await chatApiClient.getDelayMessages(chatId, beforeInTime);
   
         runInAction(() => {
           if (update) {
