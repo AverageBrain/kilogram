@@ -2,10 +2,11 @@ import React, { useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { observer } from 'mobx-react-lite';
 import { Button, Flex, Layout, Spin, Typography } from 'antd';
-import { chatsStore } from '../../stores';
-import { getCorrectMemberCase } from '../../utils';
-import './JoinGroupPage.css'
-import { Avatar } from '../Avatar';
+import { chatsStore } from '../../../stores';
+import { getCorrectMemberCase } from '../../../utils';
+import { Avatar } from '../../Avatar';
+
+import '../additionalPages.css';
 
 const { Content } = Layout;
 const { Text } = Typography;
@@ -36,26 +37,26 @@ const JoinGroupPage: React.FC = () => {
   }, []);
 
   return (
-    <Layout style={{ height: "100vh" }}>
-      <Content className="container join-group-card">
+    <Layout className="container" style={{ height: "100vh" }}>
+      <Content className="content">
         <Flex  vertical gap={32} justify="center" align="center">
           {loading
             ? <Spin />
             : responseError === 'JoinKey not connected to any group'
-              ? <Text className="h2">Такая группа не существует, проверьте вашу ссылку.</Text>
+              ? <Text className="h3">Такая группа не существует, проверьте вашу ссылку.</Text>
               : responseError === 'User already joined the group'
-                ? <Text className="h2">Вы уже состоите в данной группе</Text>    
+                ? <Text className="h3">Вы уже состоите в данной группе</Text>    
                 : selectedItem && (
                   <>
                     <Avatar size={250} />
-                    <Text className="h2">{selectedItem.name}</Text>
-                    <Text className="h3">{selectedItem.users.length} {getCorrectMemberCase(selectedItem.users.length)}</Text>
+                    <Text className="h3">{selectedItem.name}</Text>
+                    <Text className="h4">{selectedItem.users.length} {getCorrectMemberCase(selectedItem.users.length)}</Text>
                   </>
                 )
           }
           <Button
             size="large"
-            className="join-group-button"
+            className="action-button"
             type="text"
             onClick={handleClick}
           >

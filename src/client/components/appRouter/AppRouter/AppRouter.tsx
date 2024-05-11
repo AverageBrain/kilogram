@@ -2,10 +2,10 @@ import React from 'react';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 
 import AuthRoutes from '../AuthRoutes';
-import LogInPage from '../../LogInPage';
+import LogInPage from '../../additionalPages/LogInPage';
 import MainPage from '../../MainPage';
-import JoinGroupPage from '../../JoinGroupPage';
-import NotFoundPage from '../../NotFoundPage';
+import JoinGroupPage from '../../additionalPages/JoinGroupPage';
+import NotFoundPage from '../../additionalPages/NotFoundPage';
 
 const AppRouter: React.FC = () => {
   return (
