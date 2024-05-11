@@ -1,3 +1,12 @@
+.chats {
+  height: 100%;
+  overflow-y: scroll;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
 .chat-list-item {
   padding: 0 !important;
   border-bottom: none !important;
@@ -34,10 +43,15 @@
       white-space: nowrap;
     }
   }
+
+  .last-message {
+    overflow: hidden;
+    white-space: nowrap;
+    height: 20px;
+  }
   
   .chat-list-item-meta-active {
     background-color: #00CCC940 !important;
   }
-  
 }
 

@@ -1,15 +1,16 @@
 import React, { useState } from 'react';
-import { Form, Input, Spin } from 'antd';
+import { Spin } from 'antd';
 import { SendOutlined } from '@ant-design/icons';
 import { observer } from 'mobx-react-lite';
 import DOMPurify from 'dompurify';
-import { EditorState, convertToRaw  } from 'draft-js';
+import { EditorState, convertToRaw } from 'draft-js';
 import draftToHtml from 'draftjs-to-html';
-import { Editor } from 'react-draft-wysiwyg';
+import { Editor, SyntheticKeyboardEvent } from 'react-draft-wysiwyg';
 import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
 
 import { chatsStore, messagesStore, userStore } from '../../../stores';
 import { chatApiClient } from '../../../hands';
+import { getHTMLMetadata } from './getHTMLMetadata';
 import './SendForm.css';
 
 type Props = {
@@ -18,7 +19,7 @@ type Props = {
 
 const SendMessage: React.FC<Props> = ({ scrollRef }) => {
   const { sendMessage, loading } = messagesStore;
-  const { selectedItem: chat, setSelectedChat } = chatsStore;
+  const { selectedItem: chat, setSelectedChat, getMetadata } = chatsStore;
   const { selectedUser: user, setSelectedUser } = userStore;
 
   const [editorState, setEditorState] = useState<EditorState>(() => EditorState.createEmpty());
@@ -26,9 +27,10 @@ const SendMessage: React.FC<Props> = ({ scrollRef }) => {
   const handleSubmit = async () => {
     const contentState = editorState.getCurrentContent();
     const htmlContent = draftToHtml(convertToRaw(contentState));
-    const safeHtml = DOMPurify.sanitize(htmlContent);
+
+    const safeHtml = DOMPurify.sanitize(htmlContent + await getHTMLMetadata(htmlContent, getMetadata));
     
-    if (safeHtml !== '<p></p>') {
+    if (editorState.getCurrentContent().hasText()) {
       if (chat) {
         await sendMessage(chat.id, safeHtml);      
       } else if (user) {
@@ -47,6 +49,14 @@ const SendMessage: React.FC<Props> = ({ scrollRef }) => {
     });
   }
 
+  const handleReturn = (event: SyntheticKeyboardEvent, editorState: EditorState): boolean => {
+    if (event.key === 'Enter' && !event.shiftKey && !event.ctrlKey) {
+      handleSubmit();
+      return true;
+    }
+    return false;
+  }
+
   return (
     <div className="send-message">
       <Editor
@@ -57,6 +67,7 @@ const SendMessage: React.FC<Props> = ({ scrollRef }) => {
         placeholder="Введите сообщение..."
         editorState={editorState}
         onEditorStateChange={setEditorState}
+        handleReturn={handleReturn}
         toolbar={{
           options: ['inline', 'link', 'emoji', 'remove', 'history'],
           inline: {

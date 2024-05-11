@@ -11,7 +11,7 @@ class AuthApiClient extends BaseApiClient {
     }
 
     async logout() {
-        return this.axiosGet("/logout");
+        return this.axiosPost("/logout", {});
     }
 }
 
