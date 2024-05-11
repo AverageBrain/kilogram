@@ -10,7 +10,7 @@
   display: flex;
 
   p {
-    color: #516460;
+    color: var(--base-font-color);
     margin-bottom: 0;
     word-break: break-all;
   }
@@ -51,8 +51,6 @@
   align-items: flex-end;
 
   padding: 5px;
-
-  /* TODO очень много раз повторяется */
 }
 
 .metadata {
@@ -81,5 +79,5 @@
   -webkit-line-clamp: 4;
   -webkit-box-orient: vertical;
 
-  color: #516460;
+  color: var(--base-font-color);
 }

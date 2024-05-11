@@ -11,7 +11,7 @@
   align-self: center;
   border: none;
   font-size: 24px;
-  color: #516460;
+  color: var(--base-font-color);
   background: none;
 
   cursor: pointer;

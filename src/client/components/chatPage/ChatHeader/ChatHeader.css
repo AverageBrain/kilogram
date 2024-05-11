@@ -1,7 +1,7 @@
 .chat-header {
   padding: 0;
   background-color: white;
-  color: #516460;
+  color: var(--base-font-color);
   line-height: 20px;
   display: flex;
   align-items: center;

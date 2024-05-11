@@ -28,7 +28,7 @@
   background-color: white;
   z-index: 1000;
   padding: 0 !important;
-  color: #516460;
+  color: var(--base-font-color);
 
   header {
     padding: 16px 20px;
