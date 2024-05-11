@@ -24,8 +24,10 @@ const Chats: React.FC<Props> = ({ setSearchTerm }) => {
 
   const handleClick = async (chat: ChatType) => {
     setSearchTerm('');
-    setSelectedChat(chat);
-    await loadItems(chat.id);
+    if (chat.id !== selectedItem?.id) {
+      setSelectedChat(chat);
+      await loadItems(chat.id);
+    }
   };
 
   return (

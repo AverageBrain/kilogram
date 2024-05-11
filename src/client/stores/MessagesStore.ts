@@ -47,10 +47,7 @@ class MessagesStore extends BaseStore<MessageType> {
       try {
         this.enableLoading();
       
-        const data = await chatApiClient.sendMessage(chatId, text);
-  
-        this.updateMessages([data]);
-        chatsStore.updateChats(data);
+        await chatApiClient.sendMessage(chatId, text);
       } catch (e: any) {
         console.warn(e);
       } finally {

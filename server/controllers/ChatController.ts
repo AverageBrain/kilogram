@@ -68,7 +68,7 @@ export class ChatController {
         }
 
         if (delayMessage.inTime <= new Date()) {
-            throw new Error("InTime must be grater than current date")
+            throw new Error("InTime must be greater than current date")
         }
 
         return prisma.delayMessage.create({

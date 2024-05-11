@@ -13,7 +13,7 @@
   opacity: 0;
 }
 
-.ReactModal__Content {
+.profile-modal {
   inset: unset !important;
   display: flex;
   border-radius: 10px !important;

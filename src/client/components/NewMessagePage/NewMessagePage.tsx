@@ -12,10 +12,11 @@ type Props = {
 
 export const NewMessagePage: React.FC<Props> = ({ isOpenModal, closeModal }) =>  (
   <Modal 
-    className="modal"
+    className="new-message-modal"
     isOpen={isOpenModal} 
     onRequestClose={closeModal}
-    closeTimeoutMS={500}>
+    closeTimeoutMS={500}
+  >
       <div className="new-message-page">
         <NewMessagePageHeader closeModal={closeModal} isOpenModal={isOpenModal}/>
         <NewMessageMain closeModal={closeModal}/>

@@ -12,10 +12,12 @@ export class DelayMessageJob {
             try {
                 await this.sendDelayMessage(i)
             } catch (e) {
-                console.warn('Cant send delay message id: ' + i.id)
+                console.warn('Can\'t send delay message with id: ' + i.id)
             }
         })
-        setTimeout(this.checkAndSendInTimeMessage, 1000 * 60)
+        // TODO: вернуть после проверки
+        // setTimeout(this.checkAndSendInTimeMessage.bind(this), 1000 * 60)
+        setTimeout(this.checkAndSendInTimeMessage.bind(this), 10000)
     }
 
     async sendDelayMessage(delayMessage: DelayMessage) {
