@@ -8,7 +8,7 @@ import {
 } from 'mobx';
 import { partition } from 'lodash';
 
-import { ChatType, MessageType, UserType } from '../../types';
+import { ChatType, MessageType, MetadataType, UserType } from '../../types';
 import BaseStore from './BaseStore';
 import { chatApiClient } from '../hands';
 
@@ -30,6 +30,7 @@ class ChatsStore extends BaseStore<ChatType> {
           updateGroups: action.bound,
           getGroupByJoinKey: action.bound,
           joinGroup: action.bound,
+          getMetadata: action.bound,
       });
   }
 
@@ -146,6 +147,20 @@ class ChatsStore extends BaseStore<ChatType> {
       runInAction(() => {
         this.selectedItem = data;
       });
+    } catch (e: any) {
+      console.warn(e);
+    } finally {
+      this.disableLoading();
+    }
+  }
+
+  async getMetadata(url: string): Promise<MetadataType | void> {
+    try {
+      this.enableLoading();
+    
+      const data = await chatApiClient.getMetadata(url);
+
+      return data;
     } catch (e: any) {
       console.warn(e);
     } finally {

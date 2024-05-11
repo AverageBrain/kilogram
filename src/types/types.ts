@@ -49,3 +49,9 @@ export type ChatType = BaseItemType & {
   messages: MessageType[];
   type: TypeOfChat;
 }
+
+export type MetadataType = {
+  title: string;
+  description?: string;
+  imageUrl?: string;
+}

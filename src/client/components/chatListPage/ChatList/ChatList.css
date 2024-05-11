@@ -43,6 +43,12 @@
       white-space: nowrap;
     }
   }
+
+  .last-message {
+    overflow: hidden;
+    white-space: nowrap;
+    height: 20px;
+  }
   
   .chat-list-item-meta-active {
     background-color: #00CCC940 !important;
