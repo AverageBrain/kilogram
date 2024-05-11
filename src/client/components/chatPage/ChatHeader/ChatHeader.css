@@ -7,7 +7,7 @@
   align-items: center;
   justify-content: flex-start;
 
-  .user-info {
+  .info {
     width: 100%;
     padding: 0 10px;
     cursor: pointer;
@@ -15,11 +15,11 @@
     flex-direction: column;
     justify-content: center;
 
-    .user-name {
+    .name {
       font-weight: 500;
     }  
 
-    .last-seen {
+    .description {
       font-weight: 200;
       font-size: 14px;
     }

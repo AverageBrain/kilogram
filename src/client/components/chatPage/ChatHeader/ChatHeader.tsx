@@ -24,13 +24,13 @@ const ChatHeader: React.FC = () => {
     ? (
       <>
         <HeaderAD className='chat-header'>
-          <div className='user-info' onClick={showModal}>
-            <span className='user-name'>{isGroup ? chat.name : curUser.name}</span>
+          <div className='info' onClick={showModal}>
+            <span className='name'>{isGroup ? chat.name : curUser.name}</span>
             {isGroup 
-              ? <span className='last-seen'>
+              ? <span className='description'>
                   {membersCount} {getCorrectMemberCase(membersCount)}
                 </span>
-              : (<span className='last-seen'>
+              : (<span className='description'>
                   {curUser.lastSeen ? curUser.lastSeen : 'был в сети недавно'}
                 </span>)
             }

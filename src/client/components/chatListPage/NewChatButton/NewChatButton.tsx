@@ -5,7 +5,7 @@ import { FaUser, FaUsers } from "react-icons/fa";
 
 import './NewChatButton.css';
 import clsx from 'clsx';
-import { NewMessagePage } from '../../modals';
+import { NewMessageModal } from '../../modals';
 import { NewGroupModal } from '../../modals';
 import { useModal } from '../../../../hooks';
 
@@ -60,7 +60,7 @@ export const NewChatButton: React.FC = () => {
           <HiPencil className={clsx('pencil', !firstTime && 'rotate')} size={25}/>
         }
       </div>
-      <NewMessagePage isOpenModal={isOpenNewMessageModal} closeModal={closeNewMessageModal} />
+      <NewMessageModal isOpenModal={isOpenNewMessageModal} closeModal={closeNewMessageModal} />
       <NewGroupModal isOpenModal={isOpenNewGroupModal} closeModal={closeNewGroupModal} />
     </div>
   );
