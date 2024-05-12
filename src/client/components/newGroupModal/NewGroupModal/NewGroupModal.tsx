@@ -41,7 +41,7 @@ const NewGroupModal: React.FC<Props> = ({ isOpenModal, closeModal }) => {
 
   return (
     <Modal 
-      className="modal"
+      className="new-group-modal"
       isOpen={isOpenModal} 
       onRequestClose={handleClose}
       closeTimeoutMS={500}>

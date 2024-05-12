@@ -16,7 +16,7 @@ type Props = {
 export const NewMessageUsersList: React.FC<Props> = ({ searchTerm, setSearchTerm, closeModal }) => {
   const { items, setSelectedChat } = chatsStore;
   const { setSelectedUser } = userStore;
-  const { loadItems, clearMessages } = messagesStore;
+  const { clearMessages } = messagesStore;
   const [ isSearching, setIsSearcing ] = useState('');
   const [ results, setResults ] = useState(new Array<UserType>());
 
@@ -49,8 +49,6 @@ export const NewMessageUsersList: React.FC<Props> = ({ searchTerm, setSearchTerm
     if (chat) {
       setSelectedChat(chat);
       closeModal();
-      console.log(chat);
-      await loadItems(chat.id);
     } else {
       setSelectedUser(user);
       setSelectedChat(undefined);

@@ -31,7 +31,7 @@ export class ChatService {
 
         const chatUsers = await prisma.userChat.findMany({where: {chatId: userChats[0].chatId}})
 
-        chatUsers.forEach(uc => uc.userId != user.id ? sseService.publishMessage(uc.userId, "newMessage", sendMessage) : null)
+        chatUsers.forEach(uc => sseService.publishMessage(uc.userId, "newMessage", sendMessage))
 
         return sendMessage
     }

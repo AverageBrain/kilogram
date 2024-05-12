@@ -16,7 +16,6 @@ type Props = {
 
 const Chats: React.FC<Props> = ({ setSearchTerm }) => {
   const { selectedItem, items, setSelectedChat } = chatsStore;
-  const { loadItems } = messagesStore;
 
   const locale = {
     emptyText: 'У вас нет чатов.',
@@ -24,8 +23,9 @@ const Chats: React.FC<Props> = ({ setSearchTerm }) => {
 
   const handleClick = async (chat: ChatType) => {
     setSearchTerm('');
-    setSelectedChat(chat);
-    await loadItems(chat.id);
+    if (chat.id !== selectedItem?.id) {
+      setSelectedChat(chat);
+    }
   };
 
   return (
