@@ -22,7 +22,7 @@ export const SelectedUserProfileView: React.FC<Props> = ({ selectedUser, handleB
   return (
     <React.Fragment>
       <ModalHeader handleBack={handleBack} toggle={closeModal} title='Информация о пользователе' />
-      <UserModalMain user={selectedUser}/>
+      <UserModalMain closeModal={closeModal} user={selectedUser}/>
     </React.Fragment>
   );
 }

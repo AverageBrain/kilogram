@@ -19,7 +19,7 @@ export const UserProfile: React.FC<Props> = ( { user, isOpenModal, closeModal } 
       closeTimeoutMS={500}>
         <div className="profile-modal">
           <ModalHeader toggle={closeModal} title="Информация о пользователе"/>
-          <UserModalMain user={user} />
+          <UserModalMain user={user} closeModal={closeModal}/>
         </div>
     </Modal>
   );
