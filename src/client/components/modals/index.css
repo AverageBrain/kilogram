@@ -18,6 +18,10 @@
   height: 684px;
 }
 
+.small-modal {
+  width: 360px;
+}
+
 .ReactModal__Content {
   inset: unset !important;
   display: flex;

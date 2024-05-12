@@ -5,16 +5,18 @@ import './ModalFooter.css'
 type Props = {
   handleBack: () => void;
   handleSave: () => void;
+  saveText?: string;
+  backText?: string;
 }
 
-export const ModalFooter: React.FC<Props> = ({ handleBack, handleSave }) => {
+export const ModalFooter: React.FC<Props> = ({ handleBack, handleSave, saveText, backText }) => {
   return (
     <footer>
       <Button className="modal-button" type="text" size="large" onClick={handleBack}>
-        Отменить
+        {saveText ? saveText : 'Отменить'}
       </Button>
       <Button className="modal-button" type="text" size="large" onClick={handleSave}>
-        Сохранить
+        {backText ? backText : 'Сохранить'}
       </Button>
     </footer>
   );
