@@ -14,6 +14,7 @@ type Props = {
 export const UserProfile: React.FC<Props> = ( { user, isOpenModal, closeModal } ) => {
   return (
     <Modal 
+      className="big-modal"
       isOpen={isOpenModal} 
       onRequestClose={closeModal}
       closeTimeoutMS={500}>

@@ -3,7 +3,6 @@ export type {
   MessageType,
   ChatListItemType,
   ChatType,
-  DelayMessageType,
   MetadataType,
 } from './types';
 

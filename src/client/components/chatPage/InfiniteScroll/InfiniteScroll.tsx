@@ -6,21 +6,27 @@ import { Message } from '../Message';
 import './InfiniteScroll.css';
 import { Spin } from 'antd';
 import { TypeOfChat } from '../../../../types';
+import moment from 'moment';
+import ChatDate from './ChatDate';
+import { groupBy } from 'lodash';
 
 type Props = {
   scrollRef: React.RefObject<HTMLDivElement>;
+  shouldLoadDelayed?: boolean;
 };
 
-const InfiniteScroll: React.FC<Props> = ({ scrollRef }) => {
-  const { items, loadItems, loading } = messagesStore;
+const InfiniteScroll: React.FC<Props> = ({ scrollRef, shouldLoadDelayed }) => {
+  const { items, loadMessages, loadDelayedMessages, loading } = messagesStore;
   const { selectedItem: chat } = chatsStore;
 
-  const [hasMore, setHasMore] = useState(true);
+  const [ hasMore, setHasMore ] = useState(true);
   const target = useRef<HTMLDivElement>(null);  
   
   const handleObserver = useCallback(async (entries: IntersectionObserverEntry[]) => {
     if (hasMore && !loading && chat && entries[0].isIntersecting) {
-      const loadMore = await loadItems(chat?.id, items[items.length - 1]?.id, true);
+      const loadMore = shouldLoadDelayed
+       ? await loadDelayedMessages(chat?.id, items[items.length - 1]?.inTime, true)
+       : await loadMessages(chat?.id, items[items.length - 1]?.id, true);
       setHasMore(loadMore);
     }
   }, [items, hasMore, loading]);
@@ -42,24 +48,30 @@ const InfiniteScroll: React.FC<Props> = ({ scrollRef }) => {
     };
   }, [target, handleObserver]);
 
-    return (
-      <div ref={scrollRef} className="messages">
-        {items.map((curMessage) => (
-          <Message
-            key={curMessage.id}
-            message={curMessage}
-            isGroup={chat?.type === TypeOfChat.Group}
-          />
-        ))}
-        <div className='loading-bar' ref={target}>
-          {loading && 
-            <div className='loading'>
-              <Spin />
-            </div>
-          }
-        </div>
+  const itemsGroupedByDate = groupBy(items, (item) => (moment(item.createdAt).format('D MMM YYYY')));
+
+  return (
+    <div ref={scrollRef} className="messages">
+      {Object.entries(itemsGroupedByDate).map(([date, messages]) => (
+          <div key={date} className="messages-with-same-date">
+            {messages.map(curMessage => (
+              <Message key={curMessage.id}
+              message={curMessage}
+              isGroup={chat?.type === TypeOfChat.Group} />
+            ))}
+            <ChatDate date={date} />
+          </div>
+        )
+      )}
+      <div className='loading-bar' ref={target}>
+        {loading && 
+          <div className='loading'>
+            <Spin />
+          </div>
+        }
       </div>
-    );
+    </div>
+  );
 };
 
 export default observer(InfiniteScroll);

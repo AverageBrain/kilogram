@@ -25,7 +25,7 @@ const Message: React.FC<Props> = ({ message, isGroup }) => {
         <div dangerouslySetInnerHTML={{ __html: message.text }} />
         <div className="message-meta">
           <span className="timestep">
-            {moment(message.createdAt).format('LT')}
+            {moment(message.inTime ?? message.createdAt).format('LT')}
           </span>
           {isGroup && !isActivePerson && <Avatar userId={message.userId} size={25} />}
         </div>

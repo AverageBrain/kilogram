@@ -15,7 +15,7 @@ type Props = {
 export const NewMessageUsersList: React.FC<Props> = ({ searchTerm, setSearchTerm, closeModal }) => {
   const { setSelectedChat } = chatsStore;
   const { setSelectedUser } = userStore;
-  const { loadItems, clearMessages } = messagesStore;
+  const { clearMessages } = messagesStore;
   const { loadItems: loadUsers, loading, items } = userStore;
 
   const debouncedSearchTerm = useDebounce(searchTerm, 500);
@@ -39,7 +39,6 @@ export const NewMessageUsersList: React.FC<Props> = ({ searchTerm, setSearchTerm
     if (chat) {
       setSelectedChat(chat);
       closeModal();
-      await loadItems(chat.id);
     } else {
       setSelectedUser(user);
       setSelectedChat(undefined);

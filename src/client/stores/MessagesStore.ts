@@ -13,14 +13,16 @@ class MessagesStore extends BaseStore<MessageType> {
             selectedItem: override,
             loading: override,
 
-            loadItems: action.bound,
+            loadMessages: action.bound,
+            loadDelayedMessages: action.bound,
             sendMessage: action.bound,
             updateMessages: action.bound,
             clearMessages: action.bound,
+            sendDelayMessage: action.bound,
         });
     }
 
-    async loadItems(chatId: number, afterId: number = -1, update?: boolean): Promise<boolean> {
+    async loadMessages(chatId: number, afterId: number = -1, update?: boolean): Promise<boolean> {
       try {
         this.enableLoading();
       
@@ -42,14 +44,33 @@ class MessagesStore extends BaseStore<MessageType> {
       }
     }
 
+    async loadDelayedMessages(chatId: number, beforeInTime?: Date, update?: boolean): Promise<boolean> {
+      try {
+        this.enableLoading();
+      
+        const data = await chatApiClient.getDelayMessages(chatId, beforeInTime);
+  
+        runInAction(() => {
+          if (update) {
+            this.items = [...this.items, ...data];
+          } else {
+            this.items = data;
+          }
+        });
+        return data.length > 0;
+      } catch (e: any) {
+        console.warn(e);
+        return false;
+      } finally {
+        this.disableLoading();
+      }
+    }
+
     async sendMessage(chatId: number, text: string): Promise<void> {
       try {
         this.enableLoading();
       
-        const data = await chatApiClient.sendMessage(chatId, text);
-  
-        this.updateMessages([data]);
-        chatsStore.updateChats(data);
+        await chatApiClient.sendMessage(chatId, text);
       } catch (e: any) {
         console.warn(e);
       } finally {
@@ -65,6 +86,18 @@ class MessagesStore extends BaseStore<MessageType> {
       runInAction(() => {
           this.items = [...messages, ...this.items];
       });
+    }
+
+    async sendDelayMessage(chatId: number, text: string, inTime: Date): Promise<void> {
+      try {
+        this.enableLoading();
+      
+        await chatApiClient.sendDelayMessage(chatId, text, inTime);  
+      } catch (e: any) {
+        console.warn(e);
+      } finally {
+        this.disableLoading();
+      }
     }
 }
 

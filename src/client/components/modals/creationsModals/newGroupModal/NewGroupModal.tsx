@@ -38,7 +38,8 @@ export const NewGroupModal: React.FC<Props> = ({ isOpenModal, closeModal }) => {
   };
 
   return (
-    <Modal 
+    <Modal
+      className="big-modal" 
       isOpen={isOpenModal} 
       onRequestClose={handleClose}
       closeTimeoutMS={500}>

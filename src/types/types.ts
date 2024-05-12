@@ -15,6 +15,7 @@ export type MessageType = BaseItemType & {
   chatId: number;
   userId: number;
   text: string;
+  inTime?: Date;
   reactions?: MessageReactionType[]
 }
 
@@ -24,13 +25,8 @@ export type MessageReactionType = BaseItemType & {
 }
 
 export type ReactionType = BaseItemType & {
-  emoji: string
+  emoji: string;
 }
-
-export type DelayMessageType = MessageType & {
-  inTime: Date
-}
-
 
 export type ChatListItemType = BaseItemType & {
   name: string;

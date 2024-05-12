@@ -1,37 +1,38 @@
-.ReactModal__Overlay {
-  background-color: rgba(0, 0, 0, 0.4) !important;
-  opacity: 0;
-  transition: opacity 120ms ease-in-out;
+.send-button {
+  align-self: center;
+  border: none;
+  font-size: 24px;
+  color: #516460;
+  background: none;
+
+  cursor: pointer;
+  width: 60px;
+
+  &:hover {
+    color: #06A191;
+  }
 }
 
-.ReactModal__Overlay--after-open{
-  opacity: 1;
-  z-index: 999;
+[class="ant-picker-time-panel-column"] {
+  scrollbar-width: none !important;
 }
 
-.ReactModal__Overlay--before-close{
-  opacity: 0;
-}
-
-.big-modal {
-  width: 420px;
-  height: 684px;
-}
-
-.ReactModal__Content {
+/* TODO: shared modal/modal mixin */
+.delay-modal {
   inset: unset !important;
   display: flex;
   border-radius: 10px !important;
   border: none !important;
   flex-direction: column;
   position: absolute;
+  min-width: 360px;
   left: 50% !important;
   top: 50% !important;
   transform: translate(-50%, -50%);
   background-color: white;
   z-index: 1000;
-  padding: 0 !important;
-  color: var(--base-font-color);
+  padding: 10px !important;
+  color: #516460;
 
   header {
     padding: 16px 20px;
@@ -47,5 +48,4 @@
       color: #898989;
     }
   }
-
 }
