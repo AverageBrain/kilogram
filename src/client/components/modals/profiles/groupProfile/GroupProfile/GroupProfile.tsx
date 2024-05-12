@@ -1,8 +1,8 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Modal from 'react-modal';
 import MembersList from '../MembersList';
 import { Button } from 'antd';
-import { ChatType } from '../../../../../../types';
+import { ChatType, UserType } from '../../../../../../types';
 import { copyToClipboard, getCorrectMemberCase } from '../../../../../utils';
 import { authUserStore } from '../../../../../stores';
 import { ModalHeader } from '../../../commonComponents/header';
@@ -10,6 +10,8 @@ import { MainInfo } from '../../../commonComponents/mainInfo';
 import { Divider } from '../../../commonComponents/divider';
 
 import './GroupProfile.css';
+import { SelectedUserProfileView } from './SelectedUserProfileView';
+import { GroupProfileView } from './GroupProfileView';
 
 type Props = {
   group: ChatType;
@@ -18,13 +20,10 @@ type Props = {
 }
 
 export const GroupProfile: React.FC<Props> = ({ group, isOpenModal, closeModal }) => {
-  const { selectedItem } = authUserStore;
+  const [ selectedUser, setSelectedUser ] = useState<UserType | null>(null);
 
-  const membersCount = group.users.length + 1;
-
-  const handleClick = () => {
-    const { origin } = document.location;
-    copyToClipboard(`${origin}/join/${group.joinKey}`);
+  const handleBack = () => {
+    setSelectedUser(null);
   };
 
   return (
@@ -32,23 +31,12 @@ export const GroupProfile: React.FC<Props> = ({ group, isOpenModal, closeModal }
       className="big-modal"
       isOpen={isOpenModal} 
       onRequestClose={closeModal}
+      onAfterClose={() => setSelectedUser(null)}
       closeTimeoutMS={500}>
-        <ModalHeader toggle={closeModal} title='Информация о группе' />
-        <MainInfo 
-            name={group.name}
-            description={`${membersCount} ${getCorrectMemberCase(membersCount)}`}
-            avatarParams={{size: 80}}
-          />
-        <Button
-          className="invite-button"
-          type="text"
-          size="large"
-          onClick={handleClick}
-        >
-          Скопировать приглашение
-        </Button>
-        <Divider />
-        {selectedItem && (<MembersList users={[selectedItem, ...group.users]} />)}
+        {selectedUser 
+          ? <SelectedUserProfileView selectedUser={selectedUser} handleBack={handleBack} closeModal={closeModal}/>
+          : <GroupProfileView group={group} closeModal={closeModal} setSelectedUser={setSelectedUser}/>}
+
     </Modal>
   );
 }
