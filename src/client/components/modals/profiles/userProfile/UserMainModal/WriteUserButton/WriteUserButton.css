@@ -1,0 +1,6 @@
+.write-user-button {
+  width: 100%;
+  border-radius: 0;
+  border: none;
+  color: var(--base-font-color);
+}

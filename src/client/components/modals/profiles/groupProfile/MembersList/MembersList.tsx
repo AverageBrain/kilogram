@@ -6,9 +6,10 @@ import { Avatar } from '../../../../Avatar';
 
 type Props = {
   users: UserType[];
+  handleClickOnUser: (user: UserType) => void;
 }
 
-const MembersList: React.FC<Props> = ({ users }) => {
+const MembersList: React.FC<Props> = ({ users, handleClickOnUser }) => {
   return (
     <List
       className="users-list"
@@ -18,6 +19,7 @@ const MembersList: React.FC<Props> = ({ users }) => {
         <List.Item
           className="new-message-list-item"
           key={user.id}
+          onClick={() => handleClickOnUser(user)}
         >
           <List.Item.Meta
             className="chat-list-item-meta"

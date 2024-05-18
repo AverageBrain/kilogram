@@ -1,5 +1,5 @@
 import React from 'react';
-import { UserType } from '../../../../../../types';
+import { UserType } from '../../../../../../../types';
 import { AdditionalInfoItem } from './AdditionalInfoItem'; 
 import { InfoCircleOutlined } from '@ant-design/icons';
 
