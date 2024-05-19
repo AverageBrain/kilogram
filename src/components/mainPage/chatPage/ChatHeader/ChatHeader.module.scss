@@ -1,0 +1,20 @@
+@import '../../../../styles/mixins.scss';
+
+.chat-header {
+  @include header-base-style;
+
+  .info {
+    @include title-in-header;
+    cursor: pointer;
+
+    .name {
+      font-weight: 500;
+    }  
+
+    .description {
+      font-weight: 100;
+      font-size: 14px;
+    }
+
+  }
+}

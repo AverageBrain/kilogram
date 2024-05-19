@@ -1,0 +1,32 @@
+.log-in-page {
+    .h1 {
+        font-weight: bolder;
+        color: #F78579;
+        line-height: 200px;
+    }
+
+    .h2 {
+        font-weight: bold;
+        color: #F78579;
+    }
+
+    @media (max-width: 1260px) {
+        .h1 {
+            font-size: 15vw;
+        }
+
+        .h2 {
+            font-size: 5vw;
+        }
+    } 
+
+    @media (min-width: 1260px) {
+        .h1 {
+            font-size: 195px;
+        }
+
+        .h2 {
+            font-size: 65px;
+        }
+    }
+}

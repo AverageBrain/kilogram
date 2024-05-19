@@ -1,0 +1,17 @@
+@mixin header-base-style {
+  padding: 0;
+  background-color: white;
+  color: var(--base-font-color);
+  line-height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+@mixin title-in-header {
+  width: 100%;
+  padding: 0 10px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}

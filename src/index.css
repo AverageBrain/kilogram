@@ -1,5 +1,8 @@
 :root {
-  --light-background-gradiend: linear-gradient(to bottom right, #ffffff, #FDE5DE, #FCD9CF, #FEEDE8);
+  --light-background-gradient: linear-gradient(to bottom right, #ffffff, #FDE5DE, #FCD9CF, #FEEDE8);
+  --base-background-gradient: linear-gradient(to bottom right, #F8DCDA, #FBCAC4, #FFB5AB, #FCC9C3);
+  --base-font-color: #516460;
+  --base-accent-color: #FF686B;
 }
 
 body {
