@@ -6,6 +6,7 @@ import { chatsStore, messagesStore, userStore } from '../../../../../stores';
 import { Avatar } from '../../../../Avatar';
 import { useDebounce } from '../../../../../hooks';
 import listsStyles from '../../../../../styles/lists.module.scss';
+import { observer } from 'mobx-react-lite';
 
 type Props = {
   searchTerm: string;
@@ -13,7 +14,7 @@ type Props = {
   closeModal: () => void;
 }
 
-export const NewMessageUsersList: React.FC<Props> = ({ searchTerm, setSearchTerm, closeModal }) => {
+const NewMessageUsersList: React.FC<Props> = ({ searchTerm, setSearchTerm, closeModal }) => {
   const { setSelectedChat } = chatsStore;
   const { setSelectedUser } = userStore;
   const { clearMessages } = messagesStore;
@@ -29,10 +30,7 @@ export const NewMessageUsersList: React.FC<Props> = ({ searchTerm, setSearchTerm
     emptyText: loading ? 'Поиск...' : 'Нет данных',
   };
   
-  const dataSource = useMemo(() => items.map((user) => ({
-    ...user
-  })), [items]);
-
+  const dataSource = useMemo(() => items, [items]);
 
   const handleClick = async (user: UserType) => {
     setSearchTerm('');
@@ -71,3 +69,5 @@ export const NewMessageUsersList: React.FC<Props> = ({ searchTerm, setSearchTerm
     />
   );
 };
+
+export default observer(NewMessageUsersList);

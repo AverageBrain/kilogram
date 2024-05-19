@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-import { NewMessageUsersList } from './NewMessageUsersList';
+import NewMessageUsersList from './NewMessageUsersList';
 import { UserSearch } from '../../../commonComponents/userSearch';
 
 type Props = {
