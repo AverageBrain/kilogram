@@ -6,12 +6,29 @@
   text-overflow: ellipsis !important;
 }
 
+@mixin description-style {
+  display: block;
+
+  text-decoration: none;
+  pointer-events: none;
+  color: var(--base-font-color);
+  font-weight: 200;
+
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 .chat-list-item {
   padding: 0 !important;
   border-bottom: none !important;
 
   .title {
     @include title-style;
+  }
+
+  .description {
+    @include description-style;
   }
   
   .chat-list-item-meta {
@@ -35,6 +52,11 @@
     overflow: hidden;
     white-space: nowrap;
     height: 20px;
+    @include description-style;
+
+    a {
+      @include description-style;
+    }
   }
   
   .chat-list-item-meta-active {
@@ -58,6 +80,10 @@
 
     .title {
       @include title-style;
+    }
+    
+    .description {
+      @include description-style;
     }
 
     .user-meta {

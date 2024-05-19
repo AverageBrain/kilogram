@@ -4,7 +4,7 @@
     position: relative;
     display: flex;
     flex-direction: column-reverse;
-    background: linear-gradient(to bottom right, #F8DCDA, #FBCAC4, #FFB5AB, #FCC9C3); /* TODO: вынести в переменную */
+    background: var(--base-background-gradient);
     padding: 10px;
     height: 100%;
 

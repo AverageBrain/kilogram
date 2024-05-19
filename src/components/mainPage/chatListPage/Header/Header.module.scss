@@ -1,11 +1,8 @@
+@import '../../../../styles/mixins.scss';
+
 .header {
+  @include header-base-style;
   padding: 0 20px;
-
-  background-color: white;
-
-  display: flex;
-  align-items: center;
-  justify-content: flex-start;
   gap: 20px;
 
   .search {

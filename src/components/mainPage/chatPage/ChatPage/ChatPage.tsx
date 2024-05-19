@@ -35,7 +35,7 @@ const ChatPage: React.FC = () => {
           <button className={buttonsStyles["icon-svg-button"]} onClick={handleClickBack}>
             <ArrowLeftOutlined style={{ fontSize: '18px'}} />
           </button>
-          <div className={styles['user-info']}>
+          <div className={styles['title']}>
             Отложенные сообщения
           </div>
         </Header>

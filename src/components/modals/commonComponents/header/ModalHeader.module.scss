@@ -1,8 +1,11 @@
 .header {
   padding: 16px 20px;
-  display: flex;
+  
   flex-direction: row;
+
+  display: flex;
   justify-content: flex-start;
+  align-items: center;
   font-weight: 500;
 
   .icon {

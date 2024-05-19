@@ -1,3 +1,5 @@
+@import '../../../../styles/mixins.scss';
+
 .chat {
   height: 100%;
   display: flex;
@@ -5,22 +7,12 @@
 
   background-color: white;
 }
-/* TODO: mixin */
-.delay-chat-header {
-  padding: 0;
-  background-color: white;
-  color: #516460;
-  line-height: 20px;
-  display: flex;
-  align-items: center;
-  justify-content: flex-start;
 
-  .user-info {
-    width: 100%;
-    padding: 0 10px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
+.delay-chat-header {
+  @include header-base-style;
+
+  .title {
+    @include title-in-header;
     font-weight: 500;
   }
 }

@@ -6,7 +6,9 @@ import { chatsStore } from '../../../../stores';
 import { ChatType } from '../../../../types';
 import { Avatar } from '../../../Avatar';
 import { TypeOfChat } from '../../../../types';
+
 import styles from './ChatList.module.scss';
+import listsStyles from '../../../../styles/lists.module.scss';
 
 type Props = {
   setSearchTerm: (value: string) => void;
@@ -35,21 +37,21 @@ const Chats: React.FC<Props> = ({ setSearchTerm }) => {
       renderItem={(chat) => (
         <List.Item
           key={chat.id}
-          className={styles["chat-list-item"]}
+          className={listsStyles["chat-list-item"]}
           onClick={() => handleClick(chat)}
         >
           <List.Item.Meta
-            className={clsx(styles['chat-list-item-meta'], chat.id === selectedItem?.id && styles['chat-list-item-meta-active'])}
+            className={clsx(listsStyles['chat-list-item-meta'], chat.id === selectedItem?.id && styles['chat-list-item-meta-active'])}
             avatar={chat.type == TypeOfChat.Chat ? <Avatar userId={chat.users[0].id} /> : <Avatar />}
             title={
-              <span className={styles.title}>
+              <span className={listsStyles.title}>
                 {chat.type == TypeOfChat.Chat ? chat.users[0].name : chat.name}
               </span>
             }
             description={
               chat.messages.length > 0
-                ? <div dangerouslySetInnerHTML={{ __html:  `<div class=${styles["last-message"]}>${chat.messages[0].text}</div>` }} />
-                : 'У вас нет сообщений'
+                ? <div dangerouslySetInnerHTML={{ __html:  `<div class=${clsx(listsStyles["last-message"], listsStyles['description'])}>${chat.messages[0].text}</div>` }} />
+                : <span className={listsStyles.description}>У вас нет сообщений</span>
             }
           />
         </List.Item>

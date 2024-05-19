@@ -74,8 +74,8 @@ const UsersList: React.FC<Props> = ({
                 </Badge>
               )
               : <Avatar userId={user.id} />}
-            title={user.name}
-            description={user.lastSeen? user.lastSeen : 'был в сети недавно'}
+            title={<span className={listsStyles.title}>{user.name}</span>}
+            description={<span className={listsStyles.description}>{user.lastSeen? user.lastSeen : 'был в сети недавно'}</span>}
           />
         </List.Item>
       )}

@@ -1,26 +1,18 @@
+@import '../../../../styles/mixins.scss';
+
 .chat-header {
-  padding: 0;
-  background-color: white;
-  color: var(--base-font-color);
-  line-height: 20px;
-  display: flex;
-  align-items: center;
-  justify-content: flex-start;
+  @include header-base-style;
 
   .info {
-    width: 100%;
-    padding: 0 10px;
+    @include title-in-header;
     cursor: pointer;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
 
     .name {
       font-weight: 500;
     }  
 
     .description {
-      font-weight: 200;
+      font-weight: 100;
       font-size: 14px;
     }
 

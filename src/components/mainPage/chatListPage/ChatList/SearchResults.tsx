@@ -6,7 +6,7 @@ import { observer } from 'mobx-react-lite';
 import { chatsStore, messagesStore, userStore } from '../../../../stores';
 import { UserType } from '../../../../types';
 import { Avatar } from '../../../Avatar';
-import styles from './ChatList.module.scss';
+import listsStyles from '../../../../styles/lists.module.scss';
 
 type Props = {
   results: UserType[];
@@ -43,18 +43,18 @@ const SearchResults: React.FC<Props> = ({ setSearchTerm, isSearching, results })
       dataSource={results}
       renderItem={(user) => (
         <List.Item
-          className={styles["chat-list-item"]}
+          className={listsStyles["chat-list-item"]}
           key={user.id}
           onClick={() => {handleClick(user)}}
         >
           <List.Item.Meta
             className={
-              clsx(styles['chat-list-item-meta'], 
-              user.id === selectedItem?.id && styles['chat-list-item-meta-active'])
+              clsx(listsStyles['chat-list-item-meta'], 
+              user.id === selectedItem?.id && listsStyles['chat-list-item-meta-active'])
             }
             avatar={<Avatar userId={user.id} />}
-            title={<span className={styles.title}>{user.name}</span>}
-            description={user.username}
+            title={<span className={listsStyles.title}>{user.name}</span>}
+            description={<span className={listsStyles.description}>{user.username}</span>}
           />
         </List.Item>
       )}
