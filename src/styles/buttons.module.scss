@@ -1,0 +1,14 @@
+.icon-svg-button {
+  align-self: center;
+  border: none;
+  font-size: 24px;
+  color: var(--base-font-color);
+  background: none;
+
+  cursor: pointer;
+  width: 60px;
+
+  &:hover {
+    color: #06A191;
+  }
+}

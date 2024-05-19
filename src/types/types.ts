@@ -51,3 +51,8 @@ export type MetadataType = {
   description?: string;
   imageUrl?: string;
 }
+
+export type GroupFormType = {
+  name: string;
+  userIds: number[];
+};

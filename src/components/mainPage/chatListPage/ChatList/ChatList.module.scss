@@ -1,0 +1,10 @@
+@use '../../../../styles/lists.module.scss'; 
+
+.chats {
+  height: 100%;
+  overflow-y: scroll;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}

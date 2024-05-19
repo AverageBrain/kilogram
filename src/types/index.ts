@@ -4,6 +4,7 @@ export type {
   ChatListItemType,
   ChatType,
   MetadataType,
+  GroupFormType,
 } from './types';
 
 export {

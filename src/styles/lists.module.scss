@@ -1,0 +1,72 @@
+@mixin title-style {
+  display: block;
+  color: var(--base-font-color) !important;
+  overflow: hidden !important;
+  white-space: nowrap;
+  text-overflow: ellipsis !important;
+}
+
+.chat-list-item {
+  padding: 0 !important;
+  border-bottom: none !important;
+
+  .title {
+    @include title-style;
+  }
+  
+  .chat-list-item-meta {
+    padding: 10px;
+    cursor: pointer;
+    height: 68px;
+  
+    &:hover {
+      background-color: #ddf1f1;
+    }
+
+    p {
+      margin: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+  }
+
+  .last-message {
+    overflow: hidden;
+    white-space: nowrap;
+    height: 20px;
+  }
+  
+  .chat-list-item-meta-active {
+    background-color: #00CCC940 !important;
+  }
+}
+
+.users-list {
+  box-sizing: border-box;
+  overflow-y: scroll;
+  flex-grow: 2;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+
+  .user {
+    padding: 0 !important;
+    border-bottom: none !important;
+    line-height: 1 !important;
+
+    .title {
+      @include title-style;
+    }
+
+    .user-meta {
+      padding: 8px 16px;
+      cursor: pointer;
+    
+      &:hover {
+        background-color: #ddf1f1;
+      }
+    }
+  }
+}
