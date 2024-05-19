@@ -32,7 +32,7 @@ const SendMessage: React.FC<Props> = ({ scrollRef, setShouldLoadDelayed }) => {
 
     const safeHtml = DOMPurify.sanitize(htmlContent + await getHTMLMetadata(htmlContent, getMetadata));
     
-    if (editorState.getCurrentContent().hasText()) {
+    if (editorState.getCurrentContent().getPlainText().trim().length) {
       setEditorState(EditorState.createEmpty());
       if (chat) {
         inTime ? await sendDelayMessage(chat.id, safeHtml, inTime) : await sendMessage(chat.id, safeHtml);      
@@ -94,7 +94,7 @@ const SendMessage: React.FC<Props> = ({ scrollRef, setShouldLoadDelayed }) => {
         <CalendarOutlined />
       </button>
       <SendButton
-        disabledDelay={!editorState.getCurrentContent().hasText()}
+        disabledDelay={editorState.getCurrentContent().getPlainText().trim().length === 0}
         onSubmit={handleSubmit}
       />
     </div>
