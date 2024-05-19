@@ -38,6 +38,7 @@ const SearchResults: React.FC<Props> = ({ setSearchTerm, isSearching, results })
   
   return (
     <List
+      className={listsStyles.chats}
       locale={locale}
       itemLayout="horizontal"
       dataSource={results}

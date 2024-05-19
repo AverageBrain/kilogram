@@ -19,48 +19,56 @@
   white-space: nowrap;
 }
 
-.chat-list-item {
-  padding: 0 !important;
-  border-bottom: none !important;
+.chats {
+  height: 100%;
+  overflow-y: scroll;
 
-  .title {
-    @include title-style;
+  &::-webkit-scrollbar {
+    display: none;
   }
+  .chat-list-item {
+    padding: 0 !important;
+    border-bottom: none !important;
 
-  .description {
-    @include description-style;
-  }
-  
-  .chat-list-item-meta {
-    padding: 10px;
-    cursor: pointer;
-    height: 68px;
-  
-    &:hover {
-      background-color: #ddf1f1;
+    .title {
+      @include title-style;
     }
 
-    p {
-      margin: 0;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-    }
-  }
-
-  .last-message {
-    overflow: hidden;
-    white-space: nowrap;
-    height: 20px;
-    @include description-style;
-
-    a {
+    .description {
       @include description-style;
     }
-  }
-  
-  .chat-list-item-meta-active {
-    background-color: #00CCC940 !important;
+    
+    .chat-list-item-meta {
+      padding: 10px;
+      cursor: pointer;
+      height: 68px;
+    
+      &:hover {
+        background-color: #ddf1f1;
+      }
+
+      p {
+        margin: 0;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+    }
+
+    .last-message {
+      overflow: hidden;
+      white-space: nowrap;
+      height: 20px;
+      @include description-style;
+
+      a {
+        @include description-style;
+      }
+    }
+    
+    .chat-list-item-meta-active {
+      background-color: #00CCC940 !important;
+    }
   }
 }
 

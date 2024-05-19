@@ -7,7 +7,6 @@ import { ChatType } from '../../../../types';
 import { Avatar } from '../../../Avatar';
 import { TypeOfChat } from '../../../../types';
 
-import styles from './ChatList.module.scss';
 import listsStyles from '../../../../styles/lists.module.scss';
 
 type Props = {
@@ -30,7 +29,7 @@ const Chats: React.FC<Props> = ({ setSearchTerm }) => {
 
   return (
     <List
-      className={styles.chat}
+      className={listsStyles.chats}
       locale={locale}
       itemLayout="horizontal"
       dataSource={items}
@@ -41,7 +40,7 @@ const Chats: React.FC<Props> = ({ setSearchTerm }) => {
           onClick={() => handleClick(chat)}
         >
           <List.Item.Meta
-            className={clsx(listsStyles['chat-list-item-meta'], chat.id === selectedItem?.id && styles['chat-list-item-meta-active'])}
+            className={clsx(listsStyles['chat-list-item-meta'], chat.id === selectedItem?.id && listsStyles['chat-list-item-meta-active'])}
             avatar={chat.type == TypeOfChat.Chat ? <Avatar userId={chat.users[0].id} /> : <Avatar />}
             title={
               <span className={listsStyles.title}>
