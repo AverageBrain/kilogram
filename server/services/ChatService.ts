@@ -12,7 +12,7 @@ export class ChatService {
 
     async sendMessage(user: User, message: { chatId: number, text: string }) {
         const userChats = await prisma.userChat.findMany({where: {chatId: message.chatId}})
-        if (!userChats.find((chat) => chat.userId === user.id) || userChats.length !== 2) {
+        if (!userChats.find((chat) => chat.userId === user.id)) {
             throw new Error("User has no access to the chat")
         }
 
@@ -31,7 +31,7 @@ export class ChatService {
 
         const chatUsers = await prisma.userChat.findMany({where: {chatId: userChats[0].chatId}})
 
-        chatUsers.forEach(uc => uc.userId != user.id ? sseService.publishMessage(uc.userId, "newMessage", sendMessage) : null)
+        chatUsers.forEach(uc => sseService.publishMessage(uc.userId, "newMessage", sendMessage))
 
         return sendMessage
     }

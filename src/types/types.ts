@@ -15,6 +15,7 @@ export type MessageType = BaseItemType & {
   chatId: number;
   userId: number;
   text: string;
+  inTime?: Date;
   reactions?: MessageReactionType[]
 }
 
@@ -24,22 +25,34 @@ export type MessageReactionType = BaseItemType & {
 }
 
 export type ReactionType = BaseItemType & {
-  emoji: string
+  emoji: string;
 }
-
-export type DelayMessageType = MessageType & {
-  inTime: Date
-}
-
 
 export type ChatListItemType = BaseItemType & {
   name: string;
   lastMessage: string;
 }
 
-export type ChatType = BaseItemType & {
-  users: UserType[]; // users not contains self user
-  joinKey?: String; // only for group
-  messages: MessageType[];
-  type: 'chat' | 'group';
+export enum TypeOfChat {
+  Chat = 'chat',
+  Group = 'group',
 }
+
+export type ChatType = BaseItemType & {
+  name: string;
+  users: UserType[]; // users not contains self user
+  joinKey?: string; // only for group
+  messages: MessageType[];
+  type: TypeOfChat;
+}
+
+export type MetadataType = {
+  title: string;
+  description?: string;
+  imageUrl?: string;
+}
+
+export type GroupFormType = {
+  name: string;
+  userIds: number[];
+};

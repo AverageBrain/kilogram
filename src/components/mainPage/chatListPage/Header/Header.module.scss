@@ -1,0 +1,19 @@
+@import '../../../../styles/mixins.scss';
+
+.header {
+  @include header-base-style;
+  padding: 0 20px;
+  gap: 20px;
+
+  .search {
+    padding: 5px 15px !important;
+    background-color: #F2F2F2 !important;
+    border-radius: 16px !important;
+    height: 32px;
+  }
+}
+
+.icon {
+  font-size: 20px;
+  color: var(--base-font-color);
+}

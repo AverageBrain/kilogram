@@ -1,4 +1,4 @@
-import {Controller, Get, Req, UseBefore} from 'routing-controllers';
+import {Controller, Get, Req, UseBefore, Post} from 'routing-controllers';
 import passport from 'passport';
 import express from 'express';
 
@@ -15,9 +15,9 @@ export class AuthController {
     //     response.sendStatus(200)
     // }
 
-    @Get('/logout')
+    @Post('/logout')
     logout(@Req() request: express.Request) {
         request.logout(err => err ? "" : "")
-        return {};
+        return { message: 'Successfully logged out' };
     }
 }
