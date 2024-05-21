@@ -8,6 +8,7 @@ import { NewGroupModal } from '../../../modals';
 import { useModal } from '../../../../hooks';
 
 import styles from './NewChatButton.module.scss';
+import animationsStyles from '../../../../styles/animations.module.scss';
 
 export const NewChatButton: React.FC = () => {
   const [ isClicked, setIsClicked ] = useState(false);
@@ -44,20 +45,33 @@ export const NewChatButton: React.FC = () => {
     <div className={styles['new-chat-buttons']}>
       { !firstTime && 
         <>
-          <div className={clsx(styles['extra-buttons'], styles['new-message'], isClicked ? styles['show-new-chat-button'] : styles['hide-new-chat-button'])}
-              onClick={handleNewMessageClick}>
+          <div 
+            className={
+              clsx(
+                styles['extra-buttons'], 
+                styles['new-message'], 
+                isClicked ? animationsStyles['show-new-chat-button'] : animationsStyles['hide-new-chat-button'])
+              }
+            onClick={handleNewMessageClick}
+          >
             <FaUser size={20}/>
           </div>
-          <div className={clsx(styles['extra-buttons'], styles['new-group'], isClicked ? styles['show-new-group-button'] : styles['hide-new-group-button'])}
-              onClick={handleNewGroupClick}>
+          <div 
+            className={
+              clsx(
+                styles['extra-buttons'], 
+                styles['new-group'], 
+                isClicked ? animationsStyles['show-new-group-button'] : animationsStyles['hide-new-group-button'])}
+            onClick={handleNewGroupClick}
+          >
             <FaUsers size={20}/>
           </div>
         </>
       }
       <div className={styles['main-button']} onClick={handleClick}>
         { isClicked ? 
-          <IoClose  className={clsx(styles.close, !firstTime && styles.rotate)} size={40} /> :
-          <HiPencil className={clsx(styles.pencil, !firstTime && styles.rotate)} size={25}/>
+          <IoClose  className={clsx(styles.close, !firstTime && animationsStyles.rotate)} size={40} /> :
+          <HiPencil className={clsx(styles.pencil, !firstTime && animationsStyles.rotate)} size={25}/>
         }
       </div>
       <NewMessageModal isOpenModal={isOpenNewMessageModal} closeModal={closeNewMessageModal} />
