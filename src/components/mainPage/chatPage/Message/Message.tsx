@@ -21,13 +21,19 @@ const Message: React.FC<Props> = ({ message, isGroup }) => {
   return (
 
     <>
-      <div className={clsx(styles['message'], isActivePerson ? styles['my-message'] : styles['partner-message'])}>
-        <div dangerouslySetInnerHTML={{ __html: message.text }} />
-        <div className={styles['message-meta']}>
-          <span className={styles['timestep']}>
-            {moment(message.inTime ?? message.createdAt).format('LT')}
-          </span>
-          {isGroup && !isActivePerson && <Avatar userId={message.userId} size={25} />}
+      <div 
+        className={clsx(
+          styles['message-bar'], 
+          isActivePerson ? styles['my-message'] : styles['partner-message'])}
+      >
+        {isGroup && !isActivePerson && <Avatar className={styles['user-avatar-in-group']} userId={message.userId} size={25} />}
+        <div className={styles['message']}>
+          <div dangerouslySetInnerHTML={{ __html: message.text }} />
+          <div className={styles['message-meta']}>
+            <span className={styles['timestep']}>
+              {moment(message.inTime ?? message.createdAt).format('LT')}
+            </span> 
+          </div>
         </div>
       </div>
       
