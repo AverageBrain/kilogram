@@ -16,7 +16,6 @@ export class DelayMessageJob {
                 console.warn('Can\'t send delay message with id: ' + i.id)
             }
         })
-        setTimeout(this.checkAndSendInTimeMessage.bind(this), 1000 * 30)
     }
 
     async sendDelayMessage(delayMessage: DelayMessage) {
@@ -26,6 +25,6 @@ export class DelayMessageJob {
     }
 
     async run() {
-        await this.checkAndSendInTimeMessage()
+        setInterval(this.checkAndSendInTimeMessage, 1000 * 60)
     }
 }
