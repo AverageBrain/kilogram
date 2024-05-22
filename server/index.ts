@@ -75,6 +75,8 @@ app.get(
     (req, res) => res.redirect('/')
 );
 
+app.use(errorHandler)
+
 const sseService = new SSEService()
 app.get("/api/user/sse", (req, res) => {
     res.writeHead(200, {
@@ -91,8 +93,8 @@ app.get("/api/user/sse", (req, res) => {
 
     const listenId = sseService.registerListen(userId, callback)
 
-    res.on("close", () => {
-        sseService.unregisterListen(userId, listenId)
+    res.on("close", async () => {
+        await sseService.unregisterListen(userId, await listenId)
         res.end();
     });
 });
