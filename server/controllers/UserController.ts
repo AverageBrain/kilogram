@@ -31,6 +31,27 @@ export class UserController {
         return {};
     }
 
+    @Get("/users")
+    async getUsers(
+        @Req() request: express.Request,
+    ): Promise<types.UserType[]> {
+        const sessionUser = request.user?.prismaUser
+        if (!sessionUser) {
+            throw new Error("User must be authorized")
+        }
+
+        const users: User[] = await prisma.user.findMany({
+            where: {
+                NOT: {
+                    id: {
+                        equals: sessionUser.id,
+                    }
+                }
+            }
+        });
+        return users.map(i => convertPrismaUser(i));
+    }
+
     @Post("/edit")
     async editMe(@Req() request: express.Request, @BodyParam("user") user: types.UserType): Promise<types.UserType> {
         const sessionUser = request.user
@@ -97,15 +118,12 @@ export class UserController {
         return result === null ? response.sendStatus(400) : response.sendStatus(200)
     }
 
-    @Get("/avatar/:username")
+    @Get("/avatar/:id")
     async getAvatar(
         @Res() response: express.Response,
-        @Param("username") username: string,
+        @Param("id") id: number,
     ) {
-        if (!username) {
-            throw new Error("Username required")
-        }
-        const byte64Avatar = await UserAvatarService.getAvatar(username)
+        const byte64Avatar = await UserAvatarService.getAvatar(id)
         const avatar = Buffer.from(byte64Avatar, 'base64').toString()
 
         return response.set('Content-Type', 'image/svg+xml').send(avatar)

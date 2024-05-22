@@ -1,14 +1,16 @@
-import {BodyParam, Get, JsonController, Param, Post, Req} from "routing-controllers";
+import {BodyParam, Get, JsonController, Param, Post, Req, Res} from "routing-controllers";
 import {Message, UserChat} from "@prisma/client";
 import express from "express";
+import { load } from 'cheerio';
+
 import {ChatService} from "../services/ChatService";
 import {prisma} from "../domain/PrismaClient";
 import * as types from '../../src/types';
 import {UserService} from "../services/UserService";
 import {convertPrismaUser} from "./UserController";
-import {getIdCondition, groupBy} from "../utils";
+import {getDateCondition, getIdCondition, groupBy} from "../utils";
 import {makeRandomString} from "../utils/makeid";
-import {MessageReactionType} from "../../src/types/types";
+import {MessageReactionType, TypeOfChat} from "../../src/types/types";
 
 
 const chatService = new ChatService()
@@ -27,6 +29,7 @@ export function convertPrismaMessage(prismaMessage: Message, reactions: MessageR
 }
 
 
+// TODO: возвращать, а не кидать ошибки
 @JsonController("/chat")
 export class ChatController {
     @Post("/send")
@@ -53,7 +56,7 @@ export class ChatController {
             text: string
             inTime: Date
         }
-    ): Promise<types.DelayMessageType> {
+    ): Promise<types.MessageType> {
         const user = request.user?.prismaUser
         if (!user) {
             throw new Error("User must be authorized")
@@ -64,13 +67,9 @@ export class ChatController {
             throw new Error("User has no access to the chat")
         }
 
-        if (delayMessage.inTime < new Date()) {
-            throw new Error("InTime must be grate current date")
+        if (delayMessage.inTime <= new Date()) {
+            throw new Error("InTime must be greater than current date")
         }
-        await Promise.all(userChats.map(async (userChat) => {
-            userChat.updatedAt = new Date()
-            return prisma.userChat.update({data: userChat, where: {id: userChat.id}});
-        }));
 
         return prisma.delayMessage.create({
             data: {
@@ -82,13 +81,13 @@ export class ChatController {
         })
     }
 
-    @Post("/remove/delay")
+    @Post("/delete/delay")
     async removeDelayMessage(
         @Req() request: express.Request,
         @BodyParam('delayMessage') delayMessage: {
             delayMessageId: number
         }
-    ): Promise<types.DelayMessageType> {
+    ): Promise<types.MessageType> {
         const user = request.user?.prismaUser
         if (!user) {
             throw new Error("User must be authorized")
@@ -106,18 +105,34 @@ export class ChatController {
         return prisma.delayMessage.delete({where: {id: removedDelayMessage.id}})
     }
 
-    @Get("/messages/delay/all")
-    async getAllDelayMessage(
-        @Req() request: express.Request
-    ): Promise<types.DelayMessageType[]> {
+    @Post("/messages/delay")
+    async getDelayMessages(
+        @Req() request: express.Request,
+        @BodyParam('chatMessages') chatMessages: {
+            chatId: number,
+            beforeInTime?: Date,
+        },
+    ): Promise<types.MessageType[]> {
         const user = request.user?.prismaUser
         if (!user) {
             throw new Error("User must be authorized")
         }
 
-        return prisma.delayMessage.findMany({where: {userId: user.id}})
-    }
+        const dateCondition = getDateCondition(chatMessages.beforeInTime);
 
+        return prisma.delayMessage.findMany({
+            where: {chatId: chatMessages.chatId, userId: user.id, inTime: dateCondition},
+            take: 15,
+            orderBy: [
+                {
+                    inTime: 'desc',
+                },
+                {
+                    id: 'desc',
+                },
+            ],
+        })
+    }
 
     @Post("/create/chat")
     async createChat(
@@ -158,8 +173,9 @@ export class ChatController {
             id: chat.id,
             messages: [],
             updatedAt: chat.updatedAt,
+            name: toUser.name,
             users: [convertPrismaUser(toUser)],
-            type: 'chat'
+            type: TypeOfChat.Chat,
         }
     }
 
@@ -167,7 +183,8 @@ export class ChatController {
     async createGroup(
         @Req() request: express.Request,
         @BodyParam('createGroup') createGroup: {
-            userIds: number[]
+            userIds: number[];
+            name: string;
         }
     ): Promise<types.ChatType> {
         const user = request.user?.prismaUser
@@ -177,27 +194,63 @@ export class ChatController {
 
         createGroup.userIds = createGroup.userIds.filter(i => i != user.id)
         const toUsers = await userService.getUsersById(createGroup.userIds)
-        const group = await prisma.chat.create({data: {type: 'group', joinKey: makeRandomString(20)}})
+        const group = await prisma.chat.create({
+            data: { type: TypeOfChat.Group, name: createGroup.name, joinKey: makeRandomString(20) }
+        });
 
         const createManyUserChat = toUsers.map((user) =>
             prisma.userChat.create({
                 data: {userId: user.id, chatId: group.id},
             }),
         )
-        await Promise.all(createManyUserChat)
+        await Promise.all(createManyUserChat);
+        await prisma.userChat.create({data: {userId: user.id, chatId: group.id}});
+
+        return {
+            createdAt: group.createdAt,
+            id: group.id,
+            messages: [],
+            name: group.name,
+            updatedAt: group.updatedAt,
+            users: toUsers.filter(i => i.id != user.id).map(i => convertPrismaUser(i)),
+            joinKey: group.joinKey ? group.joinKey : undefined,
+            type: TypeOfChat.Group,
+        }
+    }
+
+    @Get("/group/:joinKey")
+    async getGroupByJoinKey(
+        @Res() response: express.Response,
+        @Req() request: express.Request,
+        @Param("joinKey") joinKey: string,
+    ) {
+        const user = request.user?.prismaUser;
+        if (!user) {
+            throw new Error("User must be authorized");
+        }
+
+        const group = await prisma.chat.findUnique({ where: { joinKey: joinKey }});
+        if (group === null) {
+            return response.status(400).send({ message: 'JoinKey not connected to any group' });
+        }
+        const alreadyUsersChat = await prisma.userChat.findMany({ where: { chatId: group.id }, include: { user: true }});
+        if (alreadyUsersChat.find((item) => item.userId === user.id)) {
+            return response.status(400).send({ message: 'User already joined the group' });
+        }
 
         return {
             createdAt: group.createdAt,
             id: group.id,
             messages: [],
             updatedAt: group.updatedAt,
-            users: toUsers.filter(i => i.id != user.id).map(i => convertPrismaUser(i)),
-            joinKey: group.joinKey ? group.joinKey : undefined,
-            type: 'group'
-        }
+            name: group.name,
+            users: alreadyUsersChat.map(i => convertPrismaUser(i.user)),
+            joinKey: group.joinKey ?? undefined,
+            type: TypeOfChat.Group,
+        };
     }
 
-    @Post("/join/group")
+    @Post("/group/join")
     async joinGroup(
         @Req() request: express.Request,
         @BodyParam('joinGroup') joinGroup: {
@@ -210,10 +263,13 @@ export class ChatController {
         }
 
         const group = await prisma.chat.findUnique({where: {joinKey: joinGroup.joinKey}})
-        if (group == null) {
-            throw new Error("JoinKey not connected any group")
+        if (group === null) {
+            throw new Error("JoinKey not connected to any group")
         }
         const alreadyUsersChat = await prisma.userChat.findMany({where: {chatId: group.id}, include: {user: true}})
+        if (alreadyUsersChat.find((item) => item.userId === user.id)) {
+            throw new Error("User already joined the group")
+        }
 
         await prisma.userChat.create({
             data: {userId: user.id, chatId: group.id},
@@ -224,9 +280,10 @@ export class ChatController {
             id: group.id,
             messages: [],
             updatedAt: group.updatedAt,
+            name: group.name,
             users: alreadyUsersChat.map(i => convertPrismaUser(i.user)),
-            joinKey: group.joinKey ? group.joinKey : undefined,
-            type: 'group'
+            joinKey: group.joinKey ?? undefined,
+            type: TypeOfChat.Group,
         }
     }
 
@@ -242,9 +299,8 @@ export class ChatController {
             throw new Error("User must be authorized")
         }
         const userChats: UserChat[] = await prisma.userChat.findMany(
-            {where: {AND: [{userId: user.id}]}, take: 10, orderBy: {updatedAt: 'desc'}}
+            {where: {AND: [{userId: user.id}]}, orderBy: {updatedAt: 'desc'}}
         );
-
 
         const chatsIds = userChats.map(i => i.chatId);
         const chats = await prisma.chat.findMany({
@@ -264,6 +320,7 @@ export class ChatController {
                 id: chat.id,
                 createdAt: chat.createdAt,
                 updatedAt: chat.updatedAt,
+                name: chat.name,
                 users: othersUserChat.map(i => convertPrismaUser(i.user)),
                 messages: chat.messages.map(i => convertPrismaMessage(i, i.reactions)) as types.MessageType[],
                 type: chat.type,
@@ -344,4 +401,19 @@ export class ChatController {
         }
     }
 
+    @Post('/metadata')
+    async getMetadata(
+        @Req() request: express.Request,
+        @BodyParam('url') url: string,
+    ): Promise<types.MetadataType> {
+      const response = await fetch(url);
+      const html = await response.text();
+      const $ = load(html);
+  
+      const title = $('meta[property="og:title"]').attr('content') ?? $('title').text() ?? $('meta[name="title"]').attr('content');
+      const description = $('meta[property="og:description"]').attr('content') ?? $('meta[name="description"]').attr('content');
+      const imageUrl = $('meta[property="og:image"]').attr('content') ?? $('meta[property="og:image:url"]').attr('content');
+  
+      return { title, description, imageUrl };
+    }
 }

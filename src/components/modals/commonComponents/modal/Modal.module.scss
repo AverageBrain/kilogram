@@ -1,0 +1,41 @@
+.overlay {
+  background-color: rgba(0, 0, 0, 0.4) !important;
+  opacity: 0;
+  transition: opacity 120ms ease-in-out;
+  position: fixed;
+  inset: 0;
+  z-index: 999;
+}
+
+.overlay--after-open {
+  opacity: 1; 
+}
+
+.overlay--before-close {
+  opacity: 0;
+}
+
+.big-modal {
+  width: 420px;
+  height: 684px;
+}
+
+.small-modal {
+  width: 360px;
+}
+
+.modal {
+  inset: unset !important;
+  display: flex;
+  border-radius: 10px !important;
+  border: none !important;
+  flex-direction: column;
+  position: absolute;
+  left: 50% !important;
+  top: 50% !important;
+  transform: translate(-50%, -50%);
+  background-color: white;
+  z-index: 1000;
+  padding: 0 !important;
+  color: var(--base-font-color);
+}

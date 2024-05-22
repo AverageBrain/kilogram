@@ -1,13 +1,15 @@
 import { UserType, ChatType } from '../types';
+import { TypeOfChat } from '../types/types';
 import { chats } from './chats';
 
 const toChat = (user: UserType): ChatType => {
   return {
     id: chats.length + 1,
+    name: 'test',
     createdAt: user.createdAt,
     updatedAt: user.updatedAt,
     users: [user],
-    type: 'chat',
+    type: TypeOfChat.Chat,
     messages: [],
   }
 }

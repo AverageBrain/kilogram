@@ -3,27 +3,27 @@ import React, { useEffect } from 'react';
 import { isEmpty } from 'lodash';
 import { Spin } from 'antd';
 import { observer } from 'mobx-react-lite';
+import moment from 'moment';
+import 'moment/locale/ru';
 
-import { LogInPage, MainPage } from './client/components';
-import { authUserStore } from './client/stores';
+import AppRouter from './components';
+import { authUserStore} from './stores';
 
 const App: React.FC = () => {
   const {
-    selectedItem,
     loading,
     loadSelectedItem,
   } = authUserStore;
 
   useEffect(() => {
     loadSelectedItem();
+    moment.locale('ru');
   } ,[]);
 
   return (
     loading
       ? <Spin />
-      : isEmpty(selectedItem)
-        ? <LogInPage />
-        : <MainPage />
+      : <AppRouter />
   );
 }
 

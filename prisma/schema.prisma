@@ -55,7 +55,6 @@ model Message {
   userId    Int
   chatId    Int
   text      String
-  imageKey  String   @default("")
 
   chat      Chat              @relation(fields: [chatId], references: [id])
   user      User              @relation(fields: [userId], references: [id])
@@ -94,7 +93,6 @@ model DelayMessage {
   userId    Int
   chatId    Int
   text      String
-  imageKey  String   @default("")
   inTime    DateTime
   chat      Chat     @relation(fields: [chatId], references: [id])
   user      User     @relation(fields: [userId], references: [id])

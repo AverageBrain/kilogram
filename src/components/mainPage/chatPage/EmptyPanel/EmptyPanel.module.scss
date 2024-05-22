@@ -1,0 +1,18 @@
+.panel {
+  width: 100%;
+  height: 100%;
+  background: var(--base-background-gradient);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  .start-text {
+    padding: 5px 10px;
+    border-radius: 18px;
+    background-color: var(--base-accent-color);
+    color: white;
+    font-size: 12px;
+    font-weight: 500;
+    display: block;
+  }
+}

@@ -1,0 +1,23 @@
+.additional-info {
+  display: flex;
+  flex-direction: row;
+  padding: 10px 20px 0 20px;
+
+  .info-icon {
+    padding: 10px 20px 20px 5px;
+  }
+
+  .additional-info-list {
+    
+
+    .additional-info-item {
+      margin-bottom: 15px;
+      font-size: 14px; 
+      
+
+      .description {
+        font-weight: 200;
+      }
+    }
+  }
+}
