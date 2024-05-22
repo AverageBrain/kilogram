@@ -7,16 +7,20 @@ import moment from 'moment';
 import 'moment/locale/ru';
 
 import AppRouter from './components';
-import { authUserStore} from './stores';
+import {authUserStore, reactionsStore} from './stores';
 
 const App: React.FC = () => {
   const {
     loading,
     loadSelectedItem,
+    loggedIn
   } = authUserStore;
 
+  const {loadReactions} = reactionsStore
+
   useEffect(() => {
-    loadSelectedItem();
+    loadSelectedItem()
+    loadReactions();
     moment.locale('ru');
   } ,[]);
 

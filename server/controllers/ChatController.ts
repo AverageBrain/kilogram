@@ -10,7 +10,7 @@ import {UserService} from "../services/UserService";
 import {convertPrismaUser} from "./UserController";
 import {getDateCondition, getIdCondition, groupBy} from "../utils";
 import {makeRandomString} from "../utils/makeid";
-import {MessageReactionType, TypeOfChat} from "../../src/types/types";
+import {MessageReactionType, ReactionType, TypeOfChat} from "../../src/types/types";
 
 
 const chatService = new ChatService()
@@ -29,7 +29,6 @@ export function convertPrismaMessage(prismaMessage: Message, reactions: MessageR
 }
 
 
-// TODO: возвращать, а не кидать ошибки
 @JsonController("/chat")
 export class ChatController {
     @Post("/send")
@@ -354,6 +353,27 @@ export class ChatController {
         })
     }
 
+
+
+    @Get('/reaction/types')
+    async getReactionsTypes(
+        @Req() request: express.Request,
+    ): Promise<ReactionType[]> {
+        const user = request.user?.prismaUser
+        if (!user) {
+            throw new Error("User must be authorized")
+        }
+
+        const reactionTypes = await prisma.reactionType.findMany()
+        return reactionTypes.map(rt => {
+            return {
+                id: rt.id,
+                createdAt: rt.createdAt,
+                updatedAt: rt.createdAt,
+                emoji: rt.emoji
+            }
+        })
+    }
 
     @Post('/reaction')
     async setReaction(

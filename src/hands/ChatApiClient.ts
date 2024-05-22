@@ -1,5 +1,5 @@
 import {BaseApiClient} from "./BaseApiClient";
-import {ChatType, MessageReactionType, MessageType, MetadataType} from "../types/types";
+import {ChatType, MessageReactionType, MessageType, MetadataType, ReactionType} from "../types/types";
 
 class UserApiClient extends BaseApiClient {
     sendMessage(chatId: number, text: string): Promise<MessageType> {
@@ -44,6 +44,10 @@ class UserApiClient extends BaseApiClient {
         afterId: number,
     ): Promise<MessageType[]> {
         return this.axiosPost("/chat/messages", {chatMessages: {chatId, afterId}})
+    }
+
+    getReactionsTypes(): Promise<ReactionType[]> {
+        return this.axiosGet("/chat/reaction/types")
     }
 
     setReaction(
