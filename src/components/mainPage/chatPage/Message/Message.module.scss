@@ -1,57 +1,73 @@
-.message {
-  max-width: 500px;
-  padding: 0  10px 2px;
-  border-radius: 10px;
-  margin-top: 5px;
-  white-space: pre-wrap;
-
-  border: none;
-  background-color: white;
+.message-bar {
+  width: 100%;
   display: flex;
+  align-items: center;
+  padding: 3px 0;
 
-  p {
-    color: var(--base-font-color);
-    margin-bottom: 0;
-    word-break: break-all;
+  .user-avatar-in-group {
+    align-self: self-end;
+    margin-right: 5px;
+    flex-shrink: 0;
+    border-radius: 50%;
   }
 
-  img {
-    height: 100%;
-    width: 100%;
-    display: block;
-    border-radius: 3px;
-
-    object-fit: cover;
-  }
+  .message {
+    box-sizing: border-box;
+    max-width: 500px;
+    padding: 0 10px 2px;
+    border-radius: 10px;
+    white-space: pre-wrap;
   
+    display: flex;
+    border: none;
+    background-color: white;
+  
+    p {
+      color: var(--base-font-color);
+      margin-bottom: 0;
+      margin-bottom: 2px;
+      word-break: break-all;
+    }
+  
+    .message-meta {
+      display: flex;
+      flex-direction: column-reverse;
+      align-items: flex-end;
+    
+      padding: 2px;
+    
+      .timestep {
+        align-self: flex-end;
+        margin-left: 3px;
+      
+        white-space: nowrap;
+        font-size: smaller;
+        color: grey;
+      }
+    }
+  } 
 }
 
-.timestep {
-  align-self: flex-end;
-  margin-left: 6px;
-
-  white-space: nowrap;
-  font-size: smaller;
-  color: grey;
-}
 
 .partner-message {
-  align-self: start;
-  border-radius: 10px 10px 10px 0;
+  justify-content: left;
+  padding-right: 10%;
+
+  .message {
+    border-radius: 10px 10px 10px 0;
+  }
 }
 
 .my-message {
-  align-self: end;
-  border-radius: 10px 10px 0 10px;
+  justify-content: right;
+  padding-left: 12%;
+
+  .message {
+    border-radius: 10px 10px 0 10px;
+  }
 }
 
-.message-meta {
-  display: flex;
-  flex-direction: column-reverse;
-  align-items: flex-end;
-
-  padding: 5px;
-}
+// --- Metadata
 
 .metadata {
   display: flex;
