@@ -19,6 +19,7 @@
     white-space: pre-wrap;
   
     display: flex;
+    flex-direction: column;
     border: none;
     background-color: white;
   
@@ -96,4 +97,38 @@
   -webkit-box-orient: vertical;
 
   color: var(--base-font-color);
+}
+
+
+// -- Reactions 
+
+.reactions {
+  padding: 0;
+  margin: 0;
+  display: flex;
+  gap: 5px;
+  flex-wrap: wrap;
+
+  .reaction-wrapper {
+    display: flex;
+    list-style-type: none;
+    background-color: lightcoral;
+    border-radius: 1em;
+    padding: 3px 3px 3px 3px;
+    gap: 4px;
+    color: white;
+    font-weight: 500;
+  }
+
+  .emoji-info {
+    .user {
+      height: 20px;
+      width: 20px;
+      text-align: center;
+    }
+
+    .reaction-number {
+      padding: 0 3px 0 0;
+    }
+  }
 }

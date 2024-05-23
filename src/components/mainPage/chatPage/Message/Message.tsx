@@ -8,6 +8,8 @@ import { authUserStore } from '../../../../stores';
 import { Avatar } from '../../../Avatar';
 
 import styles from './Message.module.scss';
+import { groupBy } from 'lodash';
+import Reactions from './reactions/Reactions';
 
 type Props = {
   message: MessageType;
@@ -17,14 +19,8 @@ type Props = {
 const Message: React.FC<Props> = ({ message, isGroup }) => {
   const { selectedItem } = authUserStore;
 
-  const reactions = new Map<string, number>()
-  message.reactions?.forEach(r => {
-    const count = reactions.get(r.reactionType.emoji)
-    if (count)
-      reactions.set(r.reactionType.emoji, count + 1)
-    else
-      reactions.set(r.reactionType.emoji, 1)
-  })
+  const reactions = groupBy(message.reactions, (reaction) => reaction.reactionType.emoji);
+  console.log(reactions);
 
   const isActivePerson = selectedItem?.id === message.userId;
   return (
@@ -38,6 +34,8 @@ const Message: React.FC<Props> = ({ message, isGroup }) => {
         {isGroup && !isActivePerson && <Avatar className={styles['user-avatar-in-group']} userId={message.userId} size={25} />}
         <div className={styles['message']}>
           <div dangerouslySetInnerHTML={{ __html: message.text }} />
+          
+          <Reactions message={message}/>
           <div className={styles['message-meta']}>
             <span className={styles['timestep']}>
               {moment(message.inTime ?? message.createdAt).format('LT')}
@@ -45,13 +43,6 @@ const Message: React.FC<Props> = ({ message, isGroup }) => {
           </div>
         </div>
 
-        <div className={styles['reactions']}>
-            {
-                Array(...reactions.keys()).map((emoji, index) => (
-                    <div key={index}>{emoji}</div>
-                ))
-            }
-        </div>
 
       </div>
 
