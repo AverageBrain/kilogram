@@ -3,14 +3,16 @@ import { Avatar as AvatarD, Spin } from 'antd';
 import { CommentOutlined, UserOutlined } from '@ant-design/icons';
 import { userApiClient } from '../../hands';
 import styles from './Avatar.module.scss';
+import clsx from 'clsx';
 
 type Props = {
   userId?: number;
   size?: number;
+  className?: string;
 }
 
 // TODO: подумать, как не загружать постоянно аватарки, тк, например, для каждого сообщения не загружать заново
-const Avatar: React.FC<Props> = ({ userId, size }) => {
+const Avatar: React.FC<Props> = ({ userId, size, className }) => {
   const [ photoStatus, setPhotoStatus ] = useState('loading');
   const [ image, setImage ] = useState('');
 
@@ -35,7 +37,7 @@ const Avatar: React.FC<Props> = ({ userId, size }) => {
 
   return (
   // TODO: настроить hitboxes
-    <div className={styles.avatar} style={{ width: avatarSize, height: avatarSize}}>
+    <div className={clsx(styles.avatar, className)} style={{ width: avatarSize, height: avatarSize}}>
       {photoStatus === 'loading' && <Spin className={styles.spin} />}
       {photoStatus === 'loaded' && <img src={`data:image/svg+xml;utf8,${encodeURIComponent(image)}`} />}
       {photoStatus === 'error-occurred' && <AvatarD icon={<UserOutlined />} size={avatarSize} />}
