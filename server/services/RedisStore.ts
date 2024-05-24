@@ -60,9 +60,12 @@ export class RedisStore {
 
     async getStatus(userIds: number[]): Promise<Map<number, boolean>> {
         const keys = userIds.map(i => this.onlineKey(i))
+        const userStatus = new Map()
+        if (keys.length === 0) {
+            return userStatus;
+        }
         const statuses = await client.mGet(keys)
 
-        const userStatus = new Map()
         for (let i = 0; i < userIds.length; i++) {
             if (statuses[i] == 'true')
                 userStatus.set(userIds[i], true)

@@ -7,6 +7,7 @@ import { Avatar } from '../../../../Avatar';
 import { useDebounce } from '../../../../../hooks';
 import listsStyles from '../../../../../styles/lists.module.scss';
 import { observer } from 'mobx-react-lite';
+import { getHandle } from '../../../../../utils';
 
 type Props = {
   searchTerm: string;
@@ -64,7 +65,7 @@ const NewMessageUsersList: React.FC<Props> = ({ searchTerm, setSearchTerm, close
             title={<span className={listsStyles.title}>{user.name}</span>}
             description={
               <span className={listsStyles.description}>
-                {user.lastSeen? user.lastSeen : 'был в сети недавно'}
+                {getHandle({ user })}
               </span>
             }
           />

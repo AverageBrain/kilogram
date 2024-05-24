@@ -1,5 +1,5 @@
 import React, { memo, useEffect, useState } from 'react';
-import { Avatar as AvatarD, Spin } from 'antd';
+import { Avatar as AvatarD, Badge, Spin } from 'antd';
 import { CommentOutlined, UserOutlined } from '@ant-design/icons';
 import { userApiClient } from '../../hands';
 import styles from './Avatar.module.scss';
@@ -9,10 +9,11 @@ type Props = {
   userId?: number;
   size?: number;
   className?: string;
+  userStatus?: boolean;
 }
 
 // TODO: подумать, как не загружать постоянно аватарки, тк, например, для каждого сообщения не загружать заново
-const Avatar: React.FC<Props> = ({ userId, size, className }) => {
+const Avatar: React.FC<Props> = ({ userId, size, className, userStatus }) => {
   const [ photoStatus, setPhotoStatus ] = useState('loading');
   const [ image, setImage ] = useState('');
 
@@ -35,8 +36,7 @@ const Avatar: React.FC<Props> = ({ userId, size, className }) => {
     }
   }, [])
 
-  return (
-  // TODO: настроить hitboxes
+  const avatarComponent = (
     <div className={clsx(styles.avatar, className)} style={{ width: avatarSize, height: avatarSize}}>
       {photoStatus === 'loading' && <Spin className={styles.spin} />}
       {photoStatus === 'loaded' && <img src={`data:image/svg+xml;utf8,${encodeURIComponent(image)}`} />}
@@ -50,6 +50,19 @@ const Avatar: React.FC<Props> = ({ userId, size, className }) => {
         />
       }
     </div>
+  );
+
+  return (
+    <>
+      {userStatus
+        ? (// TODO: offset относительно размера
+          <Badge count=" " offset={[-10, 70]}  color="var(--base-accent-color)">
+            {avatarComponent}
+          </Badge>
+        )
+        : avatarComponent
+      }
+    </>
   );
 }
 
