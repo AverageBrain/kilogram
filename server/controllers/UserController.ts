@@ -1,11 +1,11 @@
-import {BodyParam, Get, JsonController, Param, Post, QueryParam, Req, Res} from 'routing-controllers';
+import { BodyParam, Get, JsonController, Param, Post, QueryParam, Req, Res } from 'routing-controllers';
 import * as types from '../../src/types';
 import express from 'express';
-import {prisma} from "../domain/PrismaClient";
-import {User} from "@prisma/client";
-import {UserAvatarService} from "../services/UserAvatarService";
-import {UploadedFile} from "express-fileupload"
-import {RedisStore} from "../services/RedisStore";
+import { prisma } from "../domain/PrismaClient";
+import { User } from "@prisma/client";
+import { UserAvatarService } from "../services/UserAvatarService";
+import { UploadedFile } from "express-fileupload"
+import { RedisStore } from "../services/RedisStore";
 
 const redisStore = new RedisStore()
 
@@ -16,6 +16,7 @@ export function convertPrismaUser(prismaUser: User, userStatus?: boolean): types
         name: prismaUser.name,
         updatedAt: prismaUser.updatedAt,
         username: prismaUser.username,
+        userStatus,
     }
 }
 
@@ -25,7 +26,7 @@ export class UserController {
     async getMe(@Req() request: express.Request): Promise<types.UserType | {}> {
         const sessionUser = request.user
         if (sessionUser?.prismaUser) {
-            return convertPrismaUser(sessionUser.prismaUser)
+            return convertPrismaUser(sessionUser.prismaUser, true)
         }
         // not authorized
         return {};
@@ -49,7 +50,9 @@ export class UserController {
                 }
             }
         });
-        return users.map(i => convertPrismaUser(i));
+        const usersStatuses = await redisStore.getStatus(users.map(i => i.id))
+
+        return users.map(i => convertPrismaUser(i, usersStatuses.get(i.id)))
     }
 
     @Post("/edit")
@@ -58,7 +61,7 @@ export class UserController {
         if (!user) {
             throw new Error("User must be authorized")
         }
-        const localUser = await prisma.user.findUniqueOrThrow({where: {githubId: sessionUser?.toString()}})
+        const localUser = await prisma.user.findUniqueOrThrow({ where: { githubId: sessionUser?.toString() } })
         localUser.name = user.name
         localUser.username = user.username
         return convertPrismaUser(localUser)
@@ -92,7 +95,7 @@ export class UserController {
             })
             const usersStatuses = await redisStore.getStatus(users.map(i => i.id))
 
-        return users.map(i => convertPrismaUser(i, usersStatuses.get(i.id)));
+            return users.map(i => convertPrismaUser(i, usersStatuses.get(i.id)));
         }
         return [];
     }

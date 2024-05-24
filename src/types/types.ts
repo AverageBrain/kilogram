@@ -9,6 +9,7 @@ export type UserType = BaseItemType & {
   username: string;
   bio?: string;
   lastSeen?: string;
+  userStatus?: boolean;
 }
 
 export type MessageType = BaseItemType & {

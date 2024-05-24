@@ -1,20 +1,22 @@
-import {BodyParam, Get, JsonController, Param, Post, Req, Res} from "routing-controllers";
-import {Message, UserChat} from "@prisma/client";
+import { BodyParam, Get, JsonController, Param, Post, Req, Res } from "routing-controllers";
+import { Message, UserChat } from "@prisma/client";
 import express from "express";
 import { load } from 'cheerio';
 
-import {ChatService} from "../services/ChatService";
-import {prisma} from "../domain/PrismaClient";
+import { ChatService } from "../services/ChatService";
+import { prisma } from "../domain/PrismaClient";
 import * as types from '../../src/types';
-import {UserService} from "../services/UserService";
-import {convertPrismaUser} from "./UserController";
-import {getDateCondition, getIdCondition, groupBy} from "../utils";
-import {makeRandomString} from "../utils/makeid";
-import {MessageReactionType, ReactionType, TypeOfChat} from "../../src/types/types";
+import { UserService } from "../services/UserService";
+import { convertPrismaUser } from "./UserController";
+import { getDateCondition, getIdCondition, groupBy } from "../utils";
+import { makeRandomString } from "../utils/makeid";
+import { MessageReactionType, ReactionType, TypeOfChat } from "../../src/types/types";
+import { RedisStore } from "../services/RedisStore";
 
 
 const chatService = new ChatService()
 const userService = new UserService()
+const redisStore = new RedisStore();
 
 export function convertPrismaMessage(prismaMessage: Message, reactions: MessageReactionType[]): types.MessageType {
     return {
@@ -61,7 +63,7 @@ export class ChatController {
             throw new Error("User must be authorized")
         }
 
-        const userChats = await prisma.userChat.findMany({where: {chatId: delayMessage.chatId}})
+        const userChats = await prisma.userChat.findMany({ where: { chatId: delayMessage.chatId } })
         if (!userChats.find((chat) => chat.userId === user.id) || userChats.length !== 2) {
             throw new Error("User has no access to the chat")
         }
@@ -92,7 +94,7 @@ export class ChatController {
             throw new Error("User must be authorized")
         }
 
-        const removedDelayMessage = await prisma.delayMessage.findUnique({where: {id: delayMessage.delayMessageId}})
+        const removedDelayMessage = await prisma.delayMessage.findUnique({ where: { id: delayMessage.delayMessageId } })
         if (removedDelayMessage == null) {
             throw new Error("Delayed message not found")
         }
@@ -101,7 +103,7 @@ export class ChatController {
             throw new Error("Access denied")
         }
 
-        return prisma.delayMessage.delete({where: {id: removedDelayMessage.id}})
+        return prisma.delayMessage.delete({ where: { id: removedDelayMessage.id } })
     }
 
     @Post("/messages/delay")
@@ -120,7 +122,7 @@ export class ChatController {
         const dateCondition = getDateCondition(chatMessages.beforeInTime);
 
         return prisma.delayMessage.findMany({
-            where: {chatId: chatMessages.chatId, userId: user.id, inTime: dateCondition},
+            where: { chatId: chatMessages.chatId, userId: user.id, inTime: dateCondition },
             take: 15,
             orderBy: [
                 {
@@ -152,8 +154,8 @@ export class ChatController {
         const alreadyChat = await prisma.userChat.findFirst({
             where: {
                 AND: [
-                    {userId: user.id},
-                    {chat: {members: {some: {userId: toUser.id}}}}
+                    { userId: user.id },
+                    { chat: { members: { some: { userId: toUser.id } } } }
                 ]
             }
         })
@@ -162,18 +164,20 @@ export class ChatController {
         }
 
 
-        const chat = await prisma.chat.create({data: {}})
+        const chat = await prisma.chat.create({ data: {} })
         await Promise.all([
-            prisma.userChat.create({data: {userId: user.id, chatId: chat.id}}),
-            prisma.userChat.create({data: {userId: toUser.id, chatId: chat.id}})
+            prisma.userChat.create({ data: { userId: user.id, chatId: chat.id } }),
+            prisma.userChat.create({ data: { userId: toUser.id, chatId: chat.id } })
         ])
+
+        const userStatus = (await redisStore.getStatus([toUser.id])).get(toUser.id);
         return {
             createdAt: chat.createdAt,
             id: chat.id,
             messages: [],
             updatedAt: chat.updatedAt,
             name: toUser.name,
-            users: [convertPrismaUser(toUser)],
+            users: [convertPrismaUser(toUser, userStatus)],
             type: TypeOfChat.Chat,
         }
     }
@@ -199,11 +203,12 @@ export class ChatController {
 
         const createManyUserChat = toUsers.map((user) =>
             prisma.userChat.create({
-                data: {userId: user.id, chatId: group.id},
+                data: { userId: user.id, chatId: group.id },
             }),
         )
         await Promise.all(createManyUserChat);
-        await prisma.userChat.create({data: {userId: user.id, chatId: group.id}});
+        await prisma.userChat.create({ data: { userId: user.id, chatId: group.id } });
+        const usersStatuses = await redisStore.getStatus(toUsers.map((i) => i.id));
 
         return {
             createdAt: group.createdAt,
@@ -211,7 +216,7 @@ export class ChatController {
             messages: [],
             name: group.name,
             updatedAt: group.updatedAt,
-            users: toUsers.filter(i => i.id != user.id).map(i => convertPrismaUser(i)),
+            users: toUsers.filter(i => i.id != user.id).map(i => convertPrismaUser(i, usersStatuses.get(i.id))),
             joinKey: group.joinKey ? group.joinKey : undefined,
             type: TypeOfChat.Group,
         }
@@ -228,22 +233,22 @@ export class ChatController {
             throw new Error("User must be authorized");
         }
 
-        const group = await prisma.chat.findUnique({ where: { joinKey: joinKey }});
+        const group = await prisma.chat.findUnique({ where: { joinKey: joinKey } });
         if (group === null) {
             return response.status(400).send({ message: 'JoinKey not connected to any group' });
         }
-        const alreadyUsersChat = await prisma.userChat.findMany({ where: { chatId: group.id }, include: { user: true }});
+        const alreadyUsersChat = await prisma.userChat.findMany({ where: { chatId: group.id }, include: { user: true } });
         if (alreadyUsersChat.find((item) => item.userId === user.id)) {
             return response.status(400).send({ message: 'User already joined the group' });
         }
-
+        const usersStatuses = await redisStore.getStatus(alreadyUsersChat.map((i) => i.id));
         return {
             createdAt: group.createdAt,
             id: group.id,
             messages: [],
             updatedAt: group.updatedAt,
             name: group.name,
-            users: alreadyUsersChat.map(i => convertPrismaUser(i.user)),
+            users: alreadyUsersChat.map(i => convertPrismaUser(i.user, usersStatuses.get(i.id))),
             joinKey: group.joinKey ?? undefined,
             type: TypeOfChat.Group,
         };
@@ -261,18 +266,19 @@ export class ChatController {
             throw new Error("User must be authorized")
         }
 
-        const group = await prisma.chat.findUnique({where: {joinKey: joinGroup.joinKey}})
+        const group = await prisma.chat.findUnique({ where: { joinKey: joinGroup.joinKey } })
         if (group === null) {
             throw new Error("JoinKey not connected to any group")
         }
-        const alreadyUsersChat = await prisma.userChat.findMany({where: {chatId: group.id}, include: {user: true}})
+        const alreadyUsersChat = await prisma.userChat.findMany({ where: { chatId: group.id }, include: { user: true } })
         if (alreadyUsersChat.find((item) => item.userId === user.id)) {
             throw new Error("User already joined the group")
         }
 
         await prisma.userChat.create({
-            data: {userId: user.id, chatId: group.id},
+            data: { userId: user.id, chatId: group.id },
         })
+        const usersStatuses = await redisStore.getStatus(alreadyUsersChat.map((i) => i.id));
 
         return {
             createdAt: group.createdAt,
@@ -280,7 +286,7 @@ export class ChatController {
             messages: [],
             updatedAt: group.updatedAt,
             name: group.name,
-            users: alreadyUsersChat.map(i => convertPrismaUser(i.user)),
+            users: alreadyUsersChat.map(i => convertPrismaUser(i.user, usersStatuses.get(i.id))),
             joinKey: group.joinKey ?? undefined,
             type: TypeOfChat.Group,
         }
@@ -298,34 +304,35 @@ export class ChatController {
             throw new Error("User must be authorized")
         }
         const userChats: UserChat[] = await prisma.userChat.findMany(
-            {where: {AND: [{userId: user.id}]}, orderBy: {updatedAt: 'desc'}}
+            { where: { AND: [{ userId: user.id }] }, orderBy: { updatedAt: 'desc' } }
         );
 
         const chatsIds = userChats.map(i => i.chatId);
         const chats = await prisma.chat.findMany({
-            where: {id: {in: chatsIds}},
+            where: { id: { in: chatsIds } },
             include: {
-                messages: {take: -1, include: {reactions: {include: {reactionType: true}}}},
-                members: {include: {user: true}}
+                messages: { take: -1, include: { reactions: { include: { reactionType: true } } } },
+                members: { include: { user: true } }
             }
         });
         const chatsById = groupBy(chats, i => i.id)
 
-        return userChats.map(c => {
+        return await Promise.all(userChats.map(async (c) => {
             const chat = chatsById[c.chatId][0]
             const othersUserChat = chat.members.filter(i => i.userId != user.id)
+            const usersStatuses = await redisStore.getStatus(othersUserChat.map((i) => i.id));
 
             return {
                 id: chat.id,
                 createdAt: chat.createdAt,
                 updatedAt: chat.updatedAt,
                 name: chat.name,
-                users: othersUserChat.map(i => convertPrismaUser(i.user)),
+                users: othersUserChat.map(i => convertPrismaUser(i.user, usersStatuses.get(i.id))),
                 messages: chat.messages.map(i => convertPrismaMessage(i, i.reactions)) as types.MessageType[],
                 type: chat.type,
                 joinKey: chat.joinKey,
             } as types.ChatType
-        })
+        }));
     }
 
 
@@ -346,10 +353,10 @@ export class ChatController {
         const idCondition = getIdCondition(chatMessages.afterId);
 
         return prisma.message.findMany({
-            where: {chatId: chatMessages.chatId,  id: idCondition},
+            where: { chatId: chatMessages.chatId, id: idCondition },
             take: 15,
-            orderBy: {id: "desc"},
-            include: {reactions: {include: {reactionType: true}}}
+            orderBy: { id: "desc" },
+            include: { reactions: { include: { reactionType: true } } }
         })
     }
 
@@ -388,13 +395,13 @@ export class ChatController {
             throw new Error("User must be authorized")
         }
 
-        const message = await prisma.message.findUnique({where: {id: reactionMessageIn.messageId}})
+        const message = await prisma.message.findUnique({ where: { id: reactionMessageIn.messageId } })
 
         if (message == null) {
             throw new Error("Message not founded")
         }
 
-        const reactionType = await prisma.reactionType.findUnique({where: {id: reactionMessageIn.reactionTypeId}})
+        const reactionType = await prisma.reactionType.findUnique({ where: { id: reactionMessageIn.reactionTypeId } })
         if (reactionType == null) {
             throw new Error("ReactionType not founded")
         }
@@ -426,14 +433,14 @@ export class ChatController {
         @Req() request: express.Request,
         @BodyParam('url') url: string,
     ): Promise<types.MetadataType> {
-      const response = await fetch(url);
-      const html = await response.text();
-      const $ = load(html);
-  
-      const title = $('meta[property="og:title"]').attr('content') ?? $('title').text() ?? $('meta[name="title"]').attr('content');
-      const description = $('meta[property="og:description"]').attr('content') ?? $('meta[name="description"]').attr('content');
-      const imageUrl = $('meta[property="og:image"]').attr('content') ?? $('meta[property="og:image:url"]').attr('content');
-  
-      return { title, description, imageUrl };
+        const response = await fetch(url);
+        const html = await response.text();
+        const $ = load(html);
+
+        const title = $('meta[property="og:title"]').attr('content') ?? $('title').text() ?? $('meta[name="title"]').attr('content');
+        const description = $('meta[property="og:description"]').attr('content') ?? $('meta[name="description"]').attr('content');
+        const imageUrl = $('meta[property="og:image"]').attr('content') ?? $('meta[property="og:image:url"]').attr('content');
+
+        return { title, description, imageUrl };
     }
 }
