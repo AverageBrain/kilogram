@@ -26,7 +26,7 @@ const MembersList: React.FC<Props> = ({ users, handleClickOnUser }) => {
         >
           <List.Item.Meta
             className={listsStyles['user-meta']}
-            avatar={<Avatar userId={user.id} />}
+            avatar={<Avatar userId={user.id} userStatus={user?.userStatus} />}
             title={<span className={listsStyles.title}>{user.name}</span>}
             description={
               <span className={listsStyles.description}>

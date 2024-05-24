@@ -55,8 +55,13 @@ const Avatar: React.FC<Props> = ({ userId, size, className, userStatus }) => {
   return (
     <>
       {userStatus
-        ? (// TODO: offset относительно размера
-          <Badge count=" " offset={[-10, 70]}  color="var(--base-accent-color)">
+        ? (
+          <Badge
+            size={avatarSize < 80 ? 'small' : undefined}
+            count=" "
+            offset={[-0.125 * avatarSize, 0.875 * avatarSize]}
+            color="var(--base-accent-color)"
+          >
             {avatarComponent}
           </Badge>
         )

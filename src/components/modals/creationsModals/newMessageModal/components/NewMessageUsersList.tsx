@@ -61,7 +61,7 @@ const NewMessageUsersList: React.FC<Props> = ({ searchTerm, setSearchTerm, close
         >
           <List.Item.Meta
             className={listsStyles['user-meta']}
-            avatar={<Avatar userId={user.id} />}
+            avatar={<Avatar userId={user.id} userStatus={user?.userStatus} />}
             title={<span className={listsStyles.title}>{user.name}</span>}
             description={
               <span className={listsStyles.description}>
