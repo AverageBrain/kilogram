@@ -52,7 +52,6 @@ export function convertPrismaReaction(prismaReaction: MessageReactionType): type
     }
 }
 
-const userService = new UserService()
 
 @JsonController("/chat")
 export class ChatController {
