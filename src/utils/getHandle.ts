@@ -1,3 +1,5 @@
+import moment from "moment";
+
 import { UserType } from "../types";
 import { getCorrectMemberCase } from "./getCorrectCase";
 
@@ -12,6 +14,6 @@ export const getHandle = (options: {
     : user?.userStatus
       ? 'онлайн'
       : user?.lastSeen
-        ? user.lastSeen
-        : 'был в сети недавно';
+        ? `был:a в сети ${moment(user.lastSeen).format('HH:MM DD.MM.YY')}`
+        : 'был:a в сети недавно';
 }

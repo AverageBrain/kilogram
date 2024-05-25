@@ -27,6 +27,7 @@ export class RedisStore {
         statusExpire.set(userId, setTimeout(async () => {
             await client.del(this.onlineKey(userId))
             await this.notifyUsers(false, userId)
+            statusExpire.delete(userId)
         }, 5_000))
         const user = await prisma.user.findUnique({ where: { id: userId } })
         if (user) {
@@ -40,6 +41,9 @@ export class RedisStore {
     * */
     async notifyUsers(status: boolean, userId: number) {
         const sseService = new SSEService();
+        const currentUser = await prisma.user.findFirstOrThrow({
+            where: { id: userId },
+        });
         const supportUser = await prisma.userChat.findMany({
             where: { userId: userId },
             include: { chat: { include: { members: true } } }
@@ -53,7 +57,7 @@ export class RedisStore {
 
         relevantUsers.forEach(
             async (id) => {
-                await sseService.publishMessage(id, 'userStatus', { status, userId });
+                await sseService.publishMessage(id, 'userStatus', { status, userId, lastSeen: currentUser.lastSeen });
             }
         );
     }

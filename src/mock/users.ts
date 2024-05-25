@@ -28,7 +28,7 @@ export const users: UserType[] = [
     updatedAt: new Date('2024-03-30T12:38:31'),
     name: 'Anton',
     username: 'average-brain',
-    lastSeen: 'онлайн',
+    lastSeen: new Date('2024-03-30T12:38:31'),
     bio: 'ррррррр...',
   },
   {
@@ -37,7 +37,7 @@ export const users: UserType[] = [
     updatedAt: new Date('2024-03-30T12:38:31'),
     name: 'Polina',
     username: 'buchurella',
-    lastSeen: 'была в сети 4 минуты назад',
+    lastSeen: new Date('2024-03-30T12:38:31'),
   },
   {
     id: 3,

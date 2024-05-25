@@ -17,6 +17,7 @@ export function convertPrismaUser(prismaUser: User, userStatus?: boolean): types
         updatedAt: prismaUser.updatedAt,
         username: prismaUser.username,
         userStatus,
+        lastSeen: prismaUser.lastSeen,
     }
 }
 

@@ -320,14 +320,14 @@ export class ChatController {
         return await Promise.all(userChats.map(async (c) => {
             const chat = chatsById[c.chatId][0]
             const othersUserChat = chat.members.filter(i => i.userId != user.id)
-            const usersStatuses = await redisStore.getStatus(othersUserChat.map((i) => i.id));
+            const usersStatuses = await redisStore.getStatus(othersUserChat.map((i) => i.userId));
 
             return {
                 id: chat.id,
                 createdAt: chat.createdAt,
                 updatedAt: chat.updatedAt,
                 name: chat.name,
-                users: othersUserChat.map(i => convertPrismaUser(i.user, usersStatuses.get(i.id))),
+                users: othersUserChat.map(i => convertPrismaUser(i.user, usersStatuses.get(i.userId))),
                 messages: chat.messages.map(i => convertPrismaMessage(i, i.reactions)) as types.MessageType[],
                 type: chat.type,
                 joinKey: chat.joinKey,

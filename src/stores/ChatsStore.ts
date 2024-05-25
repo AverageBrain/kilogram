@@ -31,6 +31,7 @@ class ChatsStore extends BaseStore<ChatType> {
       getGroupByJoinKey: action.bound,
       joinGroup: action.bound,
       getMetadata: action.bound,
+      updateStatusChats: action.bound,
     });
   }
 
@@ -112,6 +113,27 @@ class ChatsStore extends BaseStore<ChatType> {
         this.items = [updatedChat, ...otherChats];
       });
     }
+  }
+
+  async updateStatusChats(userId: number, userStatus: boolean, lastSeen: Date) {
+    runInAction(() => {
+      this.items = this.items.map((chat) => ({
+        ...chat,
+        users: chat.users.map((user) => ({
+          ...user,
+          userStatus: user.id == userId ? userStatus : user?.userStatus,
+          lastSeen: user.id == userId ? lastSeen : user?.lastSeen,
+        })),
+      }));
+      this.selectedItem = this.selectedItem ? {
+        ...this.selectedItem,
+        users: this.selectedItem.users.map((user) => ({
+          ...user,
+          userStatus: user.id == userId ? userStatus : user?.userStatus,
+          lastSeen: user.id == userId ? lastSeen : user?.lastSeen,
+        })),
+      } : undefined;
+    });
   }
 
   updateGroups(chat: ChatType) {
