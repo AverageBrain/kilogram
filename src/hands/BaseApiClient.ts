@@ -29,6 +29,10 @@ export abstract class BaseApiClient {
         return (await axiosClient.post<T>(normalizeUrl(url), data)).data
     }
 
+    async axiosPostForm<T>(url: string, form: FormData): Promise<T> {
+        return (await axiosClient.postForm<T>(normalizeUrl(url), form)).data
+    }
+
     async axiosGet<T>(url: string): Promise<T> {
         return (await axiosClient.get<T>(normalizeUrl(url))).data
     }
