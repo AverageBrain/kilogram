@@ -94,7 +94,7 @@ export class ChatController {
             data: {
                 chatId: delayMessage.chatId,
                 text: delayMessage.text,
-                fileUrls: delayMessage.fileKeys,
+                fileKeys: delayMessage.fileKeys,
                 userId: user.id,
                 inTime: delayMessage.inTime,
             }
