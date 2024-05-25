@@ -63,7 +63,7 @@ export class ChatService {
             return FileStorageService.getFilePresignedUrl(key)
         }))
     }
-    
+
     async getMessageById(messageId: number) {
         const message = await prisma.message.findUnique({where: {id: messageId}});
         if (message == null) {
@@ -91,10 +91,15 @@ export class ChatService {
             throw new Error("User has no access to the chat");
         }
 
-        await Promise.all(userChats.map(async (userChat) => {
-            userChat.updatedAt = new Date();
-            return prisma.userChat.update({data: userChat, where: {id: userChat.id}});
-        }));
+        userChats.forEach(uc => uc.updatedAt = new Date())
+        await prisma.$transaction(
+            userChats.map((userChat) =>
+                prisma.userChat.update({
+                    data: userChat,
+                    where: { id: userChat.id },
+                }),
+            ),
+        );
 
         return userChats;
     }
@@ -103,29 +108,28 @@ export class ChatService {
         const message = await this.getMessageById(reactionMessageIn.messageId);
 
         const reactionType = await this.getReactionTypeById(reactionMessageIn.reactionTypeId);
-        
+
         await this.updateMessageUpdatedAt(message);
 
         const userChats = await this.updateUserChats(message, user);
-        
+
         const curReactionMessage = await prisma.messageReaction.findFirst({
             where: {messageId: message.id, userId: user.id}
         });
-        const reactionMessage = !curReactionMessage 
+        const reactionMessage = !curReactionMessage
             ? await prisma.messageReaction.create({
                 data: {
                     userId: user.id,
                     reactionTypeId: reactionType.id,
                     messageId: message.id
                 }
-            }) 
+            })
             : await prisma.messageReaction.update({
-                data: {reactionTypeId: reactionMessageIn.reactionTypeId}, 
+                data: {reactionTypeId: reactionMessageIn.reactionTypeId},
                 where: {id: curReactionMessage.id}
             });
 
         const chatUsers = await prisma.userChat.findMany({where: {chatId: userChats[0].chatId}});
-
         chatUsers.forEach(uc => sseService.publishMessage(uc.userId, "newReaction", reactionMessage));
 
         return {
@@ -144,13 +148,13 @@ export class ChatService {
 
     async removeReaction(user: User, reactionMessageIn: {messageId: number, reactionTypeId: number}) {
         const message = await this.getMessageById(reactionMessageIn.messageId);
-        
+
         await this.updateMessageUpdatedAt(message);
 
         const userChats = await this.updateUserChats(message, user);
-        
+
         const removedReaction = await prisma.messageReaction.findFirst({
-            where: { 
+            where: {
                 AND: [
                     { userId: user.id },
                     { messageId: reactionMessageIn.messageId },

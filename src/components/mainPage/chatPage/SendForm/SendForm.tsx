@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, {useRef, useState} from 'react';
 import { observer } from 'mobx-react-lite';
-import { CalendarOutlined } from '@ant-design/icons';
+import {CalendarOutlined, CloseCircleOutlined, FileAddOutlined} from '@ant-design/icons';
 import DOMPurify from 'dompurify';
 import { EditorState, convertToRaw } from 'draft-js';
 import draftToHtml from 'draftjs-to-html';
@@ -25,6 +25,7 @@ const SendMessage: React.FC<Props> = ({ scrollRef, setShouldLoadDelayed }) => {
   const { selectedUser: user, setSelectedUser } = userStore;
   const [editorState, setEditorState] = useState<EditorState>(() => EditorState.createEmpty());
   const [fileList, setFileList] = useState<FileList | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
 
   const handleSubmit = async (inTime?: Date) => {
@@ -65,8 +66,14 @@ const SendMessage: React.FC<Props> = ({ scrollRef, setShouldLoadDelayed }) => {
     setShouldLoadDelayed(true);
   };
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFileList(e.target.files);
+  const handleFileAdd = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const data = new DataTransfer();
+    const newFiles = e.target.files ?? [];
+    const allFiles = Array.from(newFiles).concat(files);
+
+    allFiles.forEach(file => data.items.add(file))
+
+    setFileList(data.files);
   }
 
   const files = fileList ? Array.from(fileList) : [];
@@ -98,7 +105,13 @@ const SendMessage: React.FC<Props> = ({ scrollRef, setShouldLoadDelayed }) => {
           locale: 'ru',
         }}
       />
-      <input type={"file"} id={"files"} onChange={handleFileChange} multiple />
+      <ul className={styles['file-list']}>
+          {files.map((file, idx) => <li key={idx} className={styles['file-list-element']}><p className={styles['file-name']}>{file.name}</p> <CloseCircleOutlined/></li>)}
+      </ul>
+      <input type={"file"} id={"files"} onChange={handleFileAdd} ref={fileInputRef} multiple hidden/>
+      <button className={buttonsStyles['icon-svg-button']} onClick={() => fileInputRef.current?.click()}>
+        <FileAddOutlined />
+      </button>
       <button className={buttonsStyles['icon-svg-button']} onClick={handleClickDelay}>
         <CalendarOutlined />
       </button>
