@@ -37,10 +37,10 @@ const SendMessage: React.FC<Props> = ({ scrollRef, setShouldLoadDelayed }) => {
       setEditorState(EditorState.createEmpty());
       setFileList(null);
       if (chat) {
-        inTime ? await sendDelayMessage(chat.id, safeHtml, inTime) : await sendMessage(chat.id, safeHtml, files);
+        inTime ? await sendDelayMessage(chat.id, safeHtml, files, inTime) : await sendMessage(chat.id, safeHtml, files);
       } else if (user) {
         const curChat = await chatApiClient.createChat(user.id);
-        inTime ? await sendDelayMessage(curChat.id, safeHtml, inTime) : await sendMessage(curChat.id, safeHtml, files);
+        inTime ? await sendDelayMessage(curChat.id, safeHtml, files, inTime) : await sendMessage(curChat.id, safeHtml, files);
         setSelectedChat(chat);
         setSelectedUser(undefined);
       }

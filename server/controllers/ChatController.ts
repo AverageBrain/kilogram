@@ -14,6 +14,7 @@ import {MessageReactionType, ReactionType, TypeOfChat} from "../../src/types/typ
 import {MessageWithFileUrls} from "../models/MessageWithFileUrls";
 import {FileStorageService} from "../services/FileStorageService";
 import {FileInfo} from "../models/FileInfo";
+import {UploadedFile} from "express-fileupload";
 
 const chatService = new ChatService()
 const userService = new UserService()
@@ -52,20 +53,9 @@ export class ChatController {
         let messageToSend = {
             chatId: Number(chatId),
             text: text,
-            fileKeys: [] as string[]
+            fileKeys: files ? await this.uploadFiles(files) : []
         }
 
-        if (files) {
-            if (!Array.isArray(files)) files = Array.of(files)
-            messageToSend.fileKeys = await Promise.all(files.map(async (file) => {
-                const fileInfo: FileInfo = {
-                    data: file.data,
-                    name: file.name,
-                    mimetype: file.mimetype
-                }
-                return await FileStorageService.uploadFile(fileInfo)
-            }))
-        }
         const sentMessage: MessageWithFileUrls = await chatService.sendMessage(user, messageToSend)
 
         return convertPrismaMessage(sentMessage.message, [], sentMessage.fileUrls)
@@ -74,13 +64,18 @@ export class ChatController {
     @Post("/send/delay")
     async sendDelayMessage(
         @Req() request: express.Request,
-        @BodyParam('delayMessage') delayMessage: {
-            chatId: number
-            text: string
-            inTime: Date
-        }
+        @BodyParam('chatId') chatId: number,
+        @BodyParam('text') text: string,
+        @BodyParam('inTime') inTime: string,
     ): Promise<types.MessageType> {
         const user = request.user?.prismaUser
+        const files = request.files?.files
+        const delayMessage = {
+            chatId: Number(chatId),
+            text: text,
+            fileKeys: files ? await this.uploadFiles(files) : [],
+            inTime: new Date(inTime),
+        }
         if (!user) {
             throw new Error("User must be authorized")
         }
@@ -98,6 +93,7 @@ export class ChatController {
             data: {
                 chatId: delayMessage.chatId,
                 text: delayMessage.text,
+                fileKeys: delayMessage.fileKeys,
                 userId: user.id,
                 inTime: delayMessage.inTime,
             }
@@ -466,5 +462,17 @@ export class ChatController {
       const imageUrl = $('meta[property="og:image"]').attr('content') ?? $('meta[property="og:image:url"]').attr('content');
   
       return { title, description, imageUrl };
+    }
+
+    private async uploadFiles(files: UploadedFile | UploadedFile[]): Promise<string[]> {
+        if (!Array.isArray(files)) files = Array.of(files)
+        return Promise.all(files.map(async (file) => {
+            const fileInfo: FileInfo = {
+                data: file.data,
+                name: file.name,
+                mimetype: file.mimetype
+            }
+            return await FileStorageService.uploadFile(fileInfo)
+        }))
     }
 }
