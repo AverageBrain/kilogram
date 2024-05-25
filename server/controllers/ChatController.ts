@@ -17,12 +17,11 @@ import {FileInfo} from "../models/FileInfo";
 import {UploadedFile} from "express-fileupload";
 
 const chatService = new ChatService()
-const userService = new UserService()
-
 export function convertPrismaMessage(
     prismaMessage: Message,
     reactions: MessageReactionType[],
-    fileUrls: string[]
+    fileUrls: string[],
+    inTime?: Date,
 ): types.MessageType {
     return {
         id: prismaMessage.id,
@@ -31,11 +30,13 @@ export function convertPrismaMessage(
         chatId: prismaMessage.chatId,
         userId: prismaMessage.userId,
         text: prismaMessage.text,
+        inTime: inTime,
         reactions: reactions,
         fileUrls: fileUrls,
     }
 }
 
+const userService = new UserService()
 
 @JsonController("/chat")
 export class ChatController {
@@ -89,7 +90,7 @@ export class ChatController {
             throw new Error("InTime must be greater than current date")
         }
 
-        return prisma.delayMessage.create({
+        const prismaMessage = await prisma.delayMessage.create({
             data: {
                 chatId: delayMessage.chatId,
                 text: delayMessage.text,
@@ -98,6 +99,12 @@ export class ChatController {
                 inTime: delayMessage.inTime,
             }
         })
+        return convertPrismaMessage(
+            prismaMessage,
+            [],
+            await chatService.getFileUrls(delayMessage.fileKeys),
+            delayMessage.inTime
+        );
     }
 
     @Post("/delete/delay")
@@ -138,19 +145,15 @@ export class ChatController {
         }
 
         const dateCondition = getDateCondition(chatMessages.beforeInTime);
-
-        return prisma.delayMessage.findMany({
+        const prismaMessages = await prisma.delayMessage.findMany({
             where: {chatId: chatMessages.chatId, userId: user.id, inTime: dateCondition},
             take: 15,
-            orderBy: [
-                {
-                    inTime: 'desc',
-                },
-                {
-                    id: 'desc',
-                },
-            ],
+            orderBy: [{inTime: 'desc'}, {id: 'desc'}],
         })
+
+        return Promise.all(prismaMessages.map(async message =>
+            convertPrismaMessage(message, [], await chatService.getFileUrls(message.fileKeys), message.inTime)
+        ))
     }
 
     @Post("/create/chat")
