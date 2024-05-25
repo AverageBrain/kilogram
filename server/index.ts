@@ -17,6 +17,7 @@ import { SSEService } from "./services/SSEService";
 import { DelayMessageJob } from "./job/DelayMessageJob";
 import fileUpload from "express-fileupload";
 import { errorHandler } from "./middleware/ErrorHandler";
+import PushNotificationService from "./services/FirebaseNotification";
 
 const pgSession = connect_pg_simple(expressSession)
 
@@ -104,5 +105,8 @@ app.get("/api/user/sse", (req, res) => {
 
 new DelayMessageJob().run()
 
+// new PushNotificationService().send("eMilM8tFAkTHc3vyDsp2cR:APA91bESepHpZBGnv5tuE6D326eLG140BNW__EcQwyXtWarY7xyRzUY1fS_MqAxcP0Ox3mehTZ1tWp-dBqr--Upy42gGe_GAanRpGiO9RQiTZgFVQwS8EepIfbW_CbR87AwR21JR92-s", "Hihihihihi")
+// new PushNotificationService().send("d1f-PcbzGockAJV7aMcn-q:APA91bE4uA86R6cq45RkNShCFQoUHLJ55AnvDEckggk6x0REbNvOaxDeabQnm0EAe8KvYhwB0r-iDBeUBOuQ_zboo4O6KUWkMv_kjV6mru4JI9_oG1BevGLN1_qP-rNS19bLyH0DmIk2", "Hihihihihi")
+
 console.log("Server started")
-app.listen(3002);
+app.listen(3000);

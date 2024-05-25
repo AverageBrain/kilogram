@@ -4,8 +4,6 @@ export type SSECallback = (data: string) => boolean
 const listeners: Map<number, Map<string, SSECallback>> = new Map()
 
 
-
-
 export class SSEService {
     redisStore = new RedisStore()
 
