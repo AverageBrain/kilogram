@@ -57,6 +57,12 @@ export class ChatService {
 
         return sendMessage;
     }
+
+    async getFileUrls(fileKeys: string[]): Promise<string[]> {
+        return Promise.all(fileKeys.map(key => {
+            return FileStorageService.getFilePresignedUrl(key)
+        }))
+    }
     
     async getMessageById(messageId: number) {
         const message = await prisma.message.findUnique({where: {id: messageId}});
@@ -166,10 +172,5 @@ export class ChatService {
         chatUsers.forEach(uc => sseService.publishMessage(uc.userId, "removeReaction", removedReaction));
 
         return prisma.messageReaction.delete({where: {id: removedReaction.id}});
-
-    async getFileUrls(fileKeys: string[]): Promise<string[]> {
-        return Promise.all(fileKeys.map(key => {
-            return FileStorageService.getFilePresignedUrl(key)
-        }))
     }
 }
