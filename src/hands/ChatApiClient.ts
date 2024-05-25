@@ -2,12 +2,12 @@ import {BaseApiClient} from "./BaseApiClient";
 import {ChatType, MessageReactionType, MessageType, MetadataType, ReactionType} from "../types/types";
 
 class UserApiClient extends BaseApiClient {
-    sendMessage(chatId: number, text: string): Promise<MessageType> {
-        return this.axiosPost("/chat/send", {message: {chatId, text}})
+    sendMessage(chatId: number, text: string, files: File[]): Promise<MessageType> {
+        return this.axiosPostForm('/chat/send', this.messageForm(chatId, text, files))
     }
 
-    sendDelayMessage(chatId: number, text: string, inTime: Date): Promise<MessageType> {
-        return this.axiosPost("/chat/send/delay", {delayMessage: {chatId, text, inTime}})
+    sendDelayMessage(chatId: number, text: string, files: File[], inTime: Date): Promise<MessageType> {
+        return this.axiosPostForm('/chat/send/delay', this.messageForm(chatId, text, files, inTime))
     }
 
     removeDelayMessage(delayMessageId: number): Promise<MessageType> {
@@ -59,6 +59,16 @@ class UserApiClient extends BaseApiClient {
 
     getMetadata(url: string): Promise<MetadataType> {
         return this.axiosPost('/chat/metadata', { url });
+    }
+
+    private messageForm(chatId: number, text: string, files: File[], inTime?: Date): FormData {
+        const form = new FormData()
+        form.append('chatId', chatId.toString())
+        form.append('text', text)
+        if (inTime !== undefined) form.append('inTime', inTime.toString())
+        files.forEach(file => { form.append('files', file) })
+
+        return form
     }
 }
 
