@@ -1,4 +1,4 @@
-import {RedisStore} from "./RedisStore";
+import { RedisStore } from "./RedisStore";
 
 export type SSECallback = (data: string) => boolean
 const listeners: Map<number, Map<string, SSECallback>> = new Map()
@@ -43,7 +43,7 @@ export class SSEService {
             return
         }
         Array.from(userListeners.values()).forEach(
-            c => c(JSON.stringify({type: type, data: data}))
+            c => c(JSON.stringify({ type: type, data: data }))
         )
     }
 }

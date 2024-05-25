@@ -14,24 +14,25 @@ import { chatApiClient } from '../hands';
 
 class ChatsStore extends BaseStore<ChatType> {
   constructor() {
-      super();
-      makeObservable(this, {
-          items: override,
-          selectedItem: override,
-          loading: override,
+    super();
+    makeObservable(this, {
+      items: override,
+      selectedItem: override,
+      loading: override,
 
-          responseError: observable,
+      responseError: observable,
 
-          loadItems: action.bound,
-          createChat: action.bound,
-          setSelectedChat: action.bound,
-          updateChats: action.bound,
-          createGroup: action.bound,
-          updateGroups: action.bound,
-          getGroupByJoinKey: action.bound,
-          joinGroup: action.bound,
-          getMetadata: action.bound,
-      });
+      loadItems: action.bound,
+      createChat: action.bound,
+      setSelectedChat: action.bound,
+      updateChats: action.bound,
+      createGroup: action.bound,
+      updateGroups: action.bound,
+      getGroupByJoinKey: action.bound,
+      joinGroup: action.bound,
+      getMetadata: action.bound,
+      updateStatusChats: action.bound,
+    });
   }
 
   responseError?: string = undefined;
@@ -39,7 +40,7 @@ class ChatsStore extends BaseStore<ChatType> {
   async loadItems(): Promise<void> {
     try {
       this.enableLoading();
-    
+
       const data = await chatApiClient.getMyChats();
 
       runInAction(() => {
@@ -55,7 +56,7 @@ class ChatsStore extends BaseStore<ChatType> {
   async createChat(userId: number): Promise<void> {
     try {
       this.enableLoading();
-    
+
       const data = await chatApiClient.createChat(userId);
       runInAction(() => {
         this.selectedItem = data;
@@ -70,7 +71,7 @@ class ChatsStore extends BaseStore<ChatType> {
   async createGroup(userIds: number[], name: string): Promise<void> {
     try {
       this.enableLoading();
-    
+
       const data = await chatApiClient.createGroup(userIds, name);
       runInAction(() => {
         this.selectedItem = data;
@@ -106,12 +107,33 @@ class ChatsStore extends BaseStore<ChatType> {
       const updatedChat: ChatType = {
         ...updatedChats[0],
         messages: [message],
-      };  
+      };
 
       runInAction(() => {
         this.items = [updatedChat, ...otherChats];
       });
     }
+  }
+
+  async updateStatusChats(userId: number, userStatus: boolean, lastSeen: Date) {
+    runInAction(() => {
+      this.items = this.items.map((chat) => ({
+        ...chat,
+        users: chat.users.map((user) => ({
+          ...user,
+          userStatus: user.id == userId ? userStatus : user?.userStatus,
+          lastSeen: user.id == userId ? lastSeen : user?.lastSeen,
+        })),
+      }));
+      this.selectedItem = this.selectedItem ? {
+        ...this.selectedItem,
+        users: this.selectedItem.users.map((user) => ({
+          ...user,
+          userStatus: user.id == userId ? userStatus : user?.userStatus,
+          lastSeen: user.id == userId ? lastSeen : user?.lastSeen,
+        })),
+      } : undefined;
+    });
   }
 
   updateGroups(chat: ChatType) {
@@ -123,7 +145,7 @@ class ChatsStore extends BaseStore<ChatType> {
   async getGroupByJoinKey(joinKey: string): Promise<void> {
     try {
       this.enableLoading();
-    
+
       const data = await chatApiClient.getGroupByJoinKey(joinKey);
 
       runInAction(() => {
@@ -141,7 +163,7 @@ class ChatsStore extends BaseStore<ChatType> {
   async joinGroup(joinKey: string): Promise<void> {
     try {
       this.enableLoading();
-    
+
       const data = await chatApiClient.joinGroup(joinKey);
 
       runInAction(() => {
@@ -157,7 +179,7 @@ class ChatsStore extends BaseStore<ChatType> {
   async getMetadata(url: string): Promise<MetadataType | void> {
     try {
       this.enableLoading();
-    
+
       const data = await chatApiClient.getMetadata(url);
 
       return data;

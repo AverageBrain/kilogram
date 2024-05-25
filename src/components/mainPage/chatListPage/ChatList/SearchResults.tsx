@@ -53,7 +53,7 @@ const SearchResults: React.FC<Props> = ({ setSearchTerm, isSearching, results })
               clsx(listsStyles['chat-list-item-meta'], 
               user.id === selectedItem?.id && listsStyles['chat-list-item-meta-active'])
             }
-            avatar={<Avatar userId={user.id} />}
+            avatar={<Avatar userId={user.id} userStatus={user?.userStatus} />}
             title={<span className={listsStyles.title}>{user.name}</span>}
             description={<span className={listsStyles.description}>{user.username}</span>}
           />
