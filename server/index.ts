@@ -84,6 +84,7 @@ app.get("/api/user/sse", (req, res) => {
         "Connection": "keep-alive",
         "Cache-Control": "no-cache",
         "Content-Type": "text/event-stream",
+        'Content-Encoding': 'none',
     });
 
     const userId = req.user?.prismaUser?.id

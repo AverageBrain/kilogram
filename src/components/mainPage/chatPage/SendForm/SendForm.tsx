@@ -41,7 +41,7 @@ const SendMessage: React.FC<Props> = ({ scrollRef, setShouldLoadDelayed }) => {
       } else if (user) {
         const curChat = await chatApiClient.createChat(user.id);
         inTime ? await sendDelayMessage(curChat.id, safeHtml, files, inTime) : await sendMessage(curChat.id, safeHtml, files);
-        setSelectedChat(chat);
+        setSelectedChat(curChat);
         setSelectedUser(undefined);
       }
     }
