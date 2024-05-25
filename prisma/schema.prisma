@@ -91,6 +91,7 @@ model DelayMessage {
   userId    Int
   chatId    Int
   text      String
+  fileKeys  String[]
   inTime    DateTime
   fileKeys  String[]
   chat      Chat     @relation(fields: [chatId], references: [id])

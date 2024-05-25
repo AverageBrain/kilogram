@@ -119,6 +119,7 @@ class MessagesStore extends BaseStore<MessageType> {
     try {
         await chatApiClient.removeReaction(messageId, reactionTypeId);
     } catch (e: any) {
+
         console.warn(e);
         return false;
     } finally {
@@ -149,7 +150,7 @@ class MessagesStore extends BaseStore<MessageType> {
       this.items = [...updatedmessage];
     });
   }
-
+  
   updateMessageByRemoveReaction(messageId: number, reactionId: number): void {
     const message = this.items.find((message) => (message.id == messageId)); 
     if (!message) return
@@ -164,6 +165,7 @@ class MessagesStore extends BaseStore<MessageType> {
           );
           item.reactions = [...otherReaction];
         }
+
       }
     });
     runInAction(() => {

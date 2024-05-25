@@ -4,7 +4,7 @@ import { Dropdown, Input, Layout, MenuProps } from 'antd';
 import { useModal } from '../../../../hooks';
 import { authApiClient } from '../../../../hands';
 import { authUserStore } from '../../../../stores';
-import { UserProfile } from '../../../modals/profiles/userProfile/UserProfile';
+import { UserProfile } from '../../../modals';
 import {BASE_LOGOUT_HOST} from '../../../../hands/BaseApiClient';
 
 import styles from './Header.module.scss';

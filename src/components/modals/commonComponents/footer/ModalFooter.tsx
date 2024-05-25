@@ -13,10 +13,10 @@ export const ModalFooter: React.FC<Props> = ({ handleBack, handleSave, saveText,
   return (
     <footer className={styles.footer}>
       <Button className={styles["modal-button"]} type="text" size="large" onClick={handleBack}>
-        {saveText ? saveText : 'Отменить'}
+        {backText ?? 'Отменить'}
       </Button>
       <Button className={styles["modal-button"]} type="text" size="large" onClick={handleSave}>
-        {backText ? backText : 'Сохранить'}
+        {saveText ?? 'Сохранить'}
       </Button>
     </footer>
   );

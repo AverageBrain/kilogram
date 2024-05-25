@@ -54,7 +54,7 @@ const Avatar: React.FC<Props> = ({ userId, size, className }) => {
         avatarLoading
         ? <Spin className={styles.spin} />
         : image
-          ? <img src={`data:image/svg+xml;utf8,${encodeURIComponent(image)}`} />
+          ? <img alt='avatar' src={image} />
             : <AvatarAD icon={<UserOutlined />} size={avatarSize} />
       )}
     </div>

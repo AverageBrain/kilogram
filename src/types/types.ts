@@ -16,7 +16,8 @@ export type MessageType = BaseItemType & {
   userId: number;
   text: string;
   inTime?: Date;
-  reactions?: MessageReactionType[]
+  reactions?: MessageReactionType[];
+  fileUrls?: string[];
 }
 
 export type MessageReactionType = BaseItemType & {

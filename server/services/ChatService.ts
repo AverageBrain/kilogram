@@ -1,6 +1,8 @@
 import {User, UserChat} from "@prisma/client";
 import {prisma} from "../domain/PrismaClient";
 import {SSEService} from "./SSEService";
+import {FileStorageService} from "./FileStorageService";
+import {MessageWithFileUrls} from "../models/MessageWithFileUrls";
 
 const sseService = new SSEService()
 
@@ -20,8 +22,11 @@ export class ChatService {
         return prisma.userChat.findFirst({where: {chatId: chatId, userId: userId}});
     }
 
-    async sendMessage(user: User, message: { chatId: number, text: string }) {
-        const userChats = await prisma.userChat.findMany({where: {chatId: message.chatId}});
+    async sendMessage(
+        user: User,
+        message: { chatId: number, text: string, fileKeys: string[] },
+    ): Promise<MessageWithFileUrls> {
+        const userChats = await prisma.userChat.findMany({where: {chatId: message.chatId}})
         if (!userChats.find((chat) => chat.userId === user.id)) {
             throw new Error("User has no access to the chat")
         }
@@ -31,13 +36,20 @@ export class ChatService {
             return prisma.userChat.update({data: userChat, where: {id: userChat.id}});
         }));
 
-        const sendMessage = await prisma.message.create({
+        const prismaMessage = await prisma.message.create({
             data: {
                 chatId: message.chatId,
                 text: message.text,
-                userId: user.id
+                fileKeys: message.fileKeys,
+                userId: user.id,
             }
         });
+        const fileUrls = await this.getFileUrls(prismaMessage.fileKeys)
+
+        const sendMessage: MessageWithFileUrls = {
+            message: prismaMessage,
+            fileUrls: fileUrls,
+        }
 
         const chatUsers = await prisma.userChat.findMany({where: {chatId: userChats[0].chatId}});
 
@@ -154,5 +166,10 @@ export class ChatService {
         chatUsers.forEach(uc => sseService.publishMessage(uc.userId, "removeReaction", removedReaction));
 
         return prisma.messageReaction.delete({where: {id: removedReaction.id}});
+
+    async getFileUrls(fileKeys: string[]): Promise<string[]> {
+        return Promise.all(fileKeys.map(key => {
+            return FileStorageService.getFilePresignedUrl(key)
+        }))
     }
 }
