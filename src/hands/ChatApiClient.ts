@@ -1,5 +1,5 @@
 import {BaseApiClient} from "./BaseApiClient";
-import {ChatType, MessageReactionType, MessageType, MetadataType, ReactionType} from "../types/types";
+import {ChatType, MessageReactionType, MessageType, MetadataType, ReactionType, ReactionWithMessageInfoType} from "../types/types";
 
 class UserApiClient extends BaseApiClient {
     sendMessage(chatId: number, text: string, files: File[]): Promise<MessageType> {
@@ -55,6 +55,10 @@ class UserApiClient extends BaseApiClient {
         reactionTypeId: number
     ): Promise<MessageReactionType> {
         return this.axiosPost('/chat/reaction', {reactionMessage: {messageId, reactionTypeId}})
+    }
+
+    removeReaction(messageId: number, reactionTypeId: number): Promise<ReactionWithMessageInfoType> {
+        return this.axiosPost("/chat/delete/reaction", { reactionMessage: { messageId, reactionTypeId } })
     }
 
     getMetadata(url: string): Promise<MetadataType> {

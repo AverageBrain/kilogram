@@ -30,6 +30,12 @@ export type ReactionType = BaseItemType & {
   emoji: string;
 }
 
+export type ReactionWithMessageInfoType = BaseItemType & {
+  reactionTypeId: number;
+  messageId: number;
+  userId: number;
+}
+
 export type ChatListItemType = BaseItemType & {
   name: string;
   lastMessage: string;

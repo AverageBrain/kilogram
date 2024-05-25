@@ -5,7 +5,7 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
+  url      = "postgresql://kilogram:kilogram@158.160.118.181:5432/kilogram"
 }
 
 model User {

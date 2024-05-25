@@ -23,9 +23,9 @@ const SendMessage: React.FC<Props> = ({ scrollRef, setShouldLoadDelayed }) => {
   const { sendMessage, sendDelayMessage, clearMessages } = messagesStore;
   const { selectedItem: chat, setSelectedChat, getMetadata } = chatsStore;
   const { selectedUser: user, setSelectedUser } = userStore;
-
   const [editorState, setEditorState] = useState<EditorState>(() => EditorState.createEmpty());
   const [fileList, setFileList] = useState<FileList | null>(null);
+
 
   const handleSubmit = async (inTime?: Date) => {
     const contentState = editorState.getCurrentContent();
@@ -41,7 +41,7 @@ const SendMessage: React.FC<Props> = ({ scrollRef, setShouldLoadDelayed }) => {
       } else if (user) {
         const curChat = await chatApiClient.createChat(user.id);
         inTime ? await sendDelayMessage(curChat.id, safeHtml, files, inTime) : await sendMessage(curChat.id, safeHtml, files);
-        setSelectedChat(chat);
+        setSelectedChat(curChat);
         setSelectedUser(undefined);
       }
     }

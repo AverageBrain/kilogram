@@ -34,6 +34,11 @@ const Header: React.FC<Props> = ({ value, setSearchTerm, }) => {
       key: '0',
     },
     {
+      label: 'Подписаться на уведомления',
+      onClick: showModal,
+      key: '0',
+    },
+    {
       type: 'divider',
     },
     {
