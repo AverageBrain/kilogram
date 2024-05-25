@@ -1,20 +1,20 @@
-import {BodyParam, Get, JsonController, Param, Post, Req, Res} from "routing-controllers";
-import {Message, UserChat} from "@prisma/client";
+import { BodyParam, Get, JsonController, Param, Post, Req, Res } from "routing-controllers";
+import { Message, UserChat } from "@prisma/client";
 import express from "express";
 import { load } from 'cheerio';
 
-import {ChatService} from "../services/ChatService";
-import {prisma} from "../domain/PrismaClient";
+import { ChatService } from "../services/ChatService";
+import { prisma } from "../domain/PrismaClient";
 import * as types from '../../src/types';
-import {UserService} from "../services/UserService";
-import {convertPrismaUser} from "./UserController";
-import {getDateCondition, getIdCondition, groupBy} from "../utils";
-import {makeRandomString} from "../utils/makeid";
-import {MessageReactionType, ReactionType, TypeOfChat} from "../../src/types/types";
-import {MessageWithFileUrls} from "../models/MessageWithFileUrls";
-import {FileStorageService} from "../services/FileStorageService";
-import {FileInfo} from "../models/FileInfo";
-import {UploadedFile} from "express-fileupload";
+import { UserService } from "../services/UserService";
+import { convertPrismaUser } from "./UserController";
+import { getDateCondition, getIdCondition, groupBy } from "../utils";
+import { makeRandomString } from "../utils/makeid";
+import { MessageReactionType, ReactionType, TypeOfChat } from "../../src/types/types";
+import { MessageWithFileUrls } from "../models/MessageWithFileUrls";
+import { FileStorageService } from "../services/FileStorageService";
+import { FileInfo } from "../models/FileInfo";
+import { UploadedFile } from "express-fileupload";
 
 const chatService = new ChatService()
 export function convertPrismaMessage(
@@ -81,7 +81,7 @@ export class ChatController {
             throw new Error("User must be authorized")
         }
 
-        const userChats = await prisma.userChat.findMany({where: {chatId: delayMessage.chatId}})
+        const userChats = await prisma.userChat.findMany({ where: { chatId: delayMessage.chatId } })
         if (!userChats.find((chat) => chat.userId === user.id) || userChats.length !== 2) {
             throw new Error("User has no access to the chat")
         }
@@ -94,7 +94,7 @@ export class ChatController {
             data: {
                 chatId: delayMessage.chatId,
                 text: delayMessage.text,
-                fileKeys: delayMessage.fileKeys,
+                fileUrls: delayMessage.fileKeys,
                 userId: user.id,
                 inTime: delayMessage.inTime,
             }
@@ -119,7 +119,7 @@ export class ChatController {
             throw new Error("User must be authorized")
         }
 
-        const removedDelayMessage = await prisma.delayMessage.findUnique({where: {id: delayMessage.delayMessageId}})
+        const removedDelayMessage = await prisma.delayMessage.findUnique({ where: { id: delayMessage.delayMessageId } })
         if (removedDelayMessage == null) {
             throw new Error("Delayed message not found")
         }
@@ -128,7 +128,7 @@ export class ChatController {
             throw new Error("Access denied")
         }
 
-        return prisma.delayMessage.delete({where: {id: removedDelayMessage.id}})
+        return prisma.delayMessage.delete({ where: { id: removedDelayMessage.id } })
     }
 
     @Post("/messages/delay")
@@ -146,7 +146,7 @@ export class ChatController {
 
         const dateCondition = getDateCondition(chatMessages.beforeInTime);
         const prismaMessages = await prisma.delayMessage.findMany({
-            where: {chatId: chatMessages.chatId, userId: user.id, inTime: dateCondition},
+            where: { chatId: chatMessages.chatId, userId: user.id, inTime: dateCondition },
             take: 15,
             orderBy: [{inTime: 'desc'}, {id: 'desc'}],
         })
@@ -175,8 +175,8 @@ export class ChatController {
         const alreadyChat = await prisma.userChat.findFirst({
             where: {
                 AND: [
-                    {userId: user.id},
-                    {chat: {members: {some: {userId: toUser.id}}}}
+                    { userId: user.id },
+                    { chat: { members: { some: { userId: toUser.id } } } }
                 ]
             }
         })
@@ -185,10 +185,10 @@ export class ChatController {
         }
 
 
-        const chat = await prisma.chat.create({data: {}})
+        const chat = await prisma.chat.create({ data: {} })
         await Promise.all([
-            prisma.userChat.create({data: {userId: user.id, chatId: chat.id}}),
-            prisma.userChat.create({data: {userId: toUser.id, chatId: chat.id}})
+            prisma.userChat.create({ data: { userId: user.id, chatId: chat.id } }),
+            prisma.userChat.create({ data: { userId: toUser.id, chatId: chat.id } })
         ])
         return {
             createdAt: chat.createdAt,
@@ -222,11 +222,11 @@ export class ChatController {
 
         const createManyUserChat = toUsers.map((user) =>
             prisma.userChat.create({
-                data: {userId: user.id, chatId: group.id},
+                data: { userId: user.id, chatId: group.id },
             }),
         )
         await Promise.all(createManyUserChat);
-        await prisma.userChat.create({data: {userId: user.id, chatId: group.id}});
+        await prisma.userChat.create({ data: { userId: user.id, chatId: group.id } });
 
         return {
             createdAt: group.createdAt,
@@ -251,11 +251,11 @@ export class ChatController {
             throw new Error("User must be authorized");
         }
 
-        const group = await prisma.chat.findUnique({ where: { joinKey: joinKey }});
+        const group = await prisma.chat.findUnique({ where: { joinKey: joinKey } });
         if (group === null) {
             return response.status(400).send({ message: 'JoinKey not connected to any group' });
         }
-        const alreadyUsersChat = await prisma.userChat.findMany({ where: { chatId: group.id }, include: { user: true }});
+        const alreadyUsersChat = await prisma.userChat.findMany({ where: { chatId: group.id }, include: { user: true } });
         if (alreadyUsersChat.find((item) => item.userId === user.id)) {
             return response.status(400).send({ message: 'User already joined the group' });
         }
@@ -284,17 +284,17 @@ export class ChatController {
             throw new Error("User must be authorized")
         }
 
-        const group = await prisma.chat.findUnique({where: {joinKey: joinGroup.joinKey}})
+        const group = await prisma.chat.findUnique({ where: { joinKey: joinGroup.joinKey } })
         if (group === null) {
             throw new Error("JoinKey not connected to any group")
         }
-        const alreadyUsersChat = await prisma.userChat.findMany({where: {chatId: group.id}, include: {user: true}})
+        const alreadyUsersChat = await prisma.userChat.findMany({ where: { chatId: group.id }, include: { user: true } })
         if (alreadyUsersChat.find((item) => item.userId === user.id)) {
             throw new Error("User already joined the group")
         }
 
         await prisma.userChat.create({
-            data: {userId: user.id, chatId: group.id},
+            data: { userId: user.id, chatId: group.id },
         })
 
         return {
@@ -321,15 +321,15 @@ export class ChatController {
             throw new Error("User must be authorized")
         }
         const userChats: UserChat[] = await prisma.userChat.findMany(
-            {where: {AND: [{userId: user.id}]}, orderBy: {updatedAt: 'desc'}}
+            { where: { AND: [{ userId: user.id }] }, orderBy: { updatedAt: 'desc' } }
         );
 
         const chatsIds = userChats.map(i => i.chatId);
         const chats = await prisma.chat.findMany({
-            where: {id: {in: chatsIds}},
+            where: { id: { in: chatsIds } },
             include: {
-                messages: {take: -1, include: {reactions: {include: {reactionType: true}}}},
-                members: {include: {user: true}}
+                messages: { take: -1, include: { reactions: { include: { reactionType: true } } } },
+                members: { include: { user: true } }
             }
         });
         const chatsById = groupBy(chats, i => i.id)
@@ -371,10 +371,10 @@ export class ChatController {
         const idCondition = getIdCondition(chatMessages.afterId);
 
         return prisma.message.findMany({
-            where: {chatId: chatMessages.chatId,  id: idCondition},
+            where: { chatId: chatMessages.chatId, id: idCondition },
             take: 15,
-            orderBy: {id: "desc"},
-            include: {reactions: {include: {reactionType: true}}}
+            orderBy: { id: "desc" },
+            include: { reactions: { include: { reactionType: true } } }
         }).then(messages => {
             return Promise.all(messages.map(async message => {
                 const fileUrls = await chatService.getFileUrls(message.fileKeys)
@@ -418,13 +418,13 @@ export class ChatController {
             throw new Error("User must be authorized")
         }
 
-        const message = await prisma.message.findUnique({where: {id: reactionMessageIn.messageId}})
+        const message = await prisma.message.findUnique({ where: { id: reactionMessageIn.messageId } })
 
         if (message == null) {
             throw new Error("Message not founded")
         }
 
-        const reactionType = await prisma.reactionType.findUnique({where: {id: reactionMessageIn.reactionTypeId}})
+        const reactionType = await prisma.reactionType.findUnique({ where: { id: reactionMessageIn.reactionTypeId } })
         if (reactionType == null) {
             throw new Error("ReactionType not founded")
         }
@@ -456,15 +456,15 @@ export class ChatController {
         @Req() request: express.Request,
         @BodyParam('url') url: string,
     ): Promise<types.MetadataType> {
-      const response = await fetch(url);
-      const html = await response.text();
-      const $ = load(html);
-  
-      const title = $('meta[property="og:title"]').attr('content') ?? $('title').text() ?? $('meta[name="title"]').attr('content');
-      const description = $('meta[property="og:description"]').attr('content') ?? $('meta[name="description"]').attr('content');
-      const imageUrl = $('meta[property="og:image"]').attr('content') ?? $('meta[property="og:image:url"]').attr('content');
-  
-      return { title, description, imageUrl };
+        const response = await fetch(url);
+        const html = await response.text();
+        const $ = load(html);
+
+        const title = $('meta[property="og:title"]').attr('content') ?? $('title').text() ?? $('meta[name="title"]').attr('content');
+        const description = $('meta[property="og:description"]').attr('content') ?? $('meta[name="description"]').attr('content');
+        const imageUrl = $('meta[property="og:image"]').attr('content') ?? $('meta[property="og:image:url"]').attr('content');
+
+        return { title, description, imageUrl };
     }
 
     private async uploadFiles(files: UploadedFile | UploadedFile[]): Promise<string[]> {

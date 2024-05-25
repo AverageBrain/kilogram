@@ -1,12 +1,12 @@
-import axios, {AxiosResponse} from 'axios'
+import axios, { AxiosResponse } from 'axios'
 
 // production
 export const BASE_SERVER_GITHUB_REDIRECT = 'http://team1.ya-itmo.ru/api/auth/github'
 export const BASE_SERVER_HOST = '/api/' // TODO: вынести
 export const BASE_LOGOUT_HOST = '/';
 
-// export const BASE_SERVER_GITHUB_REDIRECT = 'http://localhost:3000/api/auth/github'
-// export const BASE_SERVER_HOST = 'http://localhost:3000/api/' // TODO: вынести
+// export const BASE_SERVER_GITHUB_REDIRECT = 'http://localhost:3002/api/auth/github';
+// export const BASE_SERVER_HOST = 'http://localhost:3002/api/';
 // export const BASE_LOGOUT_HOST = 'http://localhost:3000/';
 
 
@@ -42,7 +42,7 @@ export abstract class BaseApiClient {
     }
 
     setMessagesSource(callback: (data: any) => void) {
-        const sse = new EventSource(BASE_SERVER_HOST + 'user/sse', {withCredentials: true});
+        const sse = new EventSource(BASE_SERVER_HOST + 'user/sse', { withCredentials: true });
         sse.onmessage = (ev) => {
             const data = JSON.parse(ev.data)
             callback(data)
