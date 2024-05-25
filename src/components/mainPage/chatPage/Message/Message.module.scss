@@ -17,8 +17,10 @@
     padding: 0 10px 2px;
     border-radius: 10px;
     white-space: pre-wrap;
+    position: relative;
   
     display: flex;
+    flex-direction: column;
     border: none;
     background-color: white;
   
@@ -56,14 +58,25 @@
   .message {
     border-radius: 10px 10px 10px 0;
   }
+
+  .reaction-button-wrapper {
+    right: -20px;
+    bottom: 0;
+  }
 }
 
 .my-message {
   justify-content: right;
+  flex-direction: row-reverse;
   padding-left: 12%;
 
   .message {
     border-radius: 10px 10px 0 10px;
+  }
+
+  .reaction-button-wrapper {
+    left: -20px;
+    bottom: 0;
   }
 }
 
@@ -96,4 +109,87 @@
   -webkit-box-orient: vertical;
 
   color: var(--base-font-color);
+}
+
+
+// -- Reactions 
+
+.reactions {
+  padding: 0;
+  margin: 0;
+  display: flex;
+  gap: 5px;
+  flex-wrap: wrap;
+
+  .reaction-wrapper {
+    cursor: pointer;
+    display: flex;
+    list-style-type: none;
+    background-color: #f3a89e;
+    border-radius: 1em;
+    padding: 3px 3px 3px 3px;
+    gap: 4px;
+    color: white;
+    font-weight: 500;
+  }
+
+  .auth-user-reaction {
+    background-color: #fc595c;
+  }
+
+  .emoji-info {
+    .user {
+      height: 20px;
+      width: 20px;
+      text-align: center;
+    }
+
+    .reaction-number {
+      padding: 0 3px 0 0;
+    }
+  }
+}
+
+.reaction-button-wrapper {
+  z-index: 299;
+  opacity: 0;
+  transition: opacity 200ms;
+
+  position: absolute;
+  width: 40px;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  .reaction-button {
+    text-align: center;
+    cursor: pointer;
+    background-color: white;
+    border-radius: 16px;
+    padding: 2px;
+    transition: height 200ms;
+    
+    font-size: 12px;
+    transition: font-size 200ms;
+    
+    .reaction-bar {
+      height: 100%;
+
+      .reaction:hover {
+        font-size: 22px;
+        transform: scale(1.4);
+        transition: transform 200ms;
+      }
+    }
+  }
+
+  .close-to-reaction {
+    font-size: 20px;
+  }
+}
+
+.show-reaction {
+  opacity: 1;
+  z-index: 599;
 }
