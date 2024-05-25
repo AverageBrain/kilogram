@@ -8,6 +8,7 @@ import { UserProfile } from '../../../modals';
 import {BASE_LOGOUT_HOST} from '../../../../hands/BaseApiClient';
 
 import styles from './Header.module.scss';
+import {requestPermission} from "../../../../plugins/firebase";
 
 const { Header: HeaderAD } = Layout;
 
@@ -35,8 +36,8 @@ const Header: React.FC<Props> = ({ value, setSearchTerm, }) => {
     },
     {
       label: 'Подписаться на уведомления',
-      onClick: showModal,
-      key: '0',
+      onClick: requestPermission,
+      key: '2',
     },
     {
       type: 'divider',
