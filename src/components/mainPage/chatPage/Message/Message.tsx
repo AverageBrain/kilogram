@@ -23,6 +23,7 @@ const Message: React.FC<Props> = ({ message, isGroup }) => {
     <>
       <div className={clsx(styles['message'], isActivePerson ? styles['my-message'] : styles['partner-message'])}>
         <div dangerouslySetInnerHTML={{ __html: message.text }} />
+        <div dangerouslySetInnerHTML={{__html: mapFileUrls(message.fileUrls)}} />
         <div className={styles['message-meta']}>
           <span className={styles['timestep']}>
             {moment(message.inTime ?? message.createdAt).format('LT')}
@@ -30,9 +31,13 @@ const Message: React.FC<Props> = ({ message, isGroup }) => {
           {isGroup && !isActivePerson && <Avatar userId={message.userId} size={25} />}
         </div>
       </div>
-      
+
     </>
   );
+  function mapFileUrls(fileUrls: string[] | undefined): string {
+      if (!fileUrls) return ''
+      return fileUrls.map(fileUrl => `<div>${fileUrl}</div>`).join('\n')
+  }
 };
 
 export default observer(Message);

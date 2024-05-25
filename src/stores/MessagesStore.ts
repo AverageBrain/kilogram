@@ -66,11 +66,11 @@ class MessagesStore extends BaseStore<MessageType> {
       }
     }
 
-    async sendMessage(chatId: number, text: string): Promise<void> {
+    async sendMessage(chatId: number, text: string, files: File[]): Promise<void> {
       try {
         this.enableLoading();
       
-        await chatApiClient.sendMessage(chatId, text);
+        await chatApiClient.sendMessage(chatId, text, files);
       } catch (e: any) {
         console.warn(e);
       } finally {

@@ -1,4 +1,4 @@
-import {BodyParam, Get, JsonController, Param, Post, QueryParam, Req, Res} from 'routing-controllers';
+import {BodyParam, Get, JsonController, Param, Post, Req, Res} from 'routing-controllers';
 import * as types from '../../src/types';
 import express from 'express';
 import {prisma} from "../domain/PrismaClient";
@@ -6,6 +6,7 @@ import {User} from "@prisma/client";
 import {UserAvatarService} from "../services/UserAvatarService";
 import {UploadedFile} from "express-fileupload"
 import {RedisStore} from "../services/RedisStore";
+import {FileInfo} from "../models/FileInfo";
 
 const redisStore = new RedisStore()
 
@@ -101,21 +102,28 @@ export class UserController {
     async uploadAvatar(
         @Res() response: express.Response,
         @Req() request: express.Request,
-        @BodyParam("username") username: string,
+        @BodyParam("id") id: number,
     ) {
         const files = request.files
-        let result
+        let result = null
 
-        if (files === undefined || files === null) {
-            result = await UserAvatarService.createAvatar(username)
+        if (!files) {
+            result = await UserAvatarService.createAvatar(id.toString())
         } else {
             const avatar: UploadedFile | UploadedFile[] = files.avatar;
+            if (!avatar) throw Error("Неверное имя инпута для аватара")
             if (Array.isArray(avatar)) throw Error("Можно загружать только один аватар")
 
-            result = await UserAvatarService.createAvatar(username, avatar)
+            const avatarFileInfo: FileInfo = {
+                data: avatar.data,
+                name: avatar.name,
+                mimetype: avatar.mimetype
+            }
+
+            result = await UserAvatarService.createAvatar(id.toString(), avatarFileInfo)
         }
 
-        return result === null ? response.sendStatus(400) : response.sendStatus(200)
+        return result === null ? response.sendStatus(500) : response.status(200).send(result)
     }
 
     @Get("/avatar/:id")
@@ -123,9 +131,7 @@ export class UserController {
         @Res() response: express.Response,
         @Param("id") id: number,
     ) {
-        const byte64Avatar = await UserAvatarService.getAvatar(id)
-        const avatar = Buffer.from(byte64Avatar, 'base64').toString()
-
-        return response.set('Content-Type', 'image/svg+xml').send(avatar)
+        if (!id) throw new Error("Id required")
+        return await UserAvatarService.getAvatar(id.toString())
     }
 }
