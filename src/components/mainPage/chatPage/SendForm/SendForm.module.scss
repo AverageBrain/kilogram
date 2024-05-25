@@ -45,9 +45,6 @@
   list-style: none;
   width: 150px;
   padding: 0;
-  background: #ffdfdf;
-  border-radius: 2px;
-  border: 5px lightpink;
 
   .file-list-element {
     height: min-content;
@@ -58,6 +55,9 @@
     gap: 10px;
     width: inherit;
     margin: 0;
+    background: #ffdfdf;
+    border-radius: 2px;
+    border: 1px black;
 
     .file-name {
       margin: 0;
