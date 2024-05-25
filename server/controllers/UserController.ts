@@ -67,33 +67,19 @@ export class UserController {
 
     @Get("/users/find/:prefix")
     async findUsers(@Req() request: express.Request, @Param("prefix") prefix: string): Promise<types.UserType[]> {
-        if (!prefix) {
-            return [];
-        }
+        if (!prefix) return [];
         const sessionUser = request.user;
         if (sessionUser?.prismaUser) {
             const users: User[] = await prisma.user.findMany({
                 where: {
-                    AND: [
-                        {
-                            username: {
-                                startsWith: prefix,
-                            },
-                        },
-                        {
-                            NOT: {
-                                id: {
-                                    equals: sessionUser?.prismaUser?.id,
-                                }
-                            }
-                        }
-                    ]
-
+                    AND: [{
+                        username: {startsWith: prefix, mode: 'insensitive'}},
+                        {NOT: {id: {equals: sessionUser?.prismaUser?.id}}
+                    }]
                 }
             })
             const usersStatuses = await redisStore.getStatus(users.map(i => i.id))
-
-        return users.map(i => convertPrismaUser(i, usersStatuses.get(i.id)));
+            return users.map(user => convertPrismaUser(user, usersStatuses.get(user.id)));
         }
         return [];
     }
