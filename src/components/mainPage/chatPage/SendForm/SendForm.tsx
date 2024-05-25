@@ -25,6 +25,7 @@ const SendMessage: React.FC<Props> = ({ scrollRef, setShouldLoadDelayed }) => {
   const { selectedUser: user, setSelectedUser } = userStore;
 
   const [editorState, setEditorState] = useState<EditorState>(() => EditorState.createEmpty());
+  const [fileList, setFileList] = useState<FileList | null>(null);
 
   const handleSubmit = async (inTime?: Date) => {
     const contentState = editorState.getCurrentContent();
@@ -34,11 +35,12 @@ const SendMessage: React.FC<Props> = ({ scrollRef, setShouldLoadDelayed }) => {
     
     if (editorState.getCurrentContent().getPlainText().trim().length) {
       setEditorState(EditorState.createEmpty());
+      setFileList(null);
       if (chat) {
-        inTime ? await sendDelayMessage(chat.id, safeHtml, inTime) : await sendMessage(chat.id, safeHtml);      
+        inTime ? await sendDelayMessage(chat.id, safeHtml, inTime) : await sendMessage(chat.id, safeHtml, files);
       } else if (user) {
         const curChat = await chatApiClient.createChat(user.id);
-        inTime ? await sendDelayMessage(curChat.id, safeHtml, inTime) : await sendMessage(curChat.id, safeHtml);      
+        inTime ? await sendDelayMessage(curChat.id, safeHtml, inTime) : await sendMessage(curChat.id, safeHtml, files);
         setSelectedChat(chat);
         setSelectedUser(undefined);
       }
@@ -62,6 +64,12 @@ const SendMessage: React.FC<Props> = ({ scrollRef, setShouldLoadDelayed }) => {
     clearMessages();
     setShouldLoadDelayed(true);
   };
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setFileList(e.target.files);
+  }
+
+  const files = fileList ? Array.from(fileList) : [];
 
   return (
     <div className={styles["send-message"]}>
@@ -90,6 +98,7 @@ const SendMessage: React.FC<Props> = ({ scrollRef, setShouldLoadDelayed }) => {
           locale: 'ru',
         }}
       />
+      <input type={"file"} id={"files"} onChange={handleFileChange} multiple />
       <button className={buttonsStyles['icon-svg-button']} onClick={handleClickDelay}>
         <CalendarOutlined />
       </button>

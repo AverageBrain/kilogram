@@ -11,12 +11,18 @@ import {convertPrismaUser} from "./UserController";
 import {getDateCondition, getIdCondition, groupBy} from "../utils";
 import {makeRandomString} from "../utils/makeid";
 import {MessageReactionType, TypeOfChat} from "../../src/types/types";
-
+import {MessageWithFileUrls} from "../models/MessageWithFileUrls";
+import {FileStorageService} from "../services/FileStorageService";
+import {FileInfo} from "../models/FileInfo";
 
 const chatService = new ChatService()
 const userService = new UserService()
 
-export function convertPrismaMessage(prismaMessage: Message, reactions: MessageReactionType[]): types.MessageType {
+export function convertPrismaMessage(
+    prismaMessage: Message,
+    reactions: MessageReactionType[],
+    fileUrls: string[]
+): types.MessageType {
     return {
         id: prismaMessage.id,
         createdAt: prismaMessage.createdAt,
@@ -24,7 +30,8 @@ export function convertPrismaMessage(prismaMessage: Message, reactions: MessageR
         chatId: prismaMessage.chatId,
         userId: prismaMessage.userId,
         text: prismaMessage.text,
-        reactions: reactions
+        reactions: reactions,
+        fileUrls: fileUrls,
     }
 }
 
@@ -35,17 +42,34 @@ export class ChatController {
     @Post("/send")
     async sendMessage(
         @Req() request: express.Request,
-        @BodyParam('message') message: {
-            chatId: number
-            text: string
-        }
+        @BodyParam('chatId') chatId: number,
+        @BodyParam('text') text: string,
     ): Promise<types.MessageType> {
         const user = request.user?.prismaUser
         if (!user) {
             throw new Error("User must be authorized")
         }
+        let files = request.files?.files
+        let messageToSend = {
+            chatId: Number(chatId),
+            text: text,
+            fileKeys: [] as string[]
+        }
 
-        return convertPrismaMessage(await chatService.sendMessage(user, message), [])
+        if (files) {
+            if (!Array.isArray(files)) files = Array.of(files)
+            messageToSend.fileKeys = await Promise.all(files.map(async (file) => {
+                const fileInfo: FileInfo = {
+                    data: file.data,
+                    name: file.name,
+                    mimetype: file.mimetype
+                }
+                return await FileStorageService.uploadFile(fileInfo)
+            }))
+        }
+        const sentMessage: MessageWithFileUrls = await chatService.sendMessage(user, messageToSend)
+
+        return convertPrismaMessage(sentMessage.message, [], sentMessage.fileUrls)
     }
 
     @Post("/send/delay")
@@ -312,7 +336,7 @@ export class ChatController {
         });
         const chatsById = groupBy(chats, i => i.id)
 
-        return userChats.map(c => {
+        return Promise.all(userChats.map(async c => {
             const chat = chatsById[c.chatId][0]
             const othersUserChat = chat.members.filter(i => i.userId != user.id)
 
@@ -322,11 +346,14 @@ export class ChatController {
                 updatedAt: chat.updatedAt,
                 name: chat.name,
                 users: othersUserChat.map(i => convertPrismaUser(i.user)),
-                messages: chat.messages.map(i => convertPrismaMessage(i, i.reactions)) as types.MessageType[],
+                messages: await Promise.all(chat.messages.map(async message => {
+                    const fileUrls = await chatService.getFileUrls(message.fileKeys)
+                    return convertPrismaMessage(message, message.reactions, fileUrls)
+                })) as types.MessageType[],
                 type: chat.type,
                 joinKey: chat.joinKey,
             } as types.ChatType
-        })
+        }))
     }
 
 
@@ -343,7 +370,6 @@ export class ChatController {
             throw new Error("User must be authorized")
         }
 
-
         const idCondition = getIdCondition(chatMessages.afterId);
 
         return prisma.message.findMany({
@@ -351,6 +377,11 @@ export class ChatController {
             take: 15,
             orderBy: {id: "desc"},
             include: {reactions: {include: {reactionType: true}}}
+        }).then(messages => {
+            return Promise.all(messages.map(async message => {
+                const fileUrls = await chatService.getFileUrls(message.fileKeys)
+                return convertPrismaMessage(message, message.reactions, fileUrls)
+            }))
         })
     }
 

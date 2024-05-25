@@ -59,6 +59,7 @@ model Message {
   chat      Chat              @relation(fields: [chatId], references: [id])
   user      User              @relation(fields: [userId], references: [id])
   reactions MessageReaction[]
+  fileKeys  String[]
 }
 
 model ReactionType {

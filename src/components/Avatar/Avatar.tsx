@@ -37,7 +37,7 @@ const Avatar: React.FC<Props> = ({ userId, size }) => {
   // TODO: настроить hitboxes
     <div className={styles.avatar} style={{ width: avatarSize, height: avatarSize}}>
       {photoStatus === 'loading' && <Spin className={styles.spin} />}
-      {photoStatus === 'loaded' && <img src={`data:image/svg+xml;utf8,${encodeURIComponent(image)}`} />}
+      {photoStatus === 'loaded' && <img alt='avatar' src={image} />}
       {photoStatus === 'error-occurred' && <AvatarD icon={<UserOutlined />} size={avatarSize} />}
       {photoStatus === 'default-avatar' && <AvatarD
           style={{

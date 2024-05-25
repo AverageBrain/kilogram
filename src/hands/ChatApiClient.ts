@@ -2,8 +2,12 @@ import {BaseApiClient} from "./BaseApiClient";
 import {ChatType, MessageReactionType, MessageType, MetadataType} from "../types/types";
 
 class UserApiClient extends BaseApiClient {
-    sendMessage(chatId: number, text: string): Promise<MessageType> {
-        return this.axiosPost("/chat/send", {message: {chatId, text}})
+    sendMessage(chatId: number, text: string, files: File[]): Promise<MessageType> {
+        const form = new FormData()
+        form.append('chatId', chatId.toString())
+        form.append('text', text)
+        files.forEach((file) => { form.append('files', file) })
+        return this.axiosPostForm('/chat/send', form)
     }
 
     sendDelayMessage(chatId: number, text: string, inTime: Date): Promise<MessageType> {
