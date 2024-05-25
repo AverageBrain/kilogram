@@ -1,9 +1,10 @@
 import React from 'react';
 import { List } from 'antd';
 import { observer } from 'mobx-react-lite';
+
 import { UserType } from '../../../../../types';
 import { Avatar } from '../../../../Avatar';
-
+import { getHandle } from '../../../../../utils';
 import listsStyles from '../../../../../styles/lists.module.scss';
 
 type Props = {
@@ -25,11 +26,11 @@ const MembersList: React.FC<Props> = ({ users, handleClickOnUser }) => {
         >
           <List.Item.Meta
             className={listsStyles['user-meta']}
-            avatar={<Avatar userId={user.id} />}
+            avatar={<Avatar userId={user.id} userStatus={user?.userStatus} />}
             title={<span className={listsStyles.title}>{user.name}</span>}
             description={
               <span className={listsStyles.description}>
-                {user.lastSeen? user.lastSeen : 'был в сети недавно'}
+                {getHandle({ user })}
               </span>
             }
           />

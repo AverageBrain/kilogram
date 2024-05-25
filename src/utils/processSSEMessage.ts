@@ -9,8 +9,7 @@ export const processSSEMessage = async (data: any) => {
             messagesStore.updateMessages([message]);
         }
         chatsStore.updateChats(message);
-    } 
-    if (data['type'] === 'newReaction' || data['type'] === 'removeReaction') {
+    } else if (data['type'] === 'newReaction' || data['type'] === 'removeReaction') {
         const {messageId, reactionTypeId, ...other}: ReactionWithMessageInfoType = data['data'];
 
         const reaction = reactionsStore.items.find((item) => item.id === reactionTypeId);
@@ -23,5 +22,11 @@ export const processSSEMessage = async (data: any) => {
                 reactionType: reaction,
             }, type);
         }
-    } 
+    } else if (data['type'] === 'userStatus') {
+        const userId = data['data']['userId'];
+        const status = data['data']['status'];
+        const lastSeen = data['data']['lastSeen'];
+
+        chatsStore.updateStatusChats(userId, status, lastSeen);
+    }
 }

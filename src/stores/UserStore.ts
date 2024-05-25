@@ -8,14 +8,11 @@ import BaseStore from './BaseStore';
 class UserStore extends BaseStore<UserType> {
   selectedUser: UserType | undefined = undefined;
   avatarCache: Map<number, string> = new Map();
-  avatarLoading: boolean = false;
 
   constructor() {
     super();
     makeObservable(this, {
       selectedUser: observable,
-      avatarCache: observable,
-      avatarLoading: observable,
 
       loadItems: action.bound,
       setSelectedUser: action.bound,
@@ -52,10 +49,6 @@ class UserStore extends BaseStore<UserType> {
 
   async loadAvatar(id: number): Promise<string | void> {
     try {
-      runInAction(() => {
-        this.avatarLoading = true;
-      });
-
       const data = await userApiClient.getAvatar(id);
 
       runInAction(() => {
@@ -64,15 +57,11 @@ class UserStore extends BaseStore<UserType> {
           this.avatarCache.delete(oldestKey);
         }
         this.avatarCache.set(id, data);
-
-        return data;
       });
+
+      return data;
     } catch (e: any) {
       console.warn(e);
-    } finally {
-      runInAction(() => {
-        this.avatarLoading = false;
-      });
     }
   }
 }

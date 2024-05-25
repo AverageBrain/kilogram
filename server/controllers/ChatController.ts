@@ -11,12 +11,16 @@ import { convertPrismaUser } from "./UserController";
 import { getDateCondition, getIdCondition, groupBy } from "../utils";
 import { makeRandomString } from "../utils/makeid";
 import { MessageReactionType, ReactionType, TypeOfChat } from "../../src/types/types";
+import { RedisStore } from "../services/RedisStore";
 import { MessageWithFileUrls } from "../models/MessageWithFileUrls";
 import { FileStorageService } from "../services/FileStorageService";
 import { FileInfo } from "../models/FileInfo";
 import { UploadedFile } from "express-fileupload";
 
 const chatService = new ChatService()
+const userService = new UserService()
+const redisStore = new RedisStore();
+
 export function convertPrismaMessage(
     prismaMessage: Message,
     reactions: MessageReactionType[],
@@ -35,6 +39,7 @@ export function convertPrismaMessage(
         fileUrls: fileUrls,
     }
 }
+
 
 
 export function convertPrismaReaction(prismaReaction: MessageReactionType): types.MessageReactionType {
@@ -159,7 +164,7 @@ export class ChatController {
         const prismaMessages = await prisma.delayMessage.findMany({
             where: { chatId: chatMessages.chatId, userId: user.id, inTime: dateCondition },
             take: 15,
-            orderBy: [{inTime: 'desc'}, {id: 'desc'}],
+            orderBy: [{ inTime: 'desc' }, { id: 'desc' }],
         })
 
         return Promise.all(prismaMessages.map(async message =>
@@ -201,13 +206,15 @@ export class ChatController {
             prisma.userChat.create({ data: { userId: user.id, chatId: chat.id } }),
             prisma.userChat.create({ data: { userId: toUser.id, chatId: chat.id } })
         ])
+
+        const userStatus = (await redisStore.getStatus([toUser.id])).get(toUser.id);
         return {
             createdAt: chat.createdAt,
             id: chat.id,
             messages: [],
             updatedAt: chat.updatedAt,
             name: toUser.name,
-            users: [convertPrismaUser(toUser)],
+            users: [convertPrismaUser(toUser, userStatus)],
             type: TypeOfChat.Chat,
         }
     }
@@ -238,6 +245,7 @@ export class ChatController {
         )
         await Promise.all(createManyUserChat);
         await prisma.userChat.create({ data: { userId: user.id, chatId: group.id } });
+        const usersStatuses = await redisStore.getStatus(toUsers.map((i) => i.id));
 
         return {
             createdAt: group.createdAt,
@@ -245,7 +253,7 @@ export class ChatController {
             messages: [],
             name: group.name,
             updatedAt: group.updatedAt,
-            users: toUsers.filter(i => i.id != user.id).map(i => convertPrismaUser(i)),
+            users: toUsers.filter(i => i.id != user.id).map(i => convertPrismaUser(i, usersStatuses.get(i.id))),
             joinKey: group.joinKey ? group.joinKey : undefined,
             type: TypeOfChat.Group,
         }
@@ -270,14 +278,14 @@ export class ChatController {
         if (alreadyUsersChat.find((item) => item.userId === user.id)) {
             return response.status(400).send({ message: 'User already joined the group' });
         }
-
+        const usersStatuses = await redisStore.getStatus(alreadyUsersChat.map((i) => i.userId));
         return {
             createdAt: group.createdAt,
             id: group.id,
             messages: [],
             updatedAt: group.updatedAt,
             name: group.name,
-            users: alreadyUsersChat.map(i => convertPrismaUser(i.user)),
+            users: alreadyUsersChat.map(i => convertPrismaUser(i.user, usersStatuses.get(i.userId))),
             joinKey: group.joinKey ?? undefined,
             type: TypeOfChat.Group,
         };
@@ -307,6 +315,7 @@ export class ChatController {
         await prisma.userChat.create({
             data: { userId: user.id, chatId: group.id },
         })
+        const usersStatuses = await redisStore.getStatus(alreadyUsersChat.map((i) => i.userId));
 
         return {
             createdAt: group.createdAt,
@@ -314,7 +323,7 @@ export class ChatController {
             messages: [],
             updatedAt: group.updatedAt,
             name: group.name,
-            users: alreadyUsersChat.map(i => convertPrismaUser(i.user)),
+            users: alreadyUsersChat.map(i => convertPrismaUser(i.user, usersStatuses.get(i.id))),
             joinKey: group.joinKey ?? undefined,
             type: TypeOfChat.Group,
         }
@@ -348,13 +357,14 @@ export class ChatController {
         return Promise.all(userChats.map(async c => {
             const chat = chatsById[c.chatId][0]
             const othersUserChat = chat.members.filter(i => i.userId != user.id)
+            const usersStatuses = await redisStore.getStatus(othersUserChat.map((i) => i.userId));
 
             return {
                 id: chat.id,
                 createdAt: chat.createdAt,
                 updatedAt: chat.updatedAt,
                 name: chat.name,
-                users: othersUserChat.map(i => convertPrismaUser(i.user)),
+                users: othersUserChat.map(i => convertPrismaUser(i.user, usersStatuses.get(i.userId))),
                 messages: await Promise.all(chat.messages.map(async message => {
                     const fileUrls = await chatService.getFileUrls(message.fileKeys)
                     return convertPrismaMessage(message, message.reactions, fileUrls)
@@ -362,7 +372,7 @@ export class ChatController {
                 type: chat.type,
                 joinKey: chat.joinKey,
             } as types.ChatType
-        }))
+        }));
     }
 
 

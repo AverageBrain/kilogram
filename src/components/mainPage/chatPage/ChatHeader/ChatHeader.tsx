@@ -5,7 +5,7 @@ import { observer } from 'mobx-react-lite';
 import { chatsStore, userStore } from '../../../../stores';
 import { TypeOfChat } from '../../../../types/types';
 import { GroupProfile, UserProfile } from '../../../modals';
-import { getCorrectMemberCase } from '../../../../utils';
+import { getHandle } from '../../../../utils';
 
 import styles from './ChatHeader.module.scss';
 
@@ -28,9 +28,7 @@ const ChatHeader: React.FC = () => {
           <div className={styles.info} onClick={showModal}>
             <span className={styles.name}>{isGroup ? chat.name : curUser.name}</span>
             <span className={styles.description}>
-              {isGroup 
-              ? `${membersCount} ${getCorrectMemberCase(membersCount)}`
-              : curUser.lastSeen ? curUser.lastSeen : 'был в сети недавно'}
+              {getHandle({ isGroup, membersCount, user: curUser })}
             </span>
           </div>
         </HeaderAD>

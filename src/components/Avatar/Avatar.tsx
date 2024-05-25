@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { observer } from 'mobx-react-lite';
-import { Avatar as AvatarAD, Spin } from 'antd';
+import { Avatar as AvatarAD, Spin, Badge } from 'antd';
 import { CommentOutlined, UserOutlined } from '@ant-design/icons';
 import clsx from 'clsx';
 
@@ -12,10 +12,11 @@ type Props = {
   userId?: number;
   size?: number;
   className?: string;
+  userStatus?: boolean;
 }
 
-const Avatar: React.FC<Props> = ({ userId, size, className }) => {
-  const { avatarLoading, avatarCache, loadAvatar } = userStore;
+const Avatar: React.FC<Props> = ({ userId, size, className, userStatus }) => {
+  const { avatarCache, loadAvatar } = userStore;
 
   const [image, setImage] = useState<string | undefined>(undefined);
 
@@ -36,9 +37,9 @@ const Avatar: React.FC<Props> = ({ userId, size, className }) => {
     };
 
     loadData();
-  }, [avatarCache.has(userId ?? 0)]);
+  }, []);
 
-  return (
+  const avatarComponent = useMemo(() => (
   // TODO: настроить hitboxes
     <div className={clsx(styles.avatar, className)} style={{ width: avatarSize, height: avatarSize }}>
       {!userId && (
@@ -50,14 +51,29 @@ const Avatar: React.FC<Props> = ({ userId, size, className }) => {
           size={avatarSize}
         />
       )}
-      {userId && (
-        avatarLoading
-        ? <Spin className={styles.spin} />
-        : image
-          ? <img alt='avatar' src={image} />
-            : <AvatarAD icon={<UserOutlined />} size={avatarSize} />
-      )}
+      {userId && (image
+        ? <img alt='avatar' src={image} />
+        : <AvatarAD icon={<UserOutlined />} size={avatarSize} />)
+      }
     </div>
+  ), [image]);
+
+  return (
+    <>
+      {userStatus
+        ? (
+          <Badge
+            size={avatarSize < 80 ? 'small' : undefined}
+            count=" "
+            offset={[-0.125 * avatarSize, 0.875 * avatarSize]}
+            color="var(--base-accent-color)"
+          >
+            {avatarComponent}
+          </Badge>
+        )
+        : avatarComponent
+      }
+    </>
   );
 }
 

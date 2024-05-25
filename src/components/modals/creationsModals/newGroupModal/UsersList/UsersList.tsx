@@ -9,6 +9,7 @@ import { Avatar } from '../../../../Avatar';
 import { UserType } from '../../../../../types';
 import { GroupFormType } from '../../../../../types';
 import listsStyles from '../../../../../styles/lists.module.scss';
+import { getHandle } from '../../../../../utils';
 
 type Props = {
   userIds: number[];
@@ -67,7 +68,7 @@ const UsersList: React.FC<Props> = ({
             avatar={user.selected
               ? (
                 <Badge
-                  count={<CheckCircleFilled style={{ color: '#FF686B' }} />}
+                  count={<CheckCircleFilled style={{ color: 'var(--base-accent-color)' }} />}
                   offset={[0, 35]}
                 >
                   <Avatar userId={user.id} />
@@ -75,7 +76,11 @@ const UsersList: React.FC<Props> = ({
               )
               : <Avatar userId={user.id} />}
             title={<span className={listsStyles.title}>{user.name}</span>}
-            description={<span className={listsStyles.description}>{user.lastSeen? user.lastSeen : 'был в сети недавно'}</span>}
+            description={(
+              <span className={listsStyles.description}>
+                {getHandle({ user })}
+              </span>
+            )}
           />
         </List.Item>
       )}

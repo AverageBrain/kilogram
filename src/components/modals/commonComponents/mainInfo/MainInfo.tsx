@@ -6,6 +6,7 @@ import styles from './MainInfo.module.scss';
 type AvatarParams = {
   userId?: number;
   size?: number;
+  userStatus?: boolean;
 }
 
 type Props = {
@@ -20,7 +21,7 @@ export const MainInfo: React.FC<Props> = ({ name, description, avatarParams }) =
     <>
       <div className={styles['main-info']}>
         <div className={styles['avatar']}>
-          <Avatar userId={avatarParams?.userId} size={80} />
+          <Avatar {...avatarParams} />
         </div>
         <div className={styles['text-info']}>
           <span className={styles['name']}>{name}</span>
