@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import clsx from 'clsx';
 import moment from 'moment';
 import { observer } from 'mobx-react-lite';
@@ -9,6 +9,9 @@ import { Avatar } from '../../../Avatar';
 
 import styles from './Message.module.scss';
 
+import Reactions from './reactions/Reactions';
+import ReactionButton from './reactions/ReactionButton';
+
 type Props = {
   message: MessageType;
   isGroup: boolean;
@@ -16,15 +19,7 @@ type Props = {
 
 const Message: React.FC<Props> = ({ message, isGroup }) => {
   const { selectedItem } = authUserStore;
-
-  const reactions = new Map<string, number>()
-  message.reactions?.forEach(r => {
-    const count = reactions.get(r.reactionType.emoji)
-    if (count)
-      reactions.set(r.reactionType.emoji, count + 1)
-    else
-      reactions.set(r.reactionType.emoji, 1)
-  })
+  const [ isHover, setIsHover ] = useState(false);
 
   const isActivePerson = selectedItem?.id === message.userId;
   return (
@@ -36,23 +31,20 @@ const Message: React.FC<Props> = ({ message, isGroup }) => {
           isActivePerson ? styles['my-message'] : styles['partner-message'])}
       >
         {isGroup && !isActivePerson && <Avatar className={styles['user-avatar-in-group']} userId={message.userId} size={25} />}
-        <div className={styles['message']}>
+        <div className={styles['message']}
+          onMouseEnter={() => setIsHover(true)}
+          onMouseLeave={() => setIsHover(false)}
+        >
           <div dangerouslySetInnerHTML={{ __html: message.text }} />
+          
+          <Reactions message={message}/>
           <div className={styles['message-meta']}>
             <span className={styles['timestep']}>
               {moment(message.inTime ?? message.createdAt).format('LT')}
             </span> 
           </div>
+          <ReactionButton message={message} setVisible={isHover}/>
         </div>
-
-        <div className={styles['reactions']}>
-            {
-                Array(...reactions.keys()).map((emoji, index) => (
-                    <div key={index}>{emoji}</div>
-                ))
-            }
-        </div>
-
       </div>
 
     </>

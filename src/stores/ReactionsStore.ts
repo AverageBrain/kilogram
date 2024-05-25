@@ -11,7 +11,7 @@ class ReactionsStore extends BaseStore<ReactionType> {
             selectedItem: override,
             loading: override,
 
-            loadReactions: action.bound
+            loadReactions: action.bound,
         });
     }
 

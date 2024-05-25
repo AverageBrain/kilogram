@@ -5,8 +5,11 @@ export type {
   ChatType,
   MetadataType,
   GroupFormType,
+  ReactionType,
+  MessageReactionType,
+  ReactionWithMessageInfoType,
 } from './types';
 
 export {
-  TypeOfChat
+  TypeOfChat,
 } from './types';

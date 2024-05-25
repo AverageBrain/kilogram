@@ -11,6 +11,7 @@ import {convertPrismaUser} from "./UserController";
 import {getDateCondition, getIdCondition, groupBy} from "../utils";
 import {makeRandomString} from "../utils/makeid";
 import {MessageReactionType, ReactionType, TypeOfChat} from "../../src/types/types";
+import { message } from "antd";
 
 
 const chatService = new ChatService()
@@ -28,6 +29,15 @@ export function convertPrismaMessage(prismaMessage: Message, reactions: MessageR
     }
 }
 
+export function convertPrismaReaction(prismaReaction: MessageReactionType): types.MessageReactionType {
+    return {
+        id: prismaReaction.id,
+        createdAt: prismaReaction.createdAt,
+        updatedAt: prismaReaction.updatedAt,
+        reactionType: prismaReaction.reactionType,
+        userId: prismaReaction.userId,
+    }
+}
 
 @JsonController("/chat")
 export class ChatController {
@@ -383,42 +393,28 @@ export class ChatController {
             reactionTypeId: number
         }
     ): Promise<MessageReactionType> {
-        const user = request.user?.prismaUser
+        const user = request.user?.prismaUser;
         if (!user) {
-            throw new Error("User must be authorized")
+            throw new Error("User must be authorized");
         }
 
-        const message = await prisma.message.findUnique({where: {id: reactionMessageIn.messageId}})
+        return convertPrismaReaction(await chatService.setReaction(user, reactionMessageIn));
+    }
 
-        if (message == null) {
-            throw new Error("Message not founded")
+    @Post("/delete/reaction")
+    async removeReaction(
+        @Req() request: express.Request,
+        @BodyParam('reactionMessage') reactionMessageIn: {
+            messageId: number,
+            reactionTypeId: number,
+        }
+    ): Promise<types.ReactionWithMessageInfoType> {
+        const user = request.user?.prismaUser;
+        if (!user) {
+            throw new Error("User must be authorized");
         }
 
-        const reactionType = await prisma.reactionType.findUnique({where: {id: reactionMessageIn.reactionTypeId}})
-        if (reactionType == null) {
-            throw new Error("ReactionType not founded")
-        }
-
-        const reactionMessage = await prisma.messageReaction.create({
-            data: {
-                userId: user.id,
-                reactionTypeId: reactionType.id,
-                messageId: message.id
-            }
-        })
-
-        return {
-            id: reactionMessage.id,
-            createdAt: reactionType.createdAt,
-            updatedAt: reactionType.updatedAt,
-            reactionType: {
-                id: reactionType.id,
-                createdAt: reactionType.createdAt,
-                updatedAt: reactionType.updatedAt,
-                emoji: reactionType.emoji
-            },
-            userId: user.id,
-        }
+        return await chatService.removeReaction(user, reactionMessageIn);
     }
 
     @Post('/metadata')

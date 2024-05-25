@@ -44,7 +44,7 @@ const Avatar: React.FC<Props> = ({ userId, size, className }) => {
       {!userId && (
         <AvatarAD
           style={{
-            backgroundColor: '#87d068',
+            backgroundColor: '#FF686B',
           }}
           icon={<CommentOutlined />}
           size={avatarSize}

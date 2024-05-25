@@ -24,7 +24,7 @@ const SendMessage: React.FC<Props> = ({ scrollRef, setShouldLoadDelayed }) => {
   const { selectedItem: chat, setSelectedChat, getMetadata } = chatsStore;
   const { selectedUser: user, setSelectedUser } = userStore;
 
-  const [editorState, setEditorState] = useState<EditorState>(() => EditorState.createEmpty());
+  const [ editorState, setEditorState ] = useState<EditorState>(() => EditorState.createEmpty());
 
   const handleSubmit = async (inTime?: Date) => {
     const contentState = editorState.getCurrentContent();
