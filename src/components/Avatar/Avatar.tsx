@@ -43,7 +43,7 @@ const Avatar: React.FC<Props> = ({ userId, size, className }) => {
       {photoStatus === 'error-occurred' && <AvatarD icon={<UserOutlined />} size={avatarSize} />}
       {photoStatus === 'default-avatar' && <AvatarD
           style={{
-            backgroundColor: '#87d068',
+            backgroundColor: '#FF686B',
           }}
           icon={<CommentOutlined />}
           size={avatarSize}
