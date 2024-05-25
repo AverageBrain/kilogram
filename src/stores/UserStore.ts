@@ -57,7 +57,6 @@ class UserStore extends BaseStore<UserType> {
       });
 
       const data = await userApiClient.getAvatar(id);
-      console.log('data', data);
 
       runInAction(() => {
         if (this.avatarCache.size >= cacheMaxSize) {

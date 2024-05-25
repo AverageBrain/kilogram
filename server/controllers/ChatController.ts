@@ -187,7 +187,7 @@ export class ChatController {
             where: {
                 AND: [
                     { userId: user.id },
-                    { chat: { members: { some: { userId: toUser.id } } } }
+                    { chat: { type: types.TypeOfChat.Chat, members: { some: { userId: toUser.id } } } }
                 ]
             }
         })

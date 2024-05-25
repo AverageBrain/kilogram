@@ -27,7 +27,6 @@ export const GroupProfileView: React.FC<Props> = ({ group, closeModal, setSelect
 
   const handleClickOnUser = (user: UserType) => {
     setSelectedUser(user);
-    console.log(user);
   }
 
   return (
