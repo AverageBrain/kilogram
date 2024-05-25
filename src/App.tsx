@@ -16,12 +16,13 @@ const App: React.FC = () => {
     loggedIn
   } = authUserStore;
 
-  const {loadReactions} = reactionsStore
+  const { loadReactions } = reactionsStore;
 
   useEffect(() => {
-    loadSelectedItem()
-    loadReactions();
     moment.locale('ru');
+
+    loadSelectedItem();
+    loadReactions();
   } ,[]);
 
   return (

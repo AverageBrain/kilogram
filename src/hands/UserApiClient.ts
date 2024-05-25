@@ -1,5 +1,5 @@
 import { UserType } from "../types/types";
-import {BASE_SERVER_HOST, BaseApiClient} from "./BaseApiClient";
+import { BaseApiClient } from "./BaseApiClient";
 import express from 'express';
 
 class UserApiClient extends BaseApiClient {
@@ -19,7 +19,7 @@ class UserApiClient extends BaseApiClient {
         return this.axiosGet('user/users');
     }
 
-    getAvatar(id: number): Promise<any> {
+    getAvatar(id: number): Promise<string> {
         return this.axiosGet('user/avatar/' + id);
     }
 }
