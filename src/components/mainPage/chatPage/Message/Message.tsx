@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import clsx from 'clsx';
 import moment from 'moment';
 import { observer } from 'mobx-react-lite';
@@ -8,8 +8,9 @@ import { authUserStore } from '../../../../stores';
 import { Avatar } from '../../../Avatar';
 
 import styles from './Message.module.scss';
-import { groupBy } from 'lodash';
+
 import Reactions from './reactions/Reactions';
+import ReactionButton from './reactions/ReactionButton';
 
 type Props = {
   message: MessageType;
@@ -18,9 +19,7 @@ type Props = {
 
 const Message: React.FC<Props> = ({ message, isGroup }) => {
   const { selectedItem } = authUserStore;
-
-  const reactions = groupBy(message.reactions, (reaction) => reaction.reactionType.emoji);
-  console.log(reactions);
+  const [ isHover, setIsHover ] = useState(false);
 
   const isActivePerson = selectedItem?.id === message.userId;
   return (
@@ -32,7 +31,10 @@ const Message: React.FC<Props> = ({ message, isGroup }) => {
           isActivePerson ? styles['my-message'] : styles['partner-message'])}
       >
         {isGroup && !isActivePerson && <Avatar className={styles['user-avatar-in-group']} userId={message.userId} size={25} />}
-        <div className={styles['message']}>
+        <div className={styles['message']}
+          onMouseEnter={() => setIsHover(true)}
+          onMouseLeave={() => setIsHover(false)}
+        >
           <div dangerouslySetInnerHTML={{ __html: message.text }} />
           
           <Reactions message={message}/>
@@ -41,9 +43,8 @@ const Message: React.FC<Props> = ({ message, isGroup }) => {
               {moment(message.inTime ?? message.createdAt).format('LT')}
             </span> 
           </div>
+          <ReactionButton message={message} setVisible={isHover}/>
         </div>
-
-
       </div>
 
     </>
