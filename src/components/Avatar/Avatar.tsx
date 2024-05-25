@@ -1,9 +1,12 @@
-import React, { memo, useEffect, useState } from 'react';
-import { Avatar as AvatarD, Spin } from 'antd';
+import React, { useEffect, useState } from 'react';
+import { observer } from 'mobx-react-lite';
+import { Avatar as AvatarAD, Spin } from 'antd';
 import { CommentOutlined, UserOutlined } from '@ant-design/icons';
+import clsx from 'clsx';
+
+import { userStore } from '../../stores';
 import { userApiClient } from '../../hands';
 import styles from './Avatar.module.scss';
-import clsx from 'clsx';
 
 type Props = {
   userId?: number;
@@ -11,46 +14,51 @@ type Props = {
   className?: string;
 }
 
-// TODO: подумать, как не загружать постоянно аватарки, тк, например, для каждого сообщения не загружать заново
 const Avatar: React.FC<Props> = ({ userId, size, className }) => {
-  const [ photoStatus, setPhotoStatus ] = useState('loading');
-  const [ image, setImage ] = useState('');
+  const { avatarLoading, avatarCache, loadAvatar } = userStore;
+
+  const [image, setImage] = useState<string | undefined>(undefined);
 
   const avatarSize = size ?? 40;
 
   useEffect(() => {
-    if (userId) {
-     userApiClient.getAvatar(userId)
-      .then(response => {
-        setImage(response);
-        setPhotoStatus('loaded');
-      })
-      .catch(error => {
-          setPhotoStatus('error-occurred');
-          console.error('Error occurred while getting an avatar:', error)
+    const loadData = async () => {
+      if (!image) {
+        if (userId && avatarCache.has(userId)) {
+          setImage(avatarCache.get(userId));
+        } else if (userId) {
+          const avatar = await loadAvatar(userId);
+          if (avatar) {
+            setImage(avatar);
+          }
         }
-      )
-    } else {
-      setPhotoStatus('default-avatar');
-    }
-  }, [])
+      }
+    };
+
+    loadData();
+  }, [avatarCache.has(userId ?? 0)]);
 
   return (
   // TODO: настроить hitboxes
-    <div className={clsx(styles.avatar, className)} style={{ width: avatarSize, height: avatarSize}}>
-      {photoStatus === 'loading' && <Spin className={styles.spin} />}
-      {photoStatus === 'loaded' && <img src={`data:image/svg+xml;utf8,${encodeURIComponent(image)}`} />}
-      {photoStatus === 'error-occurred' && <AvatarD icon={<UserOutlined />} size={avatarSize} />}
-      {photoStatus === 'default-avatar' && <AvatarD
+    <div className={clsx(styles.avatar, className)} style={{ width: avatarSize, height: avatarSize }}>
+      {!userId && (
+        <AvatarAD
           style={{
             backgroundColor: '#FF686B',
           }}
           icon={<CommentOutlined />}
           size={avatarSize}
         />
-      }
+      )}
+      {userId && (
+        avatarLoading
+        ? <Spin className={styles.spin} />
+        : image
+          ? <img src={`data:image/svg+xml;utf8,${encodeURIComponent(image)}`} />
+            : <AvatarAD icon={<UserOutlined />} size={avatarSize} />
+      )}
     </div>
   );
 }
 
-export default memo(Avatar);
+export default observer(Avatar);
