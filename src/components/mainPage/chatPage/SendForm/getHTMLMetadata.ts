@@ -1,5 +1,5 @@
 import { MetadataType } from '../../../../types';
-import styles from './../Message/Message.module.scss';
+import './Metadata.css';
 
 const extractFirstLink = (htmlString: string): string | null => {
   const parser = new DOMParser();
@@ -22,10 +22,10 @@ export const getHTMLMetadata = async (
     const data = await getMetadata(firstLink);
 
     if (data) {
-      return `<div class=${styles["metadata"]}><span class=${styles["metadata-title"]}><a href="${firstLink}">${data.title}</a></span><span class=${styles["metadata-description"]}>${data?.description ?? ''}</span>
+      return `<div class="metadata"><span class="metadata-title"><a href="${firstLink}">${data.title}</a></span><span class="metadata-description">${data?.description ?? ''}</span>
           ${data?.imageUrl && !data.imageUrl.includes('static')
-            ? `<img style="height: 200px;width: 200px" alt="${data.title}" src="${data?.imageUrl}">`
-            : ''}
+          ? `<img style="height: 200px;width: 200px" alt="${data.title}" src="${data?.imageUrl}">`
+          : ''}
         </div>
       `;
     }
