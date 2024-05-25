@@ -14,6 +14,6 @@ export const getHandle = (options: {
     : user?.userStatus
       ? 'онлайн'
       : user?.lastSeen
-        ? `был:a в сети ${moment(user.lastSeen).format('HH:MM DD.MM.YY')}`
+        ? `был:a в сети ${moment(user.lastSeen).format('HH:mm DD.MM.YY')}`
         : 'был:a в сети недавно';
 }
