@@ -13,9 +13,10 @@ type Props = {
   size?: number;
   className?: string;
   userStatus?: boolean;
+  onClick?: () => void;
 }
 
-const Avatar: React.FC<Props> = ({ userId, size, className, userStatus }) => {
+const Avatar: React.FC<Props> = ({ userId, size, className, userStatus, onClick }) => {
   const { avatarCache, loadAvatar } = userStore;
 
   const [image, setImage] = useState<string | undefined>(undefined);
@@ -41,7 +42,11 @@ const Avatar: React.FC<Props> = ({ userId, size, className, userStatus }) => {
 
   const avatarComponent = useMemo(() => (
   // TODO: настроить hitboxes
-    <div className={clsx(styles.avatar, className)} style={{ width: avatarSize, height: avatarSize }}>
+    <div
+      className={clsx(styles.avatar, className, onClick && styles.clickable)}
+      style={{ width: avatarSize, height: avatarSize }}
+      onClick={onClick}
+    >
       {!userId && (
         <AvatarAD
           style={{
@@ -52,7 +57,7 @@ const Avatar: React.FC<Props> = ({ userId, size, className, userStatus }) => {
         />
       )}
       {userId && (image
-        ? <img alt='avatar' src={image} />
+        ? <img alt='avatar' src={image}  />
         : <AvatarAD icon={<UserOutlined />} size={avatarSize} />)
       }
     </div>

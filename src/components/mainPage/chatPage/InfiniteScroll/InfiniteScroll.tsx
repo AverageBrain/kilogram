@@ -1,13 +1,13 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { Spin } from 'antd';
 import { observer } from 'mobx-react-lite';
+import { groupBy } from 'lodash';
+import moment from 'moment';
+
 import { chatsStore, messagesStore } from '../../../../stores';
 import { Message } from '../Message';
-import { Spin } from 'antd';
 import { TypeOfChat } from '../../../../types';
-import moment from 'moment';
 import ChatDate from './ChatDate';
-import { groupBy } from 'lodash';
-
 import styles from './InfiniteScroll.module.scss';
 
 type Props = {

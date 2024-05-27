@@ -4,13 +4,14 @@ import moment from 'moment';
 import { observer } from 'mobx-react-lite';
 
 import { MessageType } from '../../../../types'
-import { authUserStore } from '../../../../stores';
+import { authUserStore, chatsStore } from '../../../../stores';
 import { Avatar } from '../../../Avatar';
-
-import styles from './Message.module.scss';
-
+import { UserProfile } from '../../../modals';
+import { useModal } from '../../../../hooks';
 import Reactions from './reactions/Reactions';
 import ReactionButton from './reactions/ReactionButton';
+
+import styles from './Message.module.scss';
 
 type Props = {
   message: MessageType;
@@ -18,10 +19,24 @@ type Props = {
 }
 
 const Message: React.FC<Props> = ({ message, isGroup }) => {
-  const { selectedItem } = authUserStore;
-  const [ isHover, setIsHover ] = useState(false);
+  const { selectedItem: authUser } = authUserStore;
+  const { selectedItem: selectedChat } = chatsStore;
 
-  const isActivePerson = selectedItem?.id === message.userId;
+  const [ isHover, setIsHover ] = useState(false);
+  const { isOpenModal, showModal, closeModal } = useModal();
+
+  const isActivePerson = authUser?.id === message.userId;
+  const curUser = selectedChat?.users && selectedChat.users.find((user) => user.id === message.userId);
+
+  const handleClickProfile = () => {
+    showModal();
+  }
+
+  const mapFileUrls = (fileUrls: string[] | undefined): string => {
+    if (!fileUrls) return ''
+    return fileUrls.map(fileUrl => `<div>${fileUrl}</div>`).join('\n')
+  };
+
   return (
 
     <>
@@ -30,28 +45,36 @@ const Message: React.FC<Props> = ({ message, isGroup }) => {
           styles['message-bar'],
           isActivePerson ? styles['my-message'] : styles['partner-message'])}
       >
-        {isGroup && !isActivePerson && <Avatar className={styles['user-avatar-in-group']} userId={message.userId} size={25} />}
-        <div className={styles['message']}
+        {isGroup && !isActivePerson && (
+          <Avatar
+            className={styles['user-avatar-in-group']}
+            userId={message.userId}
+            size={25}
+            onClick={handleClickProfile}
+          />
+        )}
+        <div className={styles.message}
           onMouseEnter={() => setIsHover(true)}
           onMouseLeave={() => setIsHover(false)}
         >
+          {(isGroup &&
+            <div className={styles['message-title']} onClick={handleClickProfile}>
+              {curUser?.name}
+            </div>
+          )}
           <div dangerouslySetInnerHTML={{ __html: message.text }} />
           <Reactions message={message}/>
           <div className={styles['message-meta']}>
-            <span className={styles['timestep']}>
+            <span className={styles.timestep}>
               {moment(message.inTime ?? message.createdAt).format('LT')}
             </span>
           </div>
           <ReactionButton message={message} setVisible={isHover}/>
         </div>
       </div>
-
+      {curUser && <UserProfile user={curUser} isOpenModal={isOpenModal} closeModal={closeModal} />}
     </>
   );
-  function mapFileUrls(fileUrls: string[] | undefined): string {
-      if (!fileUrls) return ''
-      return fileUrls.map(fileUrl => `<div>${fileUrl}</div>`).join('\n')
-  }
 };
 
 export default observer(Message);

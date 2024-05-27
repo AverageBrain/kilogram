@@ -20,7 +20,7 @@ type Props = {
 };
 
 const SendMessage: React.FC<Props> = ({ scrollRef, setShouldLoadDelayed }) => {
-  const { sendMessage, sendDelayMessage, clearMessages } = messagesStore;
+  const { loading, sendMessage, sendDelayMessage, clearMessages } = messagesStore;
   const { selectedItem: chat, setSelectedChat, getMetadata } = chatsStore;
   const { selectedUser: user, setSelectedUser } = userStore;
   const [editorState, setEditorState] = useState<EditorState>(() => EditorState.createEmpty());
@@ -29,6 +29,10 @@ const SendMessage: React.FC<Props> = ({ scrollRef, setShouldLoadDelayed }) => {
 
 
   const handleSubmit = async (inTime?: Date) => {
+    if (loading) {
+      return;
+    }
+
     const contentState = editorState.getCurrentContent();
     const htmlContent = draftToHtml(convertToRaw(contentState));
 
