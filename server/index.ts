@@ -109,4 +109,6 @@ new DelayMessageJob().run()
 // new PushNotificationService().send("d1f-PcbzGockAJV7aMcn-q:APA91bE4uA86R6cq45RkNShCFQoUHLJ55AnvDEckggk6x0REbNvOaxDeabQnm0EAe8KvYhwB0r-iDBeUBOuQ_zboo4O6KUWkMv_kjV6mru4JI9_oG1BevGLN1_qP-rNS19bLyH0DmIk2", "Hihihihihi")
 
 console.log("Server started")
-app.listen(3000);
+// app.listen(3000);
+// FIXME: develop
+app.listen(3002);
