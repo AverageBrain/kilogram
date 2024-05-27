@@ -25,9 +25,9 @@ const Message: React.FC<Props> = ({ message, isGroup }) => {
   return (
 
     <>
-      <div 
+      <div
         className={clsx(
-          styles['message-bar'], 
+          styles['message-bar'],
           isActivePerson ? styles['my-message'] : styles['partner-message'])}
       >
         {isGroup && !isActivePerson && <Avatar className={styles['user-avatar-in-group']} userId={message.userId} size={25} />}
@@ -36,12 +36,11 @@ const Message: React.FC<Props> = ({ message, isGroup }) => {
           onMouseLeave={() => setIsHover(false)}
         >
           <div dangerouslySetInnerHTML={{ __html: message.text }} />
-          
           <Reactions message={message}/>
           <div className={styles['message-meta']}>
             <span className={styles['timestep']}>
               {moment(message.inTime ?? message.createdAt).format('LT')}
-            </span> 
+            </span>
           </div>
           <ReactionButton message={message} setVisible={isHover}/>
         </div>
@@ -49,6 +48,10 @@ const Message: React.FC<Props> = ({ message, isGroup }) => {
 
     </>
   );
+  function mapFileUrls(fileUrls: string[] | undefined): string {
+      if (!fileUrls) return ''
+      return fileUrls.map(fileUrl => `<div>${fileUrl}</div>`).join('\n')
+  }
 };
 
 export default observer(Message);

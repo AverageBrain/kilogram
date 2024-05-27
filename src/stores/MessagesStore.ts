@@ -70,11 +70,11 @@ class MessagesStore extends BaseStore<MessageType> {
     }
   }
 
-  async sendMessage(chatId: number, text: string): Promise<void> {
+  async sendMessage(chatId: number, text: string, files: File[]): Promise<void> {
     try {
       this.enableLoading();
     
-      await chatApiClient.sendMessage(chatId, text);
+      await chatApiClient.sendMessage(chatId, text, files);
     } catch (e: any) {
       console.warn(e);
     } finally {
@@ -92,11 +92,11 @@ class MessagesStore extends BaseStore<MessageType> {
     });
   }
 
-  async sendDelayMessage(chatId: number, text: string, inTime: Date): Promise<void> {
+  async sendDelayMessage(chatId: number, text: string, files: File[], inTime: Date): Promise<void> {
     try {
       this.enableLoading();
     
-      await chatApiClient.sendDelayMessage(chatId, text, inTime);  
+      await chatApiClient.sendDelayMessage(chatId, text, files, inTime);
     } catch (e: any) {
       console.warn(e);
     } finally {
@@ -119,6 +119,7 @@ class MessagesStore extends BaseStore<MessageType> {
     try {
         await chatApiClient.removeReaction(messageId, reactionTypeId);
     } catch (e: any) {
+
         console.warn(e);
         return false;
     } finally {
@@ -149,7 +150,7 @@ class MessagesStore extends BaseStore<MessageType> {
       this.items = [...updatedmessage];
     });
   }
-
+  
   updateMessageByRemoveReaction(messageId: number, reactionId: number): void {
     const message = this.items.find((message) => (message.id == messageId)); 
     if (!message) return
@@ -164,6 +165,7 @@ class MessagesStore extends BaseStore<MessageType> {
           );
           item.reactions = [...otherReaction];
         }
+
       }
     });
     runInAction(() => {

@@ -3,7 +3,7 @@ import {User} from "@prisma/client";
 import {UserAvatarService} from "./UserAvatarService";
 
 export class UserService {
-    async getOrCreateUserByGithub(githubId: string, name: string, username: string): Promise<User> {
+    async getOrCreateUserByGithub(githubId: string, name: string | null, username: string): Promise<User> {
         const user = await prisma.user.findUnique({where: {githubId: githubId}})
         if (user == null) {
             const avatarKey = await UserAvatarService.createAvatar(username)
@@ -14,7 +14,7 @@ export class UserService {
                 data: {
                     username: username,
                     githubId: githubId,
-                    name: name,
+                    name: name == null ? username : name,
                     avatarKey: avatarKey
                 }
             });

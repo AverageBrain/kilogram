@@ -20,7 +20,6 @@ const LogInPage: React.FC = () => {
 
   const handleLogIn = () => authApiClient.authWithGithub();
 
-  console.log(styles);
   return (
     <>
       {loggedIn

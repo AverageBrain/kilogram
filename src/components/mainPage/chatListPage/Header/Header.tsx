@@ -4,10 +4,11 @@ import { Dropdown, Input, Layout, MenuProps } from 'antd';
 import { useModal } from '../../../../hooks';
 import { authApiClient } from '../../../../hands';
 import { authUserStore } from '../../../../stores';
-import { UserProfile } from '../../../modals/profiles/userProfile/UserProfile';
+import { UserProfile } from '../../../modals';
 import {BASE_LOGOUT_HOST} from '../../../../hands/BaseApiClient';
 
 import styles from './Header.module.scss';
+import {requestPermission} from "../../../../plugins/firebase";
 
 const { Header: HeaderAD } = Layout;
 
@@ -32,6 +33,11 @@ const Header: React.FC<Props> = ({ value, setSearchTerm, }) => {
       label: 'Профиль',
       onClick: showModal,
       key: '0',
+    },
+    {
+      label: 'Подписаться на уведомления',
+      onClick: requestPermission,
+      key: '2',
     },
     {
       type: 'divider',

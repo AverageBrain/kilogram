@@ -8,6 +8,7 @@ import 'moment/locale/ru';
 
 import AppRouter from './components';
 import {authUserStore, reactionsStore} from './stores';
+import {requestPermission} from "./plugins/firebase";
 
 const App: React.FC = () => {
   const {
@@ -20,9 +21,9 @@ const App: React.FC = () => {
 
   useEffect(() => {
     moment.locale('ru');
-
     loadSelectedItem();
     loadReactions();
+    requestPermission()
   } ,[]);
 
   return (

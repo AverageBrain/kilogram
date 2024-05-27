@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, {useRef, useState} from 'react';
 import { observer } from 'mobx-react-lite';
-import { CalendarOutlined } from '@ant-design/icons';
+import {CalendarOutlined, CloseCircleOutlined, FileAddOutlined} from '@ant-design/icons';
 import DOMPurify from 'dompurify';
 import { EditorState, convertToRaw } from 'draft-js';
 import draftToHtml from 'draftjs-to-html';
@@ -23,8 +23,10 @@ const SendMessage: React.FC<Props> = ({ scrollRef, setShouldLoadDelayed }) => {
   const { sendMessage, sendDelayMessage, clearMessages } = messagesStore;
   const { selectedItem: chat, setSelectedChat, getMetadata } = chatsStore;
   const { selectedUser: user, setSelectedUser } = userStore;
+  const [editorState, setEditorState] = useState<EditorState>(() => EditorState.createEmpty());
+  const [fileList, setFileList] = useState<FileList | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const [ editorState, setEditorState ] = useState<EditorState>(() => EditorState.createEmpty());
 
   const handleSubmit = async (inTime?: Date) => {
     const contentState = editorState.getCurrentContent();
@@ -34,12 +36,13 @@ const SendMessage: React.FC<Props> = ({ scrollRef, setShouldLoadDelayed }) => {
     
     if (editorState.getCurrentContent().getPlainText().trim().length) {
       setEditorState(EditorState.createEmpty());
+      setFileList(null);
       if (chat) {
-        inTime ? await sendDelayMessage(chat.id, safeHtml, inTime) : await sendMessage(chat.id, safeHtml);      
+        inTime ? await sendDelayMessage(chat.id, safeHtml, files, inTime) : await sendMessage(chat.id, safeHtml, files);
       } else if (user) {
         const curChat = await chatApiClient.createChat(user.id);
-        inTime ? await sendDelayMessage(curChat.id, safeHtml, inTime) : await sendMessage(curChat.id, safeHtml);      
-        setSelectedChat(chat);
+        inTime ? await sendDelayMessage(curChat.id, safeHtml, files, inTime) : await sendMessage(curChat.id, safeHtml, files);
+        setSelectedChat(curChat);
         setSelectedUser(undefined);
       }
     }
@@ -62,6 +65,18 @@ const SendMessage: React.FC<Props> = ({ scrollRef, setShouldLoadDelayed }) => {
     clearMessages();
     setShouldLoadDelayed(true);
   };
+
+  const handleFileAdd = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const data = new DataTransfer();
+    const newFiles = e.target.files ?? [];
+    const allFiles = Array.from(newFiles).concat(files);
+
+    allFiles.forEach(file => data.items.add(file))
+
+    setFileList(data.files);
+  }
+
+  const files = fileList ? Array.from(fileList) : [];
 
   return (
     <div className={styles["send-message"]}>
@@ -90,6 +105,13 @@ const SendMessage: React.FC<Props> = ({ scrollRef, setShouldLoadDelayed }) => {
           locale: 'ru',
         }}
       />
+      <ul className={styles['file-list']}>
+          {files.map((file, idx) => <li key={idx} className={styles['file-list-element']}><p className={styles['file-name']}>{file.name}</p> <CloseCircleOutlined/></li>)}
+      </ul>
+      <input type={"file"} id={"files"} onChange={handleFileAdd} ref={fileInputRef} multiple hidden/>
+      <button className={buttonsStyles['icon-svg-button']} onClick={() => fileInputRef.current?.click()}>
+        <FileAddOutlined />
+      </button>
       <button className={buttonsStyles['icon-svg-button']} onClick={handleClickDelay}>
         <CalendarOutlined />
       </button>

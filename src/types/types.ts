@@ -8,7 +8,8 @@ export type UserType = BaseItemType & {
   name: string;
   username: string;
   bio?: string;
-  lastSeen?: string;
+  lastSeen?: Date;
+  userStatus?: boolean;
 }
 
 export type MessageType = BaseItemType & {
@@ -16,7 +17,8 @@ export type MessageType = BaseItemType & {
   userId: number;
   text: string;
   inTime?: Date;
-  reactions?: MessageReactionType[]
+  reactions?: MessageReactionType[];
+  fileUrls?: string[];
 }
 
 export type MessageReactionType = BaseItemType & {
