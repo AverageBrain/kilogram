@@ -3,27 +3,33 @@ import React, { useEffect } from 'react';
 import { isEmpty } from 'lodash';
 import { Spin } from 'antd';
 import { observer } from 'mobx-react-lite';
+import moment from 'moment';
+import 'moment/locale/ru';
 
-import { LogInPage, MainPage } from './client/components';
-import { authUserStore } from './client/stores';
+import AppRouter from './components';
+import {authUserStore, reactionsStore} from './stores';
+import {requestPermission} from "./plugins/firebase";
 
 const App: React.FC = () => {
   const {
-    selectedItem,
     loading,
     loadSelectedItem,
+    loggedIn
   } = authUserStore;
 
+  const { loadReactions } = reactionsStore;
+
   useEffect(() => {
+    moment.locale('ru');
     loadSelectedItem();
+    loadReactions();
+    requestPermission()
   } ,[]);
 
   return (
     loading
       ? <Spin />
-      : isEmpty(selectedItem)
-        ? <LogInPage />
-        : <MainPage />
+      : <AppRouter />
   );
 }
 

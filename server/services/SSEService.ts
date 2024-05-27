@@ -1,9 +1,14 @@
+import { RedisStore } from "./RedisStore";
+
 export type SSECallback = (data: string) => boolean
 const listeners: Map<number, Map<string, SSECallback>> = new Map()
 
 
 export class SSEService {
-    registerListen(userId: number, sseCallback: SSECallback): string {
+    redisStore = new RedisStore()
+
+
+    async registerListen(userId: number, sseCallback: SSECallback): Promise<string> {
         if (!listeners.has(userId)) {
             listeners.set(userId, new Map())
         }
@@ -11,6 +16,9 @@ export class SSEService {
         if (userListeners == undefined) {
             throw new Error('Unexpected error')
         }
+
+        await this.redisStore.setOnline(userId)
+
         while (true) {
             const randomId = Math.floor(Math.random() * 10000000).toString()
             if (userListeners.has(randomId)) {
@@ -22,8 +30,9 @@ export class SSEService {
         }
     }
 
-    unregisterListen(userId: number, randomId: string) {
+    async unregisterListen(userId: number, randomId: string) {
         listeners.get(userId)?.delete(randomId)
+        await this.redisStore.setOffline(userId)
     }
 
     async publishMessage(toUserId: number, type: string, data: any) {
@@ -32,7 +41,7 @@ export class SSEService {
             return
         }
         Array.from(userListeners.values()).forEach(
-            c => c(JSON.stringify({type: type, data: data}))
+            c => c(JSON.stringify({ type: type, data: data }))
         )
     }
 }

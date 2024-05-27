@@ -1,18 +1,24 @@
-import {BodyParam, Get, JsonController, Param, Post, QueryParam, Req, Res} from 'routing-controllers';
+import { BodyParam, Get, JsonController, Param, Post, QueryParam, Req, Res } from 'routing-controllers';
 import * as types from '../../src/types';
 import express from 'express';
-import {prisma} from "../domain/PrismaClient";
-import {User} from "@prisma/client";
-import {UserAvatarService} from "../services/UserAvatarService";
-import {UploadedFile} from "express-fileupload"
+import { prisma } from "../domain/PrismaClient";
+import { User } from "@prisma/client";
+import { UserAvatarService } from "../services/UserAvatarService";
+import { UploadedFile } from "express-fileupload"
+import { RedisStore } from "../services/RedisStore";
+import { FileInfo } from "../models/FileInfo";
 
-export function convertPrismaUser(prismaUser: User): types.UserType {
+const redisStore = new RedisStore()
+
+export function convertPrismaUser(prismaUser: User, userStatus?: boolean): types.UserType {
     return {
         createdAt: prismaUser.createdAt,
         id: prismaUser.id,
         name: prismaUser.name,
         updatedAt: prismaUser.updatedAt,
-        username: prismaUser.username
+        username: prismaUser.username,
+        userStatus,
+        lastSeen: prismaUser.lastSeen,
     }
 }
 
@@ -22,10 +28,33 @@ export class UserController {
     async getMe(@Req() request: express.Request): Promise<types.UserType | {}> {
         const sessionUser = request.user
         if (sessionUser?.prismaUser) {
-            return convertPrismaUser(sessionUser.prismaUser)
+            return convertPrismaUser(sessionUser.prismaUser, true)
         }
         // not authorized
         return {};
+    }
+
+    @Get("/users")
+    async getUsers(
+        @Req() request: express.Request,
+    ): Promise<types.UserType[]> {
+        const sessionUser = request.user?.prismaUser
+        if (!sessionUser) {
+            throw new Error("User must be authorized")
+        }
+
+        const users: User[] = await prisma.user.findMany({
+            where: {
+                NOT: {
+                    id: {
+                        equals: sessionUser.id,
+                    }
+                }
+            }
+        });
+        const usersStatuses = await redisStore.getStatus(users.map(i => i.id))
+
+        return users.map(i => convertPrismaUser(i, usersStatuses.get(i.id)))
     }
 
     @Post("/edit")
@@ -34,7 +63,7 @@ export class UserController {
         if (!user) {
             throw new Error("User must be authorized")
         }
-        const localUser = await prisma.user.findUniqueOrThrow({where: {githubId: sessionUser?.toString()}})
+        const localUser = await prisma.user.findUniqueOrThrow({ where: { githubId: sessionUser?.toString() } })
         localUser.name = user.name
         localUser.username = user.username
         return convertPrismaUser(localUser)
@@ -42,31 +71,22 @@ export class UserController {
 
     @Get("/users/find/:prefix")
     async findUsers(@Req() request: express.Request, @Param("prefix") prefix: string): Promise<types.UserType[]> {
-        if (!prefix) {
-            return [];
-        }
+        if (!prefix) return [];
         const sessionUser = request.user;
         if (sessionUser?.prismaUser) {
             const users: User[] = await prisma.user.findMany({
                 where: {
-                    AND: [
-                        { 
-                            username: {
-                                startsWith: prefix,
-                            }, 
-                        },
-                        {
-                            NOT: {
-                                id: {
-                                    equals: sessionUser?.prismaUser?.id,
-                                }
-                            }
-                        }
-                    ]
-     
+                    AND: [{
+                        username: { startsWith: prefix, mode: 'insensitive' }
+                    },
+                    {
+                        NOT: { id: { equals: sessionUser?.prismaUser?.id } }
+                    }]
                 }
             })
-            return users.map(i => convertPrismaUser(i));
+            const usersStatuses = await redisStore.getStatus(users.map(i => i.id))
+
+            return users.map(i => convertPrismaUser(i, usersStatuses.get(i.id)));
         }
         return [];
     }
@@ -75,31 +95,36 @@ export class UserController {
     async uploadAvatar(
         @Res() response: express.Response,
         @Req() request: express.Request,
-        @BodyParam("username") username: string,
+        @BodyParam("id") id: number,
     ) {
         const files = request.files
-        let result
+        let result = null
 
-        if (files === undefined || files === null) {
-            result = await UserAvatarService.createAvatar(username)
+        if (!files) {
+            result = await UserAvatarService.createAvatar(id.toString())
         } else {
             const avatar: UploadedFile | UploadedFile[] = files.avatar;
+            if (!avatar) throw Error("Неверное имя инпута для аватара")
             if (Array.isArray(avatar)) throw Error("Можно загружать только один аватар")
 
-            result = await UserAvatarService.createAvatar(username, avatar)
+            const avatarFileInfo: FileInfo = {
+                data: avatar.data,
+                name: avatar.name,
+                mimetype: avatar.mimetype
+            }
+
+            result = await UserAvatarService.createAvatar(id.toString(), avatarFileInfo)
         }
 
-        return result === null ? response.sendStatus(400) : response.sendStatus(200)
+        return result === null ? response.sendStatus(500) : response.status(200).send(result)
     }
 
-    @Get("/avatar")
+    @Get("/avatar/:id")
     async getAvatar(
         @Res() response: express.Response,
-        @QueryParam("username") username: string,
+        @Param("id") id: number,
     ) {
-        const byte64Avatar = await UserAvatarService.getAvatar(username)
-        const avatar = Buffer.from(byte64Avatar, 'base64').toString()
-
-        return response.set('Content-Type', 'image/svg+xml').send(avatar)
+        if (!id) throw new Error("Id required")
+        return await UserAvatarService.getAvatar(id.toString())
     }
 }

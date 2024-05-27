@@ -1,13 +1,15 @@
 import { UserType, ChatType } from '../types';
+import { TypeOfChat } from '../types/types';
 import { chats } from './chats';
 
 const toChat = (user: UserType): ChatType => {
   return {
     id: chats.length + 1,
+    name: 'test',
     createdAt: user.createdAt,
     updatedAt: user.updatedAt,
     users: [user],
-    type: 'chat',
+    type: TypeOfChat.Chat,
     messages: [],
   }
 }
@@ -26,7 +28,7 @@ export const users: UserType[] = [
     updatedAt: new Date('2024-03-30T12:38:31'),
     name: 'Anton',
     username: 'average-brain',
-    lastSeen: 'онлайн',
+    lastSeen: new Date('2024-03-30T12:38:31'),
     bio: 'ррррррр...',
   },
   {
@@ -35,7 +37,7 @@ export const users: UserType[] = [
     updatedAt: new Date('2024-03-30T12:38:31'),
     name: 'Polina',
     username: 'buchurella',
-    lastSeen: 'была в сети 4 минуты назад',
+    lastSeen: new Date('2024-03-30T12:38:31'),
   },
   {
     id: 3,

@@ -1,0 +1,71 @@
+.send-message {
+  display: flex;
+  background-color: white;
+
+  ::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+.wrapper-class {
+  width: 100%;
+}
+
+.toolbar-class {
+  border: none !important;
+}
+
+.editor-class {
+  padding: 10px;
+  min-height: 90px;
+  max-height: 90px;
+
+  overflow-y: scroll;
+  ::-webkit-scrollbar {
+    display: none;
+  }
+
+  div {
+    margin-top: 0;
+  }
+
+  span {
+    word-break: break-all;
+  }
+}
+
+.popover-class {
+  box-sizing: content-box;
+  transform: scale(1) translateY(-100%);
+  transform-origin: 1em 0% 0px;
+  top: 0%;
+}
+
+.file-list {
+  list-style: none;
+  width: 150px;
+  padding: 0;
+
+  .file-list-element {
+    height: min-content;
+    display: flex;
+    justify-content: space-between;
+    padding-left: 5px;
+    padding-right: 5px;
+    gap: 10px;
+    width: inherit;
+    margin: 0;
+    background: #ffdfdf;
+    border-radius: 2px;
+    border: 1px black;
+
+    .file-name {
+      margin: 0;
+      max-width: 100px;
+      white-space: nowrap;
+      height: 20px;
+      text-overflow: ellipsis;
+      overflow: clip;
+    }
+  }
+}

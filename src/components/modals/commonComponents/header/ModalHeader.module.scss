@@ -1,0 +1,25 @@
+.header {
+  padding: 16px 20px;
+  
+  flex-direction: row;
+
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  font-weight: 500;
+
+  .icon {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    color: var(--base-font-color);
+  }
+
+  .back-button {
+    margin-right: 16px;
+  }
+
+  .close-button {
+    margin-left: auto;
+  }
+}

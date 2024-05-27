@@ -1,0 +1,46 @@
+.new-chat-buttons {
+  position: absolute;
+  color: white;
+  bottom: 0;
+  right: 0;
+
+  .main-button {
+    cursor: pointer;
+    border-radius: 50%;
+    height: 55px;
+    width: 55px;
+    background-color: var(--base-accent-color);
+    position: absolute;
+    right: 30px;
+    bottom: 30px;
+    z-index: 99;
+    
+    display: flex; 
+    justify-content: center;
+    align-items: center;
+
+    .close {
+      position: relative;
+    }
+
+    .pencil {
+      position: relative;
+    }
+  }
+
+  .extra-buttons {
+    cursor: pointer;
+    border-radius: 50%;
+    height: 50px;
+    width: 50px;
+    background-color: var(--base-accent-color);
+    position: absolute;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 98;
+    opacity: 0;
+  }
+}
+

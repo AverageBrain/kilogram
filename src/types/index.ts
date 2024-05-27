@@ -3,5 +3,13 @@ export type {
   MessageType,
   ChatListItemType,
   ChatType,
-  DelayMessageType,
+  MetadataType,
+  GroupFormType,
+  ReactionType,
+  MessageReactionType,
+  ReactionWithMessageInfoType,
+} from './types';
+
+export {
+  TypeOfChat,
 } from './types';

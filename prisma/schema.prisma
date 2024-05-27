@@ -5,7 +5,7 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
+  url      = "postgresql://kilogram:kilogram@158.160.118.181:5432/kilogram"
 }
 
 model User {
@@ -16,10 +16,11 @@ model User {
   name             String            @default("")
   githubId         String?           @unique
   avatarKey        String?           @default("")
+  lastSeen         DateTime          @default(now())
+  DelayMessage     DelayMessage[]
   messages         Message[]
-  chats            UserChat[]
   messageReactions MessageReaction[]
-  DelayMessage DelayMessage[]
+  chats            UserChat[]
 }
 
 model Chat {
@@ -28,11 +29,11 @@ model Chat {
   updatedAt       DateTime       @updatedAt
   name            String         @default("")
   type            String         @default("chat")
-  joinKey   String?    @unique
   avatarKey       String         @default("")
+  joinKey         String?        @unique
+  delayedMessages DelayMessage[]
   messages        Message[]
   members         UserChat[]
-  delayedMessages DelayMessage[]
 }
 
 model UserChat {
@@ -48,42 +49,39 @@ model UserChat {
 }
 
 model Message {
-  id        Int      @id @default(autoincrement())
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id        Int               @id @default(autoincrement())
+  createdAt DateTime          @default(now())
+  updatedAt DateTime          @updatedAt
   userId    Int
   chatId    Int
   text      String
-  imageKey  String   @default("")
-
+  fileKeys  String[]
   chat      Chat              @relation(fields: [chatId], references: [id])
   user      User              @relation(fields: [userId], references: [id])
   reactions MessageReaction[]
 }
 
 model ReactionType {
-  id        Int      @id @default(autoincrement())
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  code  String @unique
-  emoji String @default("")
-
+  id               Int               @id @default(autoincrement())
+  createdAt        DateTime          @default(now())
+  updatedAt        DateTime          @updatedAt
+  code             String            @unique
+  emoji            String            @default("")
   messageReactions MessageReaction[]
 }
 
 model MessageReaction {
-  id        Int      @id @default(autoincrement())
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
+  id             Int          @id @default(autoincrement())
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
   reactionTypeId Int
   messageId      Int
   userId         Int
+  message        Message      @relation(fields: [messageId], references: [id])
+  reactionType   ReactionType @relation(fields: [reactionTypeId], references: [id])
+  user           User         @relation(fields: [userId], references: [id])
 
-  reactionType ReactionType @relation(fields: [reactionTypeId], references: [id])
-  message      Message      @relation(fields: [messageId], references: [id])
-  user         User         @relation(fields: [userId], references: [id])
+  @@unique([userId, reactionTypeId, messageId])
 }
 
 model DelayMessage {
@@ -93,7 +91,7 @@ model DelayMessage {
   userId    Int
   chatId    Int
   text      String
-  imageKey  String   @default("")
+  fileKeys  String[]
   inTime    DateTime
   chat      Chat     @relation(fields: [chatId], references: [id])
   user      User     @relation(fields: [userId], references: [id])

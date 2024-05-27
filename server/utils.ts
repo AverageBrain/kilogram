@@ -5,3 +5,5 @@ export const groupBy = <T, K extends keyof any>(arr: T[], key: (i: T) => K) =>
     }, {} as Record<K, T[]>)
 
 export const getIdCondition = (afterId: number) => afterId === -1 ? undefined : { lt: afterId };
+
+export const getDateCondition = (date?: Date) => date ? { lt: date } : undefined;

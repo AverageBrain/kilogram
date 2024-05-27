@@ -1,0 +1,95 @@
+.show-new-group-button {
+  animation: new-group-button-up 200ms 1 cubic-bezier(.27,0,.05,1.2) both;
+}
+
+.hide-new-group-button {
+  animation: new-group-button-down 150ms 1 ease-in both;
+}
+
+@keyframes new-group-button-up {
+  0% {
+    opacity: 0;
+    display: none;
+    right: 32px;
+    bottom: 30px;
+  }
+
+  100% {
+    opacity: 1;
+    right: 32px;
+    bottom: 155px;
+    display: flex;
+  }
+}
+
+@keyframes new-group-button-down {
+  0% {
+    opacity: 1;
+    right: 32px;
+    bottom: 155px;
+    display: flex;
+  }
+
+  100% {
+    opacity: 0;
+    display: none;
+    right: 32px;
+    bottom: 30px;
+  }
+}
+
+
+.show-new-chat-button {
+  animation: new-message-button-up 200ms 1 cubic-bezier(.27,0,.20,1.2) both;
+}
+
+.hide-new-chat-button {
+  animation: new-message-button-down 150ms 1 ease-in both;
+}
+
+@keyframes new-message-button-up {
+  0% {
+    opacity: 0;
+    display: none;
+    right: 32px;
+    bottom: 30px;
+  }
+
+  100% {
+    opacity: 1;
+    right: 32px;
+    bottom: 95px;
+    display: flex;
+  }
+}
+
+@keyframes new-message-button-down {
+  0% {
+    opacity: 1;
+    right: 32px;
+    bottom: 95px;
+    display: flex;
+  }
+
+  100% {
+    opacity: 0;
+    display: none;
+    right: 32px;
+    bottom: 30px;
+    
+  }
+}
+
+.rotate {
+  animation: rotate45 200ms 1 cubic-bezier(.27,0,.20,1.2) both;
+}
+    
+@keyframes rotate45 { 
+    0% { 
+      transform: rotate(45deg); 
+    } 
+    100% { 
+      transform: rotate(0deg); 
+    }
+}
+
