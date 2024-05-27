@@ -35,6 +35,7 @@ export const WriteUserButton: React.FC<Props> = ( { user, closeModal } ) => {
       <Button className={styles["write-user-button"]} type="text" size="large" onClick={handleClick}>
         Написать сообщение
       </Button>
+      <Divider />
     </>
   );
 }

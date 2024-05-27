@@ -106,7 +106,12 @@ const SendMessage: React.FC<Props> = ({ scrollRef, setShouldLoadDelayed }) => {
         }}
       />
       <ul className={styles['file-list']}>
-          {files.map((file, idx) => <li key={idx} className={styles['file-list-element']}><p className={styles['file-name']}>{file.name}</p> <CloseCircleOutlined/></li>)}
+        {files.map((file, idx) => (
+          <li key={idx} className={styles['file-list-element']}>
+            <p className={styles['file-name']}>{file.name}</p>
+            <CloseCircleOutlined />
+          </li>
+        ))}
       </ul>
       <input type={"file"} id={"files"} onChange={handleFileAdd} ref={fileInputRef} multiple hidden/>
       <button className={buttonsStyles['icon-svg-button']} onClick={() => fileInputRef.current?.click()}>

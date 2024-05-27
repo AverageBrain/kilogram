@@ -6,7 +6,7 @@ import { getCorrectMemberCase } from "./getCorrectCase";
 export const getHandle = (options: {
   isGroup?: boolean;
   membersCount?: number;
-  user: UserType;
+  user?: UserType;
 }) => {
   const { isGroup, membersCount, user } = options;
   return isGroup

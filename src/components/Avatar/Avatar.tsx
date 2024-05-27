@@ -45,7 +45,7 @@ const Avatar: React.FC<Props> = ({ userId, size, className, userStatus }) => {
       {!userId && (
         <AvatarAD
           style={{
-            backgroundColor: '#FF686B',
+            backgroundColor: 'var(--base-accent-color)',
           }}
           icon={<CommentOutlined />}
           size={avatarSize}
@@ -66,7 +66,7 @@ const Avatar: React.FC<Props> = ({ userId, size, className, userStatus }) => {
             size={avatarSize < 80 ? 'small' : undefined}
             count=" "
             offset={[-0.125 * avatarSize, 0.875 * avatarSize]}
-            color="var(--base-accent-color)"
+            color="var(--hover-icon-color)"
           >
             {avatarComponent}
           </Badge>
