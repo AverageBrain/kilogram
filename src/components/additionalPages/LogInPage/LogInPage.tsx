@@ -25,7 +25,7 @@ const LogInPage: React.FC = () => {
       {loggedIn
         ? <Navigate replace to="/" relative="path" />
         :  (
-          <Layout className={commonStyles.container} style={{ height: "100vh" }}>
+          <Layout className={commonStyles.container} style={{ height: '100vh' }}>
             <Content className={clsx(styles['log-in-page'], commonStyles.content)}>
               <Flex vertical gap={32} justify="center" align="center">
                 <Text className={styles.h1}>KILOGRAM</Text>
@@ -34,7 +34,7 @@ const LogInPage: React.FC = () => {
                   className={commonStyles['action-button']}
                   size="large"
                   type="text"
-                  icon={<GithubOutlined style={{ fontSize: '30px'}} />}
+                  icon={<GithubOutlined style={{ fontSize: '30px' }} />}
                   onClick={handleLogIn}
                 >
                   Войти через GitHub
@@ -47,6 +47,6 @@ const LogInPage: React.FC = () => {
     </>
   );
 
-}
+};
 
 export default observer(LogInPage);

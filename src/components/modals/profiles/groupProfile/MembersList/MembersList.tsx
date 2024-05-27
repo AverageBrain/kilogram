@@ -10,17 +10,16 @@ import listsStyles from '../../../../../styles/lists.module.scss';
 type Props = {
   users: UserType[];
   handleClickOnUser: (user: UserType) => void;
-}
+};
 
-const MembersList: React.FC<Props> = ({ users, handleClickOnUser }) => {
-  return (
+const MembersList: React.FC<Props> = ({ users, handleClickOnUser }) => (
     <List
       className={listsStyles['users-list']}
       itemLayout="horizontal"
       dataSource={users}
       renderItem={(user) => (
         <List.Item
-          className={listsStyles['user']}
+          className={listsStyles.user}
           key={user.id}
           onClick={() => handleClickOnUser(user)}
         >
@@ -37,7 +36,6 @@ const MembersList: React.FC<Props> = ({ users, handleClickOnUser }) => {
         </List.Item>
       )}
     />
-  );
-};
+);
 
 export default observer(MembersList);

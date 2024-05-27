@@ -1,11 +1,10 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { observer } from 'mobx-react-lite';
-import { Avatar as AvatarAD, Spin, Badge } from 'antd';
+import { Avatar as AvatarAD, Badge } from 'antd';
 import { CommentOutlined, UserOutlined } from '@ant-design/icons';
 import clsx from 'clsx';
 
 import { userStore } from '../../stores';
-import { userApiClient } from '../../hands';
 import styles from './Avatar.module.scss';
 
 type Props = {
@@ -14,7 +13,7 @@ type Props = {
   className?: string;
   userStatus?: boolean;
   onClick?: () => void;
-}
+};
 
 const Avatar: React.FC<Props> = ({ userId, size, className, userStatus, onClick }) => {
   const { avatarCache, loadAvatar } = userStore;
@@ -57,7 +56,7 @@ const Avatar: React.FC<Props> = ({ userId, size, className, userStatus, onClick 
         />
       )}
       {userId && (image
-        ? <img alt='avatar' src={image}  />
+        ? <img alt="avatar" src={image}  />
         : <AvatarAD icon={<UserOutlined />} size={avatarSize} />)
       }
     </div>
@@ -80,6 +79,6 @@ const Avatar: React.FC<Props> = ({ userId, size, className, userStatus, onClick 
       }
     </>
   );
-}
+};
 
 export default observer(Avatar);

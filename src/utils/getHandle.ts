@@ -1,7 +1,7 @@
-import moment from "moment";
+import moment from 'moment';
 
-import { UserType } from "../types";
-import { getCorrectMemberCase } from "./getCorrectCase";
+import { UserType } from '../types';
+import { getCorrectMemberCase } from './getCorrectCase';
 
 export const getHandle = (options: {
   isGroup?: boolean;
@@ -9,6 +9,7 @@ export const getHandle = (options: {
   user?: UserType;
 }) => {
   const { isGroup, membersCount, user } = options;
+
   return isGroup
     ? `${membersCount} ${getCorrectMemberCase(membersCount)}`
     : user?.userStatus
@@ -16,4 +17,4 @@ export const getHandle = (options: {
       : user?.lastSeen
         ? `был:a в сети ${moment(user.lastSeen).format('HH:mm DD.MM.YY')}`
         : 'был:a в сети недавно';
-}
+};

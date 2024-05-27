@@ -37,7 +37,7 @@ const JoinGroupPage: React.FC = () => {
   }, []);
 
   return (
-    <Layout className={styles.container} style={{ height: "100vh" }}>
+    <Layout className={styles.container} style={{ height: '100vh' }}>
       <Content className={styles.content}>
         <Flex  vertical gap={32} justify="center" align="center">
           {loading
@@ -45,12 +45,14 @@ const JoinGroupPage: React.FC = () => {
             : responseError === 'JoinKey not connected to any group'
               ? <Text className={styles.h3}>Такая группа не существует, проверьте вашу ссылку.</Text>
               : responseError === 'User already joined the group'
-                ? <Text className={styles.h3}>Вы уже состоите в данной группе</Text>    
+                ? <Text className={styles.h3}>Вы уже состоите в данной группе</Text>
                 : selectedItem && (
                   <>
                     <Avatar size={250} />
                     <Text className={styles.h3}>{selectedItem.name}</Text>
-                    <Text className={styles.h4}>{selectedItem.users.length} {getCorrectMemberCase(selectedItem.users.length)}</Text>
+                    <Text className={styles.h4}>
+                      {selectedItem.users.length} {getCorrectMemberCase(selectedItem.users.length)}
+                    </Text>
                   </>
                 )
           }

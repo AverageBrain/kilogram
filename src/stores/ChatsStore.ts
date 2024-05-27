@@ -1,4 +1,3 @@
-
 import {
   action,
   makeObservable,
@@ -90,7 +89,7 @@ class ChatsStore extends BaseStore<ChatType> {
   }
 
   getChatByUser(user: UserType) {
-    for (let item of this.items) {
+    for (const item of this.items) {
       if (item.type === 'chat' && item.users[0] && item.users[0].id === user.id)
         return item;
     }

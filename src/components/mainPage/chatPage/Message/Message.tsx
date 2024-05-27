@@ -3,7 +3,7 @@ import clsx from 'clsx';
 import moment from 'moment';
 import { observer } from 'mobx-react-lite';
 
-import { MessageType } from '../../../../types'
+import { MessageType } from '../../../../types';
 import { authUserStore, chatsStore } from '../../../../stores';
 import { Avatar } from '../../../Avatar';
 import { UserProfile } from '../../../modals';
@@ -16,13 +16,13 @@ import styles from './Message.module.scss';
 type Props = {
   message: MessageType;
   isGroup: boolean;
-}
+};
 
 const Message: React.FC<Props> = ({ message, isGroup }) => {
   const { selectedItem: authUser } = authUserStore;
   const { selectedItem: selectedChat } = chatsStore;
 
-  const [ isHover, setIsHover ] = useState(false);
+  const [isHover, setIsHover] = useState(false);
   const { isOpenModal, showModal, closeModal } = useModal();
 
   const isActivePerson = authUser?.id === message.userId;
@@ -30,11 +30,12 @@ const Message: React.FC<Props> = ({ message, isGroup }) => {
 
   const handleClickProfile = () => {
     showModal();
-  }
+  };
 
   const mapFileUrls = (fileUrls: string[] | undefined): string => {
-    if (!fileUrls) return ''
-    return fileUrls.map(fileUrl => `<div>${fileUrl}</div>`).join('\n')
+    if (!fileUrls) return '';
+
+    return fileUrls.map((fileUrl) => `<div>${fileUrl}</div>`).join('\n');
   };
 
   return (

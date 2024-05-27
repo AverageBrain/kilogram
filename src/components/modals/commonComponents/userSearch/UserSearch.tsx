@@ -5,21 +5,18 @@ import styles from './UserSearch.module.scss';
 
 type Props = {
   searchTerm: string;
-  setSearchTerm: (value: string) => void; 
+  setSearchTerm: (value: string) => void;
 };
 
-export const UserSearch: React.FC<Props> = ({ searchTerm, setSearchTerm }) => {
-
-  return (
-    <div className={styles["search-bar"]}>
+export const UserSearch: React.FC<Props> = ({ searchTerm, setSearchTerm }) => (
+    <div className={styles['search-bar']}>
       <Input
         allowClear={true}
-        className={styles["search"]}
+        className={styles.search}
         variant="borderless"
         placeholder="Поиск контактов..."
         value={searchTerm}
-        onChange={e => setSearchTerm(e.target.value)}
+        onChange={(e) => setSearchTerm(e.target.value)}
       />
     </div>
-  );
-};
+);

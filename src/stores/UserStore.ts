@@ -7,6 +7,7 @@ import BaseStore from './BaseStore';
 
 class UserStore extends BaseStore<UserType> {
   selectedUser: UserType | undefined = undefined;
+
   avatarCache: Map<number, string> = new Map();
 
   constructor() {

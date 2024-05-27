@@ -13,7 +13,7 @@ type Props = {
   searchTerm: string;
   setSearchTerm: (value: string) => void;
   closeModal: () => void;
-}
+};
 
 const NewMessageUsersList: React.FC<Props> = ({ searchTerm, setSearchTerm, closeModal }) => {
   const { setSelectedChat } = chatsStore;
@@ -24,13 +24,13 @@ const NewMessageUsersList: React.FC<Props> = ({ searchTerm, setSearchTerm, close
   const debouncedSearchTerm = useDebounce(searchTerm, 500);
 
   useEffect(() => {
-      loadUsers(debouncedSearchTerm);
+    loadUsers(debouncedSearchTerm);
   }, [debouncedSearchTerm]);
 
   const locale = {
     emptyText: loading ? 'Поиск...' : 'Нет данных',
   };
-  
+
   const dataSource = useMemo(() => items, [items]);
 
   const handleClick = async (user: UserType) => {
@@ -55,9 +55,11 @@ const NewMessageUsersList: React.FC<Props> = ({ searchTerm, setSearchTerm, close
       dataSource={dataSource}
       renderItem={(user) => (
         <List.Item
-          className={listsStyles['user']}
+          className={listsStyles.user}
           key={user.id}
-          onClick={() => {handleClick(user)}}
+          onClick={() => {
+            handleClick(user);
+          }}
         >
           <List.Item.Meta
             className={listsStyles['user-meta']}

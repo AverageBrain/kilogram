@@ -1,40 +1,41 @@
-
 import { action, makeObservable, observable, runInAction } from 'mobx';
 
 class BaseStore<T> {
-    loading: boolean = false;
-    selectedItem?: T = undefined;
-    items: T[] = [];   
+  loading = false;
 
-    constructor() {
-        makeObservable(this, {
-            loading: observable,
-            selectedItem: observable,
-            items: observable,
+  selectedItem?: T = undefined;
 
-            enableLoading: action.bound,
-            disableLoading: action.bound,
-            resetItems: action.bound,
-        });
-    }
+  items: T[] = [];
 
-    resetItems(): void {
-        runInAction(() => {
-            this.items = [];
-        });
-    }
+  constructor() {
+    makeObservable(this, {
+      loading: observable,
+      selectedItem: observable,
+      items: observable,
 
-    enableLoading(): void {
-        runInAction(() => {
-            this.loading = true;
-        });
-    }
+      enableLoading: action.bound,
+      disableLoading: action.bound,
+      resetItems: action.bound,
+    });
+  }
 
-    disableLoading(): void {
-        runInAction(() => {
-            this.loading = false;
-        });
-    }
+  resetItems(): void {
+    runInAction(() => {
+      this.items = [];
+    });
+  }
+
+  enableLoading(): void {
+    runInAction(() => {
+      this.loading = true;
+    });
+  }
+
+  disableLoading(): void {
+    runInAction(() => {
+      this.loading = false;
+    });
+  }
 }
 
 export default BaseStore;

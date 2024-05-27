@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import { FormikErrors } from 'formik';
 import { List, Badge } from 'antd';
 import { CheckCircleFilled } from '@ant-design/icons';
@@ -6,8 +6,8 @@ import { observer } from 'mobx-react-lite';
 import { userStore } from '../../../../../stores';
 import { useDebounce } from '../../../../../hooks';
 import { Avatar } from '../../../../Avatar';
-import { UserType } from '../../../../../types';
-import { GroupFormType } from '../../../../../types';
+import { UserType, GroupFormType } from '../../../../../types';
+
 import listsStyles from '../../../../../styles/lists.module.scss';
 import { getHandle } from '../../../../../utils';
 
@@ -19,7 +19,7 @@ type Props = {
     shouldValidate?: boolean | undefined,
   ) => Promise<void> | Promise<FormikErrors<GroupFormType>>;
   searchTerm: string;
-}
+};
 
 const UsersList: React.FC<Props> = ({
   searchTerm,
@@ -53,18 +53,18 @@ const UsersList: React.FC<Props> = ({
 
   return (
     <List
-      className={listsStyles["users-list"]}
+      className={listsStyles['users-list']}
       locale={locale}
       itemLayout="horizontal"
       dataSource={dataSource}
       renderItem={(user) => (
         <List.Item
-          className={listsStyles["user"]}
+          className={listsStyles.user}
           key={user.id}
           onClick={() => handleClick(user, !user.selected)}
         >
           <List.Item.Meta
-            className={listsStyles["user-meta"]}
+            className={listsStyles['user-meta']}
             avatar={user.selected
               ? (
                 <Badge
