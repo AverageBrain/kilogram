@@ -7,8 +7,7 @@ import MainPage from '../../mainPage/MainPage';
 import JoinGroupPage from '../../additionalPages/JoinGroupPage';
 import NotFoundPage from '../../additionalPages/NotFoundPage';
 
-const AppRouter: React.FC = () => {
-  return (
+const AppRouter: React.FC = () => (
     <BrowserRouter>
       <Routes>
         <Route
@@ -29,7 +28,6 @@ const AppRouter: React.FC = () => {
         />
       </Routes>
     </BrowserRouter>
-  );
-};
+);
 
 export default AppRouter;

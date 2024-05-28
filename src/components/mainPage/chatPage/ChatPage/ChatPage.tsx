@@ -32,14 +32,14 @@ const ChatPage: React.FC = () => {
       {shouldLoadDelayed
         ? (
         <Header className={styles['delay-chat-header']}>
-          <button className={buttonsStyles["icon-svg-button"]} onClick={handleClickBack}>
-            <ArrowLeftOutlined style={{ fontSize: '18px'}} />
+          <button className={buttonsStyles['icon-svg-button']} onClick={handleClickBack}>
+            <ArrowLeftOutlined style={{ fontSize: '18px' }} />
           </button>
-          <div className={styles['title']}>
+          <div className={styles.title}>
             Отложенные сообщения
           </div>
         </Header>
-      ) : <ChatHeader />}
+        ) : <ChatHeader />}
       <InfiniteScroll key={shouldLoadDelayed.toString()} scrollRef={scrollRef} shouldLoadDelayed={shouldLoadDelayed} />
       {!shouldLoadDelayed && <SendForm scrollRef={scrollRef} setShouldLoadDelayed={setShouldLoadDelayed} />}
     </div>

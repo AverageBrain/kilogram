@@ -2,24 +2,15 @@ import { UserType, ChatType } from '../types';
 import { TypeOfChat } from '../types/types';
 import { chats } from './chats';
 
-const toChat = (user: UserType): ChatType => {
-  return {
-    id: chats.length + 1,
-    name: 'test',
-    createdAt: user.createdAt,
-    updatedAt: user.updatedAt,
-    users: [user],
-    type: TypeOfChat.Chat,
-    messages: [],
-  }
-}
-
-export const searchUsersByUsername = async (prefix: string) => {
-  const filteredUsers = users
-    .filter(user => user.username.startsWith(prefix))
-    .map(user => toChat(user));
-  return filteredUsers;
-};
+const toChat = (user: UserType): ChatType => ({
+  id: chats.length + 1,
+  name: 'test',
+  createdAt: user.createdAt,
+  updatedAt: user.updatedAt,
+  users: [user],
+  type: TypeOfChat.Chat,
+  messages: [],
+});
 
 export const users: UserType[] = [
   {
@@ -60,4 +51,12 @@ export const users: UserType[] = [
     name: 'Yuliana',
     username: 'Yuliana427',
   },
-]
+];
+
+export const searchUsersByUsername = async (prefix: string) => {
+  const filteredUsers = users
+    .filter((user) => user.username.startsWith(prefix))
+    .map((user) => toChat(user));
+
+  return filteredUsers;
+};

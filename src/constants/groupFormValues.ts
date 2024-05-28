@@ -2,7 +2,7 @@ import { GroupFormType } from '../types';
 import * as Yup from 'yup';
 
 export const groupFormInitialValues: GroupFormType = {
-  name: "",
+  name: '',
   userIds: [],
 };
 

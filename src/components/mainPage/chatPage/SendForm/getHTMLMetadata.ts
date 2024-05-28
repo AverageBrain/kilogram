@@ -11,7 +11,7 @@ const extractFirstLink = (htmlString: string): string | null => {
   } else {
     return null;
   }
-}
+};
 
 export const getHTMLMetadata = async (
   htmlString: string,
@@ -24,8 +24,8 @@ export const getHTMLMetadata = async (
     if (data) {
       return `<div class="metadata"><span class="metadata-title"><a href="${firstLink}">${data.title}</a></span><span class="metadata-description">${data?.description ?? ''}</span>
           ${data?.imageUrl && !data.imageUrl.includes('static')
-          ? `<img style="height: 200px;width: 200px" alt="${data.title}" src="${data?.imageUrl}">`
-          : ''}
+    ? `<img style="height: 200px;width: 200px" alt="${data.title}" src="${data?.imageUrl}">`
+    : ''}
         </div>
       `;
     }

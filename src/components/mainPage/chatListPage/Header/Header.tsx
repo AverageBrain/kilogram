@@ -5,20 +5,20 @@ import { useModal } from '../../../../hooks';
 import { authApiClient } from '../../../../hands';
 import { authUserStore } from '../../../../stores';
 import { UserProfile } from '../../../modals';
-import {BASE_LOGOUT_HOST} from '../../../../hands/BaseApiClient';
+import { BASE_LOGOUT_HOST } from '../../../../hands/BaseApiClient';
 
 import styles from './Header.module.scss';
-import {requestPermission} from "../../../../plugins/firebase";
+import { requestPermission } from '../../../../plugins/firebase';
 
 const { Header: HeaderAD } = Layout;
 
 type Props = {
   // setIsSearcing: (value: string) => void;
-  value: string,
+  value: string;
   setSearchTerm: (value: string) => void;
-}
+};
 
-const Header: React.FC<Props> = ({ value, setSearchTerm, }) => {
+const Header: React.FC<Props> = ({ value, setSearchTerm }) => {
   const { selectedItem } = authUserStore;
 
   const { isOpenModal, showModal, closeModal } = useModal();
@@ -57,11 +57,11 @@ const Header: React.FC<Props> = ({ value, setSearchTerm, }) => {
           </Dropdown>
           <Input
             allowClear={true}
-            className={styles["search"]}
+            className={styles.search}
             variant="borderless"
             placeholder="Поиск контактов..."
             value={value}
-            onChange={e => setSearchTerm(e.target.value)}
+            onChange={(e) => setSearchTerm(e.target.value)}
           />
       </HeaderAD>
 

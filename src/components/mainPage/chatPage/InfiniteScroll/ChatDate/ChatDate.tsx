@@ -6,14 +6,12 @@ type Props = {
   date: string;
 };
 
-const ChatDate: React.FC<Props> = ({ date }) => {
-  return (
+const ChatDate: React.FC<Props> = ({ date }) => (
     <div className={styles['chat-date']}>
       <span className={styles['date-wrapper']}>
         {date}
       </span>
     </div>
-  );
-};
+);
 
 export default observer(ChatDate);

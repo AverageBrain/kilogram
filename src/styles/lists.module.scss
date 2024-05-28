@@ -44,7 +44,7 @@
       height: 68px;
     
       &:hover {
-        background-color: #ddf1f1;
+        background-color: var(--hover-color);
       }
 
       p {
@@ -67,7 +67,7 @@
     }
     
     .chat-list-item-meta-active {
-      background-color: #00CCC940 !important;
+      background-color: var(--active-color) !important;
     }
   }
 }

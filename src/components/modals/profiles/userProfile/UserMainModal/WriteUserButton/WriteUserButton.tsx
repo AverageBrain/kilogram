@@ -9,7 +9,7 @@ import styles from './WriteUserButton.module.scss';
 type Props = {
   user: UserType;
   closeModal: () => void;
-}
+};
 
 export const WriteUserButton: React.FC<Props> = ( { user, closeModal } ) => {
   const { setSelectedChat } = chatsStore;
@@ -32,9 +32,10 @@ export const WriteUserButton: React.FC<Props> = ( { user, closeModal } ) => {
   return (
     <>
       <Divider />
-      <Button className={styles["write-user-button"]} type="text" size="large" onClick={handleClick}>
+      <Button className={styles['write-user-button']} type="text" size="large" onClick={handleClick}>
         Написать сообщение
       </Button>
+      <Divider />
     </>
   );
-}
+};

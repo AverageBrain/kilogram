@@ -6,15 +6,15 @@ import { ModalHeader } from '../../commonComponents/header';
 type Props = {
   isOpenModal: boolean;
   closeModal: () => void;
-}
+};
 
 export const NewMessageModal: React.FC<Props> = ({ isOpenModal, closeModal }) =>  (
-  <Modal 
-    modalType='big'
-    isOpenModal={isOpenModal} 
+  <Modal
+    modalType="big"
+    isOpenModal={isOpenModal}
     closeModal={closeModal}
   >
-      <ModalHeader toggle={closeModal} title='Новое сообщение'/>
+      <ModalHeader toggle={closeModal} title="Новое сообщение"/>
       <NewMessageMain closeModal={closeModal}/>
   </Modal>
 );

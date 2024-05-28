@@ -161,3 +161,11 @@
   opacity: 1;
   z-index: 599;
 }
+
+.message-title {
+  margin-top: 5px;
+  cursor: pointer;
+
+  color: var(--base-accent-color);
+  font-weight: 500;
+}

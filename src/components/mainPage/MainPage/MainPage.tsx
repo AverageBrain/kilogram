@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { Layout } from 'antd';
-import { Splitter, SplitterPanel } from 'primereact/splitter'
+import { Splitter, SplitterPanel } from 'primereact/splitter';
 import { observer } from 'mobx-react-lite';
 import { ChatListPage } from '../../mainPage/chatListPage';
 import { ChatPage, EmptyPanel } from '../../mainPage/chatPage';
@@ -28,18 +28,17 @@ const MainPage: React.FC = () => {
   };
 
   useEffect(() => {
-    loadChats();   
+    loadChats();
 
     document.addEventListener('keydown', handleEscapePress);
+
     return () => {
       document.removeEventListener('keydown', handleEscapePress);
     };
   }, [location.pathname]);
 
-  const handleResizeFinished = (pairIdx: number, newSizes: number[]) => setPanelSizes(newSizes);
-
   return (
-    <Layout style={{ height: "100vh" }}>
+    <Layout style={{ height: '100vh' }}>
       <Content>
         <Splitter className={styles.splitter}>
           <SplitterPanel size={25} minSize={20}>
@@ -55,6 +54,6 @@ const MainPage: React.FC = () => {
       </Content>
     </Layout>
   );
-}
+};
 
 export default observer(MainPage);

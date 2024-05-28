@@ -12,7 +12,7 @@ type Props = {
   results: UserType[];
   isSearching: string;
   setSearchTerm: (value: string) => void;
-}
+};
 
 const SearchResults: React.FC<Props> = ({ setSearchTerm, isSearching, results }) => {
   const { selectedItem, setSelectedChat } = chatsStore;
@@ -35,7 +35,6 @@ const SearchResults: React.FC<Props> = ({ setSearchTerm, isSearching, results })
     }
   };
 
-  
   return (
     <List
       className={listsStyles.chats}
@@ -44,14 +43,16 @@ const SearchResults: React.FC<Props> = ({ setSearchTerm, isSearching, results })
       dataSource={results}
       renderItem={(user) => (
         <List.Item
-          className={listsStyles["chat-list-item"]}
+          className={listsStyles['chat-list-item']}
           key={user.id}
-          onClick={() => {handleClick(user)}}
+          onClick={() => {
+            handleClick(user);
+          }}
         >
           <List.Item.Meta
             className={
-              clsx(listsStyles['chat-list-item-meta'], 
-              user.id === selectedItem?.id && listsStyles['chat-list-item-meta-active'])
+              clsx(listsStyles['chat-list-item-meta'],
+                user.id === selectedItem?.id && listsStyles['chat-list-item-meta-active'])
             }
             avatar={<Avatar userId={user.id} userStatus={user?.userStatus} />}
             title={<span className={listsStyles.title}>{user.name}</span>}

@@ -1,14 +1,15 @@
 import { UserType, ChatType } from '../types';
 import { TypeOfChat } from '../types/types';
-import { users } from './users'
+import { users } from './users';
 
 export const findUserById = (id: number): UserType => {
   const user: UserType | undefined = users.find((user: UserType) => user.id === id);
   if (!user) {
     throw Error("Mock: Can't find user with id");
   }
+
   return user;
-}
+};
 
 export const chats: ChatType[] = [
   {
@@ -43,8 +44,8 @@ export const chats: ChatType[] = [
         updatedAt: new Date('2024-03-30T12:38:31'),
         text: 'How are you? `import dayjs;`',
       },
-    ]
-  }, 
+    ],
+  },
   {
     id: 10,
     createdAt: new Date('2024-03-30T12:38:31'),
@@ -77,8 +78,8 @@ export const chats: ChatType[] = [
         updatedAt: new Date('2024-03-30T12:38:31'),
         text: 'Master of puppets, I\'m pulling your strings',
       },
-    ]
-  }, 
+    ],
+  },
   {
     id: 11,
     createdAt: new Date('2024-03-30T12:38:31'),
@@ -111,6 +112,6 @@ export const chats: ChatType[] = [
         updatedAt: new Date('2024-03-30T12:38:31'),
         text: 'When my depression works the graveyard shift, all of the people I\'ve ghosted stand there in the room',
       },
-    ]
-  }, 
-]
+    ],
+  },
+];

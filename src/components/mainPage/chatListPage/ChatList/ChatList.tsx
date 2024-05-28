@@ -9,11 +9,11 @@ import Chats from './Chats';
 type Props = {
   searchTerm: string;
   setSearchTerm: (value: string) => void;
-}
+};
 
 const ChatList: React.FC<Props> = ({ setSearchTerm, searchTerm }) => {
   const [isSearching, setIsSearcing] = useState('');
-  
+
   const [results, setResults] = useState(new Array<UserType>());
 
   const debouncedSearchTerm = useDebounce(searchTerm, 500);
@@ -22,7 +22,7 @@ const ChatList: React.FC<Props> = ({ setSearchTerm, searchTerm }) => {
     () => {
       if (debouncedSearchTerm) {
         setIsSearcing('proccesing');
-        userApiClient.findUsers(debouncedSearchTerm).then(results => {
+        userApiClient.findUsers(debouncedSearchTerm).then((results) => {
           setIsSearcing('found');
 
           setResults(results);
@@ -31,12 +31,12 @@ const ChatList: React.FC<Props> = ({ setSearchTerm, searchTerm }) => {
         setIsSearcing('');
         setResults([]);
       }
-    }, [debouncedSearchTerm]
-  )
+    }, [debouncedSearchTerm],
+  );
 
   return (
-    isSearching ? 
-      <SearchResults results={results} isSearching={isSearching} setSearchTerm={setSearchTerm} /> : 
+    isSearching ?
+      <SearchResults results={results} isSearching={isSearching} setSearchTerm={setSearchTerm} /> :
       <Chats setSearchTerm={setSearchTerm} />
   );
 };

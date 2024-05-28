@@ -1,13 +1,13 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { Spin } from 'antd';
 import { observer } from 'mobx-react-lite';
+import { groupBy } from 'lodash';
+import moment from 'moment';
+
 import { chatsStore, messagesStore } from '../../../../stores';
 import { Message } from '../Message';
-import { Spin } from 'antd';
 import { TypeOfChat } from '../../../../types';
-import moment from 'moment';
 import ChatDate from './ChatDate';
-import { groupBy } from 'lodash';
-
 import styles from './InfiniteScroll.module.scss';
 
 type Props = {
@@ -19,14 +19,14 @@ const InfiniteScroll: React.FC<Props> = ({ scrollRef, shouldLoadDelayed }) => {
   const { items, loadMessages, loadDelayedMessages, loading } = messagesStore;
   const { selectedItem: chat } = chatsStore;
 
-  const [ hasMore, setHasMore ] = useState(true);
-  const target = useRef<HTMLDivElement>(null);  
-  
+  const [hasMore, setHasMore] = useState(true);
+  const target = useRef<HTMLDivElement>(null);
+
   const handleObserver = useCallback(async (entries: IntersectionObserverEntry[]) => {
     if (hasMore && !loading && chat && entries[0].isIntersecting) {
       const loadMore = shouldLoadDelayed
-       ? await loadDelayedMessages(chat?.id, items[items.length - 1]?.inTime, true)
-       : await loadMessages(chat?.id, items[items.length - 1]?.id, true);
+        ? await loadDelayedMessages(chat?.id, items[items.length - 1]?.inTime, true)
+        : await loadMessages(chat?.id, items[items.length - 1]?.id, true);
       setHasMore(loadMore);
     }
   }, [items, hasMore, loading]);
@@ -34,7 +34,7 @@ const InfiniteScroll: React.FC<Props> = ({ scrollRef, shouldLoadDelayed }) => {
   useEffect(() => {
     const observer = new IntersectionObserver(
       handleObserver,
-      { threshold: 1 }
+      { threshold: 1 },
     );
 
     if (target.current) {
@@ -53,19 +53,21 @@ const InfiniteScroll: React.FC<Props> = ({ scrollRef, shouldLoadDelayed }) => {
   return (
     <div ref={scrollRef} className={styles.messages}>
       {Object.entries(itemsGroupedByDate).map(([date, messages]) => (
-          <div key={date} className={styles["messages-with-same-date"]}>
-            {messages.map(curMessage => (
+          <div key={date} className={styles['messages-with-same-date']}>
+            {messages.map((curMessage) => (
               <Message key={curMessage.id}
               message={curMessage}
-              isGroup={chat?.type === TypeOfChat.Group} />
+              isGroup={chat?.type === TypeOfChat.Group}
+              isAllowedReaction={shouldLoadDelayed ? false : true}
+              />
             ))}
             <ChatDate date={date} />
           </div>
-        )
+      ),
       )}
       <div className={styles['loading-bar']} ref={target}>
-        {loading && 
-          <div className={styles['loading']}>
+        {loading &&
+          <div className={styles.loading}>
             <Spin />
           </div>
         }

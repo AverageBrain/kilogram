@@ -3,15 +3,14 @@ import { observer } from 'mobx-react-lite';
 import { List } from 'antd';
 import clsx from 'clsx';
 import { chatsStore } from '../../../../stores';
-import { ChatType } from '../../../../types';
+import { ChatType, TypeOfChat } from '../../../../types';
 import { Avatar } from '../../../Avatar';
-import { TypeOfChat } from '../../../../types';
 
 import listsStyles from '../../../../styles/lists.module.scss';
 
 type Props = {
   setSearchTerm: (value: string) => void;
-}
+};
 
 const Chats: React.FC<Props> = ({ setSearchTerm }) => {
   const { selectedItem, items, setSelectedChat } = chatsStore;
@@ -36,7 +35,7 @@ const Chats: React.FC<Props> = ({ setSearchTerm }) => {
       renderItem={(chat) => (
         <List.Item
           key={chat.id}
-          className={listsStyles["chat-list-item"]}
+          className={listsStyles['chat-list-item']}
           onClick={() => handleClick(chat)}
         >
           <List.Item.Meta
@@ -51,7 +50,7 @@ const Chats: React.FC<Props> = ({ setSearchTerm }) => {
             }
             description={
               chat.messages.length > 0
-                ? <div dangerouslySetInnerHTML={{ __html:  `<div class=${clsx(listsStyles["last-message"], listsStyles['description'])}>${chat.messages[0].text}</div>` }} />
+                ? <div dangerouslySetInnerHTML={{ __html: `<div class=${clsx(listsStyles['last-message'], listsStyles.description)}>${chat.messages[0].text}</div>` }} />
                 : <span className={listsStyles.description}>У вас нет сообщений</span>
             }
           />

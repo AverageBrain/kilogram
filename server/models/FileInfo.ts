@@ -1,5 +1,5 @@
 export interface FileInfo {
-    data: Buffer
-    name: string
-    mimetype: string
+  data: Buffer;
+  name: string;
+  mimetype: string;
 }

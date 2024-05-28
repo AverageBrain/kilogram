@@ -1,9 +1,6 @@
 import React from 'react';
-import styles from './Divider.module.scss'
+import styles from './Divider.module.scss';
 
-export const Divider: React.FC = () => {
-
-  return (
+export const Divider: React.FC = () => (
     <div className={styles.divider}></div>
-  );
-}
+);
