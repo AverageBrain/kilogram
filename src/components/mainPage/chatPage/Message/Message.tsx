@@ -16,9 +16,10 @@ import styles from './Message.module.scss';
 type Props = {
   message: MessageType;
   isGroup: boolean;
+  isAllowedReaction: boolean;
 };
 
-const Message: React.FC<Props> = ({ message, isGroup }) => {
+const Message: React.FC<Props> = ({ message, isAllowedReaction, isGroup }) => {
   const { selectedItem: authUser } = authUserStore;
   const { selectedItem: selectedChat } = chatsStore;
 
@@ -64,13 +65,13 @@ const Message: React.FC<Props> = ({ message, isGroup }) => {
             </div>
           )}
           <div dangerouslySetInnerHTML={{ __html: message.text }} />
-          <Reactions message={message}/>
+          {isAllowedReaction && <Reactions message={message}/>}
           <div className={styles['message-meta']}>
             <span className={styles.timestep}>
               {moment(message.inTime ?? message.createdAt).format('LT')}
             </span>
           </div>
-          <ReactionButton message={message} setVisible={isHover}/>
+          {isAllowedReaction && <ReactionButton message={message} setVisible={isHover}/>}
         </div>
       </div>
       {curUser && <UserProfile user={curUser} isOpenModal={isOpenModal} closeModal={closeModal} />}

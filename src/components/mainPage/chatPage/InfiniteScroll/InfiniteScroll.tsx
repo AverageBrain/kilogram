@@ -57,7 +57,9 @@ const InfiniteScroll: React.FC<Props> = ({ scrollRef, shouldLoadDelayed }) => {
             {messages.map((curMessage) => (
               <Message key={curMessage.id}
               message={curMessage}
-              isGroup={chat?.type === TypeOfChat.Group} />
+              isGroup={chat?.type === TypeOfChat.Group}
+              isAllowedReaction={shouldLoadDelayed ? false : true}
+              />
             ))}
             <ChatDate date={date} />
           </div>
