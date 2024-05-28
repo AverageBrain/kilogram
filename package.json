@@ -4,7 +4,7 @@
   "private": true,
   "dependencies": {
     "@ant-design/icons": "^5.3.5",
-    "@aws-sdk/client-s3": "^3.549.0",
+    "@aws-sdk/client-s3": "3.554.0",
     "@aws-sdk/s3-request-presigner": "3.554.0",
     "@koa/cors": "^5.0.0",
     "@prisma/client": "^5.12.1",

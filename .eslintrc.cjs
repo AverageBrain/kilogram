@@ -75,6 +75,7 @@ module.exports = {
         "no-unused-vars": "off",
         "@typescript-eslint/no-unused-vars": "warn",
         "@typescript-eslint/no-shadow": "off",
+        "@typescript-eslint/no-explicit-any": "warn",
         "arrow-body-style": "warn",
         "brace-style": [
             "error",
