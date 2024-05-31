@@ -32,7 +32,7 @@ const ChatPage: React.FC = () => {
       {shouldLoadDelayed
         ? (
         <Header className={styles['delay-chat-header']}>
-          <button className={buttonsStyles['icon-svg-button']} onClick={handleClickBack}>
+          <button className={buttonsStyles['big-icon-svg-button']} onClick={handleClickBack}>
             <ArrowLeftOutlined style={{ fontSize: '18px' }} />
           </button>
           <div className={styles.title}>

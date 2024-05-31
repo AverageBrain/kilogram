@@ -21,7 +21,7 @@ type Props = {
 };
 
 const SendMessage: React.FC<Props> = ({ scrollRef, setShouldLoadDelayed }) => {
-  const { loading, sendMessage, sendDelayMessage, clearMessages } = messagesStore;
+  const { loading, sendMessage, sendDelayMessage, resetItems } = messagesStore;
   const { selectedItem: chat, setSelectedChat, getMetadata } = chatsStore;
   const { selectedUser: user, setSelectedUser } = userStore;
 
@@ -75,7 +75,7 @@ const SendMessage: React.FC<Props> = ({ scrollRef, setShouldLoadDelayed }) => {
   };
 
   const handleClickDelay = () => {
-    clearMessages();
+    resetItems();
     setShouldLoadDelayed(true);
   };
 
@@ -125,10 +125,10 @@ const SendMessage: React.FC<Props> = ({ scrollRef, setShouldLoadDelayed }) => {
         ))}
       </ul>
       <input type={'file'} id={'files'} onChange={handleFileAdd} ref={fileInputRef} multiple hidden/>
-      <button className={buttonsStyles['icon-svg-button']} onClick={() => fileInputRef.current?.click()}>
+      <button className={buttonsStyles['big-icon-svg-button']} onClick={() => fileInputRef.current?.click()}>
         <FileAddOutlined />
       </button>
-      <button className={buttonsStyles['icon-svg-button']} onClick={handleClickDelay}>
+      <button className={buttonsStyles['big-icon-svg-button']} onClick={handleClickDelay}>
         <CalendarOutlined />
       </button>
       <SendButton

@@ -8,22 +8,25 @@ import { ChatPage, EmptyPanel } from '../../mainPage/chatPage';
 import { chatsStore, messagesStore, userStore } from '../../../stores';
 
 import styles from './MainPage.module.scss';
+import { useTypeOfScreen } from '../../../hooks';
 
 const { Content } = Layout;
 
 const MainPage: React.FC = () => {
   const { selectedItem, loadItems: loadChats, setSelectedChat } = chatsStore;
   const { selectedUser, setSelectedUser } = userStore;
-  const { clearMessages } = messagesStore;
+  const { resetItems } = messagesStore;
 
   const [panelSizes, setPanelSizes] = useState<number[]>([]); // TODO: можно записывать в localStorage
   const location = useLocation();
+
+  const { isBigScreen } = useTypeOfScreen();
 
   const handleEscapePress = (event: KeyboardEvent) => {
     if (event.key === 'Escape') {
       setSelectedChat(undefined);
       setSelectedUser(undefined);
-      clearMessages();
+      resetItems();
     }
   };
 
@@ -40,17 +43,22 @@ const MainPage: React.FC = () => {
   return (
     <Layout style={{ height: '100vh' }}>
       <Content>
-        <Splitter className={styles.splitter}>
-          <SplitterPanel size={25} minSize={20}>
-            <ChatListPage />
-          </SplitterPanel>
-          <SplitterPanel size={75} minSize={55}>
-            {selectedItem || selectedUser
-              ? <ChatPage key={selectedItem?.id} />
-              : <EmptyPanel />
-            }
-          </SplitterPanel>
-        </Splitter>
+        {isBigScreen
+          ? <Splitter className={styles.splitter}>
+            <SplitterPanel size={35} minSize={25}>
+              <ChatListPage />
+            </SplitterPanel>
+            <SplitterPanel size={65} minSize={55}>
+              {selectedItem || selectedUser
+                ? <ChatPage key={selectedItem?.id} />
+                : <EmptyPanel />
+              }
+            </SplitterPanel>
+          </Splitter>
+          : selectedItem || selectedUser
+            ? <ChatPage key={selectedItem?.id} />
+            : <ChatListPage />
+        }
       </Content>
     </Layout>
   );
