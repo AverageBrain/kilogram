@@ -9,6 +9,7 @@ import { MainInfo } from '../../../commonComponents/mainInfo';
 import { Divider } from '../../../commonComponents/divider';
 
 import styles from './GroupProfile.module.scss';
+import { useTypeOfScreen } from '../../../../../hooks';
 
 type Props = {
   group: ChatType;
@@ -19,6 +20,7 @@ type Props = {
 export const GroupProfileView: React.FC<Props> = ({ group, closeModal, setSelectedUser }) => {
   const { selectedItem } = authUserStore;
   const membersCount = group.users.length + 1;
+  const { isHiddenModal } = useTypeOfScreen();
 
   const handleClick = () => {
     const { origin } = document.location;
@@ -31,7 +33,11 @@ export const GroupProfileView: React.FC<Props> = ({ group, closeModal, setSelect
 
   return (
     <>
-      <ModalHeader toggle={closeModal} title="Информация о группе" />
+      <ModalHeader
+        handleClose={isHiddenModal ? undefined : closeModal}
+        title="Информация о группе"
+        handleBack={isHiddenModal ? closeModal : undefined}
+      />
       <MainInfo
           name={group.name}
           description={`${membersCount} ${getCorrectMemberCase(membersCount)}`}

@@ -20,6 +20,21 @@
   height: 684px;
 }
 
+@media not ((min-width: 431px) and (min-height: 700px)) {
+  .big-modal {
+    width: 100vw;
+    height: 100vh;
+    border-radius: 0 !important;
+  }
+}
+
+@media (max-width: 360px) {
+  .small-modal {
+    width: 100vw !important;
+    border-radius: 0 !important;
+  }
+}
+
 .small-modal {
   width: 360px;
 }
@@ -27,7 +42,7 @@
 .modal {
   inset: unset !important;
   display: flex;
-  border-radius: 10px !important;
+  border-radius: 10px;
   border: none !important;
   flex-direction: column;
   position: absolute;
