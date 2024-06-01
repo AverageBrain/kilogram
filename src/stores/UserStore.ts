@@ -1,4 +1,5 @@
 import { action, makeObservable, observable, runInAction } from 'mobx';
+import { message } from 'antd';
 
 import { UserType } from '../types';
 import { userApiClient } from '../hands';
@@ -36,6 +37,7 @@ class UserStore extends BaseStore<UserType> {
         this.items = data;
       });
     } catch (e: any) {
+      message.error('Не удалось получить пользователей');
       console.warn(e);
     } finally {
       this.disableLoading();
@@ -62,6 +64,7 @@ class UserStore extends BaseStore<UserType> {
 
       return data;
     } catch (e: any) {
+      message.error('Не удалось загрузить аватар');
       console.warn(e);
     }
   }

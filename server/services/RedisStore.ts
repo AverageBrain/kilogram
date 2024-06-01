@@ -40,7 +40,6 @@ export class RedisStore {
     * Notify users about online or offline for another users
     * */
   async notifyUsers(status: boolean, userId: number) {
-    console.log(status, userId);
     const sseService = new SSEService();
     const currentUser = await prisma.user.findFirstOrThrow({
       where: { id: userId },

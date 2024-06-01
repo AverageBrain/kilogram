@@ -1,4 +1,5 @@
 import { action, computed, makeObservable, override, runInAction } from 'mobx';
+import { message } from 'antd';
 import { isEmpty } from 'lodash';
 
 import { UserType } from '../types';
@@ -39,6 +40,7 @@ class AuthUserStore extends BaseStore<UserType> {
         this.selectedItem = data;
       });
     } catch (e: any) {
+      message.error('Не удалось получить пользователя');
       console.warn(e);
     } finally {
       this.disableLoading();
