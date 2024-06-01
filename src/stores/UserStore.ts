@@ -22,7 +22,7 @@ class UserStore extends BaseStore<UserType> {
     });
   }
 
-  async loadItems(prefix?: string): Promise<void> {
+  async loadItems(prefix?: string): Promise<UserType[]> {
     try {
       this.enableLoading();
 
@@ -36,9 +36,13 @@ class UserStore extends BaseStore<UserType> {
       runInAction(() => {
         this.items = data;
       });
+
+      return data;
     } catch (e: any) {
       message.error('Не удалось получить пользователей');
       console.warn(e);
+
+      return [];
     } finally {
       this.disableLoading();
     }

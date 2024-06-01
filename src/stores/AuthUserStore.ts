@@ -4,7 +4,7 @@ import { isEmpty } from 'lodash';
 
 import { UserType } from '../types';
 import BaseStore from './BaseStore';
-import { userApiClient } from '../hands';
+import { authApiClient, userApiClient } from '../hands';
 import { processSSEMessage } from '../utils';
 
 class AuthUserStore extends BaseStore<UserType> {
@@ -18,6 +18,8 @@ class AuthUserStore extends BaseStore<UserType> {
       loggedIn: computed,
 
       loadSelectedItem: action.bound,
+      logIn: action.bound,
+      logOut: action.bound,
     });
     this.loading = true;
   }
@@ -44,6 +46,24 @@ class AuthUserStore extends BaseStore<UserType> {
       console.warn(e);
     } finally {
       this.disableLoading();
+    }
+  }
+
+  async logIn(): Promise<void> {
+    try {
+      await authApiClient.authWithGithub();
+    } catch (e: any) {
+      message.error('Не удалось войти в аккаунт');
+      console.warn(e);
+    }
+  }
+
+  async logOut(): Promise<void> {
+    try {
+      await await authApiClient.logout();
+    } catch (e: any) {
+      message.error('Не удалось выйти из аккаунта');
+      console.warn(e);
     }
   }
 }

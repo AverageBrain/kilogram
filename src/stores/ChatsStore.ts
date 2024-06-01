@@ -54,7 +54,7 @@ class ChatsStore extends BaseStore<ChatType> {
     }
   }
 
-  async createChat(userId: number): Promise<void> {
+  async createChat(userId: number): Promise<ChatType | undefined> {
     try {
       this.enableLoading();
 
@@ -62,6 +62,8 @@ class ChatsStore extends BaseStore<ChatType> {
       runInAction(() => {
         this.selectedItem = data;
       });
+
+      return data;
     } catch (e: any) {
       message.error('Не удалось создать чат');
       console.warn(e);
