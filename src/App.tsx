@@ -13,16 +13,22 @@ const App: React.FC = () => {
   const {
     loading,
     loadSelectedItem,
+    selectedItem,
   } = authUserStore;
 
   const { loadReactions } = reactionsStore;
 
   useEffect(() => {
     moment.locale('ru');
-    loadSelectedItem();
-    loadReactions();
     requestPermission();
+    loadSelectedItem();
   }, []);
+
+  useEffect(() => {
+    if (selectedItem?.id) {
+      loadReactions();
+    }
+  }, [selectedItem]);
 
   return (
     loading

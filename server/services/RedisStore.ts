@@ -2,7 +2,7 @@ import { createClient } from 'redis';
 import { SSEService } from './SSEService';
 import { prisma } from '../domain/PrismaClient';
 
-const client = await createClient({ url: 'redis://158.160.118.181:6379' })
+const client = await createClient({ url: 'redis://158.160.118.181:6379', password: 'kilogram323' })
   .on('error', (err) => console.log('Redis Client Error', err))
   .connect();
 
@@ -40,7 +40,6 @@ export class RedisStore {
     * Notify users about online or offline for another users
     * */
   async notifyUsers(status: boolean, userId: number) {
-    console.log(status, userId);
     const sseService = new SSEService();
     const currentUser = await prisma.user.findFirstOrThrow({
       where: { id: userId },
