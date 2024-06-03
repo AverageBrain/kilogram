@@ -5,6 +5,8 @@ import { UserType } from '../types';
 import BaseStore from './BaseStore';
 import { userApiClient } from '../hands';
 import { processSSEMessage } from '../utils';
+import {requestPermission} from "../plugins/firebase";
+import {reactionsStore} from "./index";
 
 class AuthUserStore extends BaseStore<UserType> {
     constructor() {
@@ -31,8 +33,12 @@ class AuthUserStore extends BaseStore<UserType> {
 
             const data = await userApiClient.getMe();
 
+            const { loadReactions } = reactionsStore;
+
             if (data) {
+                requestPermission()
                 userApiClient.setMessagesSource(processSSEMessage);
+                await loadReactions();
             }
 
             runInAction(() => {
