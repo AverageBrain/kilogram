@@ -2,7 +2,7 @@ import { createClient } from 'redis';
 import { SSEService } from './SSEService';
 import { prisma } from '../domain/PrismaClient';
 
-const client = await createClient({ url: 'redis://158.160.118.181:6379' })
+const client = await createClient({ url: 'redis://158.160.118.181:6379', password: 'kilogram323' })
   .on('error', (err) => console.log('Redis Client Error', err))
   .connect();
 
