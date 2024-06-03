@@ -1,14 +1,11 @@
 import React from 'react';
+import { Navigate } from 'react-router-dom';
 import { observer } from 'mobx-react-lite';
 import { Button, Layout, Flex, Typography } from 'antd';
 import { GithubOutlined } from '@ant-design/icons';
-
-import { authApiClient } from '../../../hands';
-import { authUserStore } from '../../../stores';
-
-import { Navigate } from 'react-router-dom';
 import clsx from 'clsx';
 
+import { authUserStore } from '../../../stores';
 import commonStyles from '../additionalPages.module.scss';
 import styles from './LogInPage.module.scss';
 
@@ -16,9 +13,7 @@ const { Content } = Layout;
 const { Text } = Typography;
 
 const LogInPage: React.FC = () => {
-  const { loggedIn } = authUserStore;
-
-  const handleLogIn = () => authApiClient.authWithGithub();
+  const { loggedIn, logIn } = authUserStore;
 
   return (
     <>
@@ -34,7 +29,7 @@ const LogInPage: React.FC = () => {
                   className={commonStyles['action-button']}
                   type="text"
                   icon={<GithubOutlined style={{ fontSize: '30px' }} />}
-                  onClick={handleLogIn}
+                  onClick={logIn}
                 >
                   Войти через GitHub
                 </Button>

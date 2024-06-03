@@ -1,7 +1,9 @@
-import BaseStore from './BaseStore';
-import { ReactionType } from '../types/types';
 import { action, makeObservable, override, runInAction } from 'mobx';
+import { message } from 'antd';
+
+import { ReactionType } from '../types';
 import { chatApiClient } from '../hands';
+import BaseStore from './BaseStore';
 
 class ReactionsStore extends BaseStore<ReactionType> {
   constructor() {
@@ -24,9 +26,8 @@ class ReactionsStore extends BaseStore<ReactionType> {
         this.items = data;
       });
     } catch (e: any) {
+      message.error('Не удалось получить реакции');
       console.warn(e);
-
-      return false;
     } finally {
       this.disableLoading();
     }

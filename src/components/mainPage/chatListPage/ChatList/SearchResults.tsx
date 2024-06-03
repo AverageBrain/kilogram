@@ -9,18 +9,17 @@ import { Avatar } from '../../../Avatar';
 import listsStyles from '../../../../styles/lists.module.scss';
 
 type Props = {
-  results: UserType[];
-  isSearching: string;
   setSearchTerm: (value: string) => void;
 };
 
-const SearchResults: React.FC<Props> = ({ setSearchTerm, isSearching, results }) => {
+const SearchResults: React.FC<Props> = ({ setSearchTerm }) => {
   const { selectedItem, setSelectedChat } = chatsStore;
   const { setSelectedUser } = userStore;
   const { resetItems } = messagesStore;
 
+
   const locale = {
-    emptyText: isSearching === 'proccesing' ? 'Происходит поиск...' : 'Нет данных',
+    emptyText: loading ? 'Происходит поиск...' : 'Нет данных',
   };
 
   const handleClick = async (user: UserType) => {
@@ -40,14 +39,12 @@ const SearchResults: React.FC<Props> = ({ setSearchTerm, isSearching, results })
       className={listsStyles.chats}
       locale={locale}
       itemLayout="horizontal"
-      dataSource={results}
+      dataSource={users}
       renderItem={(user) => (
         <List.Item
           className={listsStyles['chat-list-item']}
           key={user.id}
-          onClick={() => {
-            handleClick(user);
-          }}
+          onClick={() => handleClick(user)}
         >
           <List.Item.Meta
             className={

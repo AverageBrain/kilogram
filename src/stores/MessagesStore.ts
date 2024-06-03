@@ -1,8 +1,10 @@
 import { action, makeObservable, override, runInAction } from 'mobx';
-import { MessageReactionType, MessageType } from '../types';
-import BaseStore from './BaseStore';
-import { chatApiClient } from '../hands';
+import { message } from 'antd';
 import { partition } from 'lodash';
+
+import { MessageReactionType, MessageType } from '../types';
+import { chatApiClient } from '../hands';
+import BaseStore from './BaseStore';
 
 class MessagesStore extends BaseStore<MessageType> {
   constructor() {
@@ -40,6 +42,7 @@ class MessagesStore extends BaseStore<MessageType> {
 
       return data.length > 0;
     } catch (e: any) {
+      message.error('Не удалось получить сообщения');
       console.warn(e);
 
       return false;
@@ -64,6 +67,7 @@ class MessagesStore extends BaseStore<MessageType> {
 
       return data.length > 0;
     } catch (e: any) {
+      message.error('Не удалось получить сообщения');
       console.warn(e);
 
       return false;
@@ -78,6 +82,7 @@ class MessagesStore extends BaseStore<MessageType> {
 
       await chatApiClient.sendMessage(chatId, text, files);
     } catch (e: any) {
+      message.error('Не удалось отправить сообщение');
       console.warn(e);
     } finally {
       this.disableLoading();
@@ -96,6 +101,7 @@ class MessagesStore extends BaseStore<MessageType> {
 
       await chatApiClient.sendDelayMessage(chatId, text, files, inTime);
     } catch (e: any) {
+      message.error('Не удалось отправить сообщение');
       console.warn(e);
     } finally {
       this.disableLoading();
@@ -106,11 +112,8 @@ class MessagesStore extends BaseStore<MessageType> {
     try {
       await chatApiClient.setReaction(messageId, reactionTypeId);
     } catch (e: any) {
+      message.error('Не удалось поставить реакцию');
       console.warn(e);
-
-      return false;
-    } finally {
-      this.disableLoading();
     }
   }
 
@@ -118,12 +121,8 @@ class MessagesStore extends BaseStore<MessageType> {
     try {
       await chatApiClient.removeReaction(messageId, reactionTypeId);
     } catch (e: any) {
-
+      message.error('Не удалось убрать реакцию');
       console.warn(e);
-
-      return false;
-    } finally {
-      this.disableLoading();
     }
   }
 
