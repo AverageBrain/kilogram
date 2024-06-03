@@ -35,13 +35,13 @@ export class SSEService {
         await this.redisStore.setOffline(userId)
     }
 
-    async publishMessage(toUserId: number, type: string, data: any) {
+    async publishMessage(toUserId: number, type: string, uuid: string, data: any) {
         const userListeners = listeners.get(toUserId)
         if (userListeners == undefined) {
             return
         }
         Array.from(userListeners.values()).forEach(
-            c => c(JSON.stringify({ type: type, data: data }))
+            c => c(JSON.stringify({ type: type, data: data, eventId: uuid }))
         )
     }
 }

@@ -14,8 +14,9 @@ services:
     restart: always
     ports:
       - "6379:6379"
+    command:
+      - redis-server --requirepass kilogram323
     environment:
-      - REDIS_PASSWORD=kilogram
       - REDIS_PORT=6379
       - REDIS_DATABASES=16
 
