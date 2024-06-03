@@ -9,7 +9,6 @@ import { Editor, SyntheticKeyboardEvent } from 'react-draft-wysiwyg';
 import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
 
 import { chatsStore, messagesStore, userStore } from '../../../../stores';
-import { chatApiClient } from '../../../../hands';
 import SendButton from '../SendButton';
 import { getHTMLMetadata } from './getHTMLMetadata';
 import styles from './SendForm.module.scss';
@@ -22,7 +21,7 @@ type Props = {
 
 const SendMessage: React.FC<Props> = ({ scrollRef, setShouldLoadDelayed }) => {
   const { loading, sendMessage, sendDelayMessage, clearMessages } = messagesStore;
-  const { selectedItem: chat, setSelectedChat, getMetadata } = chatsStore;
+  const { selectedItem: chat, setSelectedChat, getMetadata, createChat } = chatsStore;
   const { selectedUser: user, setSelectedUser } = userStore;
 
   const [editorState, setEditorState] = useState<EditorState>(() => EditorState.createEmpty());
@@ -49,10 +48,12 @@ const SendMessage: React.FC<Props> = ({ scrollRef, setShouldLoadDelayed }) => {
           ? await sendDelayMessage(chat.id, safeHtml, files, inTime)
           : await sendMessage(chat.id, safeHtml, files);
       } else if (user) {
-        const curChat = await chatApiClient.createChat(user.id);
-        inTime
-          ? await sendDelayMessage(curChat.id, safeHtml, files, inTime)
-          : await sendMessage(curChat.id, safeHtml, files);
+        const curChat = await createChat(user.id);
+        if (curChat) {
+          inTime
+            ? await sendDelayMessage(curChat.id, safeHtml, files, inTime)
+            : await sendMessage(curChat.id, safeHtml, files);
+        }
         setSelectedChat(curChat);
         setSelectedUser(undefined);
       }
