@@ -88,6 +88,7 @@
   display: flex;
   gap: 5px;
   flex-wrap: wrap;
+  user-select: none;
 
   .reaction-wrapper {
     cursor: pointer;
@@ -142,12 +143,15 @@
     transition: font-size 200ms;
     
     .reaction-bar {
+      display: flex;
+      flex-direction: column-reverse;
       height: 100%;
+      user-select: none;
 
       .reaction:hover {
         font-size: 22px;
-        transform: scale(1.4);
-        transition: transform 200ms;
+        transform: scale(1.2);
+        transition: transform 100ms;
       }
     }
   }
@@ -168,4 +172,19 @@
 
   color: var(--base-accent-color);
   font-weight: 500;
+}
+
+.reactions-context-menu-item {
+  padding: 2px !important;
+  font-size: 22px !important;
+  line-height: 24px !important;
+  user-select: none;
+
+  .reaction:hover {
+    font-size: 24px;
+  }
+}
+
+.reactions-context-menu-item:hover {
+  background-color: white !important;
 }

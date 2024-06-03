@@ -37,7 +37,7 @@ $texttool_height: 26px;
   position: absolute;
   top: -$texttool_height;
   flex-wrap: nowrap;
-  overflow-y: scroll;
+  overflow-x: scroll;
   width: 100%;
 
   &::-webkit-scrollbar {
