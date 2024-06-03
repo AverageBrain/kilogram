@@ -9,6 +9,7 @@ import { ArrowLeftOutlined } from '@ant-design/icons';
 
 import styles from './ChatPage.module.scss';
 import buttonsStyles from '../../../../styles/buttons.module.scss';
+import { useHiddenTexttools } from '../../../../hooks';
 
 const { Header } = Layout;
 
@@ -17,6 +18,7 @@ const ChatPage: React.FC = () => {
 
   const scrollRef = React.useRef<HTMLDivElement>(null);
   const [shouldLoadDelayed, setShouldLoadDelayed] = useState(false);
+  const { isToolbarHidden, setIsToolbarHidden } = useHiddenTexttools();
 
   useEffect(() => () => {
     resetItems();
@@ -39,9 +41,14 @@ const ChatPage: React.FC = () => {
             Отложенные сообщения
           </div>
         </Header>
-        ) : <ChatHeader />}
+        ) : <ChatHeader isToolbarHidden={isToolbarHidden} setIsToolbarHidden={setIsToolbarHidden}/>}
       <InfiniteScroll key={shouldLoadDelayed.toString()} scrollRef={scrollRef} shouldLoadDelayed={shouldLoadDelayed} />
-      {!shouldLoadDelayed && <SendForm scrollRef={scrollRef} setShouldLoadDelayed={setShouldLoadDelayed} />}
+      {!shouldLoadDelayed &&
+        <SendForm
+          isToolbarHidden={isToolbarHidden}
+          scrollRef={scrollRef}
+          setShouldLoadDelayed={setShouldLoadDelayed}
+        />}
     </div>
   );
 };

@@ -1,4 +1,5 @@
 .send-message {
+  position: relative;
   display: flex;
   background-color: white;
   padding-bottom: 10px;
@@ -22,8 +23,30 @@
   width: 100%;
 }
 
+$texttool_height: 26px;
+
+.wrapper-send-message {
+  .space-for-texttools {
+    width: 100%;
+    height: $texttool_height;
+  }
+}
+
 .toolbar-class {
   border: none !important;
+  position: absolute;
+  top: -$texttool_height;
+  flex-wrap: nowrap;
+  overflow-y: scroll;
+  width: 100%;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+
+  .inside-params {
+    flex-wrap: nowrap;
+  }
 }
 
 .editor-class {

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import { Layout } from 'antd';
 import { Splitter, SplitterPanel } from 'primereact/splitter';
@@ -17,7 +17,6 @@ const MainPage: React.FC = () => {
   const { selectedUser, setSelectedUser } = userStore;
   const { resetItems } = messagesStore;
 
-  const [panelSizes, setPanelSizes] = useState<number[]>([]); // TODO: можно записывать в localStorage
   const location = useLocation();
 
   const { isBigScreen } = useTypeOfScreen();

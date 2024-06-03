@@ -1,12 +1,12 @@
 import React from 'react';
-import { Layout } from 'antd';
+import { Dropdown, Layout, MenuProps } from 'antd';
 import { useModal } from '../../../../hooks/useModal';
 import { observer } from 'mobx-react-lite';
 import { chatsStore, messagesStore, userStore } from '../../../../stores';
 import { TypeOfChat } from '../../../../types/types';
 import { GroupProfile, UserProfile } from '../../../modals';
 import { getHandle } from '../../../../utils';
-import { ArrowLeftOutlined } from '@ant-design/icons';
+import { ArrowLeftOutlined, MoreOutlined } from '@ant-design/icons';
 import { useTypeOfScreen } from '../../../../hooks';
 import { Avatar } from '../../../Avatar';
 
@@ -16,7 +16,12 @@ import clsx from 'clsx';
 
 const { Header: HeaderAD } = Layout;
 
-const ChatHeader: React.FC = () => {
+type Props = {
+  isToolbarHidden: boolean;
+  setIsToolbarHidden: (value: boolean) => void;
+};
+
+const ChatHeader: React.FC<Props> = ({ isToolbarHidden, setIsToolbarHidden }) => {
   const { selectedItem: chat, setSelectedChat } = chatsStore;
   const { selectedUser: user, setSelectedUser } = userStore;
   const { resetItems } = messagesStore;
@@ -33,6 +38,19 @@ const ChatHeader: React.FC = () => {
     setSelectedUser(undefined);
     resetItems();
   };
+  console.log('Header', isToolbarHidden);
+
+  const toggleToolbarHidden = () => {
+    setIsToolbarHidden(!isToolbarHidden);
+  };
+
+  const items: MenuProps['items'] = [ // TODO: вместе с логикой вынести в отдельный компонент
+    {
+      label: isToolbarHidden ? 'Включить текстовые настройки' : 'Скрыть текстовые настройки',
+      onClick: toggleToolbarHidden,
+      key: '0',
+    },
+  ];
 
   return (
     <>
@@ -51,6 +69,11 @@ const ChatHeader: React.FC = () => {
             </span>
           </div>
         </div>
+        <Dropdown menu={{ items }} trigger={['click']}>
+          <span className={clsx(buttonStyles['big-icon-svg-button'])}>
+            <MoreOutlined />
+            </span>
+        </Dropdown>
       </HeaderAD>
       {isGroup
         ? <GroupProfile group={chat} isOpenModal={isOpenModal} closeModal={closeModal} />
