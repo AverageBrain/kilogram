@@ -22,7 +22,7 @@ type Props = {
 
 const SendMessage: React.FC<Props> = ({ scrollRef, setShouldLoadDelayed, isToolbarHidden }) => {
   const { loading, sendMessage, sendDelayMessage, resetItems } = messagesStore;
-  const { selectedItem: chat, setSelectedChat, getMetadata } = chatsStore;
+  const { selectedItem: chat, setSelectedChat, getMetadata, createChat } = chatsStore;
   const { selectedUser: user, setSelectedUser } = userStore;
 
   const [editorState, setEditorState] = useState<EditorState>(() => EditorState.createEmpty());

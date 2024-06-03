@@ -14,9 +14,8 @@ type Props = {
 
 const SearchResults: React.FC<Props> = ({ setSearchTerm }) => {
   const { selectedItem, setSelectedChat } = chatsStore;
-  const { setSelectedUser } = userStore;
+  const { items: users, setSelectedUser, loading } = userStore;
   const { resetItems } = messagesStore;
-
 
   const locale = {
     emptyText: loading ? 'Происходит поиск...' : 'Нет данных',
