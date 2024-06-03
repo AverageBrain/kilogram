@@ -48,6 +48,7 @@ const GroupForm: React.FC<Props> = ({ values, setFieldValue }) =>  {
                 variant="borderless"
                 placeholder="Введите название группы"
                 value={values.name}
+                maxLength={25}
                 onChange={handleChange}
                 onFocus={handleFocus}
                 onBlur={handleBlur}

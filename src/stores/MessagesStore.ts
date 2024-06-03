@@ -1,16 +1,21 @@
-import { action, makeObservable, override, runInAction } from 'mobx';
+import { action, makeObservable, observable, override, runInAction } from 'mobx';
 import { MessageReactionType, MessageType } from '../types';
 import BaseStore from './BaseStore';
 import { chatApiClient } from '../hands';
 import { partition } from 'lodash';
+import axios from 'axios';
 
 class MessagesStore extends BaseStore<MessageType> {
+  abortController = new AbortController();
+
   constructor() {
     super();
     makeObservable(this, {
       items: override,
       selectedItem: override,
       loading: override,
+
+      abortController: observable,
 
       loadMessages: action.bound,
       loadDelayedMessages: action.bound,
@@ -22,14 +27,19 @@ class MessagesStore extends BaseStore<MessageType> {
       removeReaction: action.bound,
       updateMessageByReaction: action.bound,
       updateMessageByRemoveReaction: action.bound,
+      doAbortController: action.bound,
     });
   }
 
   async loadMessages(chatId: number, afterId = -1, update?: boolean): Promise<boolean> {
+    let wasAborted = false;
+
     try {
       this.enableLoading();
+      this.doAbortController();
 
-      const data = await chatApiClient.getMessages(chatId, afterId);
+      console.log(this.abortController.signal);
+      const data = await chatApiClient.getMessages(chatId, afterId, this.abortController.signal);
 
       runInAction(() => {
         if (update) {
@@ -42,6 +52,10 @@ class MessagesStore extends BaseStore<MessageType> {
       return data.length > 0;
     } catch (e: any) {
       console.warn(e);
+      // TODO: не высвечивать ошибку об аборте
+      if (axios.isCancel(e)) {
+        wasAborted = true;
+      }
 
       return false;
     } finally {
@@ -176,6 +190,12 @@ class MessagesStore extends BaseStore<MessageType> {
     runInAction(() => {
       this.items = [...updatedmessage];
     });
+  }
+
+  doAbortController() {
+    this.abortController.abort();
+    console.log('aborted', this.abortController.signal);
+    this.abortController = new AbortController();
   }
 }
 
