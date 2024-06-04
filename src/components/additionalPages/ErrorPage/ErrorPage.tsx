@@ -1,17 +1,19 @@
 import React from 'react';
 import { Flex, Layout, Typography } from 'antd';
 
-import styles from '../additionalPages.module.scss';
+import commonStyles from '../additionalPages.module.scss';
+import styles from './ErrorPage.module.css';
+import clsx from 'clsx';
 
 const { Content } = Layout;
 const { Text } = Typography;
 
 const ErrorPage: React.FC = () => (
-    <Layout className={styles.container} style={{ height: '100vh' }}>
-      <Content className={styles.content}>
+    <Layout className={commonStyles.container} style={{ height: '100vh' }}>
+      <Content className={commonStyles.content}>
         <Flex vertical gap={32} justify="center">
-          <Text className={styles.h2}>Произошла ошибка</Text>
-          <Text className={styles.h4}>Попробуйте перезагрузить страницу</Text>
+          <Text className={clsx(commonStyles.h2, styles.h2)}>Произошла ошибка</Text>
+          <Text className={clsx(commonStyles.h4, styles.h4)}>Попробуйте перезагрузить страницу</Text>
         </Flex>
       </Content>
     </Layout>
