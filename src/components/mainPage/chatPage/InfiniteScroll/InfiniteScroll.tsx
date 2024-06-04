@@ -16,7 +16,7 @@ type Props = {
 };
 
 const InfiniteScroll: React.FC<Props> = ({ scrollRef, shouldLoadDelayed }) => {
-  const { items, loadMessages, loadDelayedMessages, loading } = messagesStore;
+  const { items, loadMessages, loadDelayedMessages, loading, doAbortController } = messagesStore;
   const { selectedItem: chat } = chatsStore;
 
   const [hasMore, setHasMore] = useState(true);
@@ -48,6 +48,10 @@ const InfiniteScroll: React.FC<Props> = ({ scrollRef, shouldLoadDelayed }) => {
       }
     };
   }, [target, handleObserver]);
+
+  useEffect(() => () => {
+    doAbortController();
+  }, []);
 
   const itemsGroupedByDate = groupBy(items, (item) => (moment(item.createdAt).format('D MMM YYYY')));
 

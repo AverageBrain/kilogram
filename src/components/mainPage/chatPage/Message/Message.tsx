@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import clsx from 'clsx';
 import moment from 'moment';
 import { observer } from 'mobx-react-lite';
+import DOMPurify from 'dompurify';
 
 import { MessageType } from '../../../../types';
 import { authUserStore, chatsStore } from '../../../../stores';
@@ -10,7 +11,6 @@ import { UserProfile } from '../../../modals';
 import { useModal, useTypeOfScreen } from '../../../../hooks';
 import Reactions from './reactions/Reactions';
 import ReactionButton from './reactions/ReactionButton';
-
 import styles from './Message.module.scss';
 import { Dropdown, MenuProps } from 'antd';
 import ReactionContextMenu from './reactions/ReactionContextMenu';
@@ -90,7 +90,7 @@ const Message: React.FC<Props> = ({
                 {curUser?.name}
               </div>
             )}
-            <div dangerouslySetInnerHTML={{ __html: message.text }} />
+            <div dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(message.text) }} />
             {isAllowedReaction && <Reactions message={message}/>}
             <div className={styles['message-meta']}>
               <span className={styles.timestep}>

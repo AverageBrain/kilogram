@@ -2,11 +2,12 @@ import React from 'react';
 import { observer } from 'mobx-react-lite';
 import { List } from 'antd';
 import clsx from 'clsx';
+import DOMPurify from 'dompurify';
+
+import listsStyles from '../../../../styles/lists.module.scss';
 import { chatsStore } from '../../../../stores';
 import { ChatType, TypeOfChat } from '../../../../types';
 import { Avatar } from '../../../Avatar';
-
-import listsStyles from '../../../../styles/lists.module.scss';
 
 type Props = {
   setSearchTerm: (value: string) => void;
@@ -50,7 +51,12 @@ const Chats: React.FC<Props> = ({ setSearchTerm }) => {
             }
             description={
               chat.messages.length > 0
-                ? <div dangerouslySetInnerHTML={{ __html: `<div class=${clsx(listsStyles['last-message'], listsStyles.description)}>${chat.messages[0].text}</div>` }} />
+                ? <div
+                  dangerouslySetInnerHTML={{
+                    __html:
+                      `<div class=${clsx(listsStyles['last-message'], listsStyles.description)}>${DOMPurify.sanitize(chat.messages[0].text)}</div>`,
+                  }}
+                />
                 : <span className={listsStyles.description}>У вас нет сообщений</span>
             }
           />

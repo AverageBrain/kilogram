@@ -1,4 +1,4 @@
-import axios, { AxiosResponse } from 'axios';
+import axios, { AxiosRequestConfig, AxiosResponse } from 'axios';
 
 // production
 // export const BASE_SERVER_GITHUB_REDIRECT = 'http://team1.ya-itmo.ru/api/auth/github'
@@ -28,8 +28,8 @@ const normalizeUrl = (url: string) => {
 };
 
 export abstract class BaseApiClient {
-  async axiosPost<T>(url: string, data: object): Promise<T> {
-    return (await axiosClient.post<T>(normalizeUrl(url), data)).data;
+  async axiosPost<T>(url: string, data: object, config?: AxiosRequestConfig<any>): Promise<T> {
+    return (await axiosClient.post<T>(normalizeUrl(url), data, config)).data;
   }
 
   async axiosPostForm<T>(url: string, form: FormData): Promise<T> {
