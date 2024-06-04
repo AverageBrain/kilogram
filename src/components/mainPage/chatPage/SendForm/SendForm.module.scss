@@ -25,6 +25,30 @@
 
 $texttool_height: 26px;
 
+@media (max-width: 391px) {
+  $texttool_height: 2 * $texttool_height;
+
+  .space-for-texttools {
+    height: $texttool_height !important;
+  }
+
+  .toolbar-class {
+    top: -$texttool_height !important;
+  }
+}
+
+@media (max-width: 218px) {
+  $texttool_height: 3 * $texttool_height;
+
+  .space-for-texttools {
+    height: $texttool_height !important;
+  }
+
+  .toolbar-class {
+    top: -$texttool_height !important;
+  }
+}
+
 .wrapper-send-message {
   .space-for-texttools {
     width: 100%;
@@ -36,8 +60,7 @@ $texttool_height: 26px;
   border: none !important;
   position: absolute;
   top: -$texttool_height;
-  flex-wrap: nowrap;
-  overflow-x: scroll;
+  height: auto;
   width: 100%;
 
   &::-webkit-scrollbar {
@@ -67,7 +90,7 @@ $texttool_height: 26px;
 
 .popover-class {
   box-sizing: content-box;
-  transform: scale(1) translateY(-100%);
+  transform: scale(1) translate(-65%, -100%);
   transform-origin: 1em 0% 0px;
   top: 0%;
 }

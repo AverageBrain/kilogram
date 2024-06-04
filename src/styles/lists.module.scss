@@ -42,9 +42,11 @@
       padding: 10px;
       cursor: pointer;
       height: 68px;
-    
-      &:hover {
-        background-color: var(--hover-color);
+
+      @media (min-width: 431px) {
+        &:hover {
+          background-color: var(--hover-color);
+        }
       }
 
       p {
