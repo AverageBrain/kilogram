@@ -31,7 +31,7 @@ const SendButton: React.FC<Props> = ({ disabledDelay, onSubmit }) => {
   return (
     <>
       {loading
-        ? <Spin className={buttonsStyles['icon-svg-button']} />
+        ? <Spin className={buttonsStyles['big-icon-svg-button']} />
         : (
         <>
           <Dropdown
@@ -39,7 +39,7 @@ const SendButton: React.FC<Props> = ({ disabledDelay, onSubmit }) => {
             trigger={['contextMenu']}
             placement="topRight"
           >
-            <button className={buttonsStyles['icon-svg-button']} onClick={handleSendMessage}>
+            <button className={buttonsStyles['big-icon-svg-button']} onClick={handleSendMessage}>
               <SendOutlined />
             </button>
           </Dropdown>

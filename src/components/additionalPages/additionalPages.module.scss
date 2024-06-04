@@ -1,4 +1,4 @@
-$coral-headers-color: #F78579;
+$coral-headers-color: var(--base-accent-color);;
 
 .container {
   display: flex;
@@ -13,29 +13,25 @@ $coral-headers-color: #F78579;
     justify-content: center;
 
     text-align: center;
-    
+
     .h1 {
-      font-size: 200px;
       font-weight: bolder;
-      color: $coral-headers-color;
+      color: var(--base-accent-color);
       line-height: 200px;
     }
-
+    
     .h2 {
-      font-size: 50px;
       font-weight: bold;
-      color: $coral-headers-color;
+      color: var(--base-accent-color);
     }
 
     .h3 {
-      font-size: 28px;
-      font-weight: 500;
-      color: $coral-headers-color;
+      font-weight: bold;
+      color: var(--base-accent-color);
     }
-
+    
     .h4 {
-      font-size: 24px;
-      color: $coral-headers-color;
+      color: var(--base-accent-color);
     }
   }
 }
@@ -43,16 +39,34 @@ $coral-headers-color: #F78579;
 .action-button {
   background-color: $coral-headers-color;
   height: 55px;
-  
 
   color: white;
   font-weight: bold;
   font-size: 24px;
-  min-width: 400px;
-  max-width: 700px;
+  max-width: 500px;
+  width: 100%;
+  padding: 20px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  @media (max-width: 600px) {
+    max-width: 400px;
+  }
+
+  @media (max-width: 500px) {
+    font-size: 5vw;
+    max-width: 300px;
+  } 
+
+  @media (max-width: 400px) {
+    font-size: 5vw;
+    max-width: 300px;
+  } 
 
   &:hover {
-    background-color: #FF7370 !important;
+    background-color: var(--base-accent-color) !important;
     color: white !important;
   }
 }

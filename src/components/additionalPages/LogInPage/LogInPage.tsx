@@ -23,11 +23,10 @@ const LogInPage: React.FC = () => {
           <Layout className={commonStyles.container} style={{ height: '100vh' }}>
             <Content className={clsx(styles['log-in-page'], commonStyles.content)}>
               <Flex vertical gap={32} justify="center" align="center">
-                <Text className={styles.h1}>KILOGRAM</Text>
-                <Text className={styles.h2}>Добро пожаловать</Text>
+                <Text className={clsx(commonStyles.h1, styles.h1)}>KILOGRAM</Text>
+                <Text className={clsx(commonStyles.h2, styles.h2)}>Добро пожаловать</Text>
                 <Button
                   className={commonStyles['action-button']}
-                  size="large"
                   type="text"
                   icon={<GithubOutlined style={{ fontSize: '30px' }} />}
                   onClick={logIn}

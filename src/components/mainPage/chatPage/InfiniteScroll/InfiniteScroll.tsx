@@ -21,6 +21,7 @@ const InfiniteScroll: React.FC<Props> = ({ scrollRef, shouldLoadDelayed }) => {
 
   const [hasMore, setHasMore] = useState(true);
   const target = useRef<HTMLDivElement>(null);
+  const [isReactionsAlreadyOpened, setIsReactionsAlreadyOpened] = useState(false);
 
   const handleObserver = useCallback(async (entries: IntersectionObserverEntry[]) => {
     if (hasMore && !loading && chat && entries[0].isIntersecting) {
@@ -59,10 +60,13 @@ const InfiniteScroll: React.FC<Props> = ({ scrollRef, shouldLoadDelayed }) => {
       {Object.entries(itemsGroupedByDate).map(([date, messages]) => (
           <div key={date} className={styles['messages-with-same-date']}>
             {messages.map((curMessage) => (
-              <Message key={curMessage.id}
-              message={curMessage}
-              isGroup={chat?.type === TypeOfChat.Group}
-              isAllowedReaction={shouldLoadDelayed ? false : true}
+              <Message
+                key={curMessage.id}
+                message={curMessage}
+                isGroup={chat?.type === TypeOfChat.Group}
+                isAllowedReaction={shouldLoadDelayed ? false : true}
+                isReactionsAlreadyOpened={isReactionsAlreadyOpened}
+                setIsReactionsAlreadyOpened={setIsReactionsAlreadyOpened}
               />
             ))}
             <ChatDate date={date} />

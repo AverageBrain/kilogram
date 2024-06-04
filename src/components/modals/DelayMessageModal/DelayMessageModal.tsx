@@ -50,7 +50,7 @@ export const DelayMessageModal: React.FC<Props> = ({ isOpenModal, closeModal, on
       isOpenModal={isOpenModal}
       closeModal={closeModal}
     >
-      <ModalHeader title={'Отправить сообщение...'} toggle={closeModal}/>
+      <ModalHeader title={'Отправить сообщение...'} handleClose={closeModal}/>
       <DatePicker
         className={styles['date-picker']}
         showTime

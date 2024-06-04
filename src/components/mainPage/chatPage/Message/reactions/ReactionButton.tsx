@@ -5,7 +5,7 @@ import { observer } from 'mobx-react-lite';
 import { MessageType } from '../../../../../types';
 
 import styles from '../Message.module.scss';
-import { messagesStore, reactionsStore } from '../../../../../stores';
+import { reactionsStore } from '../../../../../stores';
 import clsx from 'clsx';
 import { useReaction } from '../../../../../hooks/useReaction';
 
@@ -19,12 +19,6 @@ const ReactionButton: React.FC<Props> = ({ message, setVisible }) => {
   const [closeToReaction, setCloseToReaction] = useState(false);
   const [isReactionBarShowed, setIsReactionBarShowed] = useState(false);
   const { handleReaction } = useReaction(message);
-
-  const { setReaction } = messagesStore;
-
-  const handleClick = async (reactionId: number) => {
-    await setReaction(message.id, reactionId);
-  };
 
   const increaseButton = () => {
     setCloseToReaction(true);
