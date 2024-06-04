@@ -12,19 +12,19 @@ type Props = {
 };
 
 const Modal: React.FC<Props> = ( { modalType, isOpenModal, closeModal, children, onAfterClose } ) => (
-    <ReactModal
-      className={clsx(styles[modalType === 'big' ? 'big-modal' : 'small-modal'], styles.modal)}
-      overlayClassName={{
-        base: styles.overlay,
-        afterOpen: styles['overlay--after-open'],
-        beforeClose: styles['overlay--before-close'],
-      }}
-      isOpen={isOpenModal}
-      onRequestClose={closeModal}
-      onAfterClose={onAfterClose}
-      closeTimeoutMS={120}>
-        {children}
-    </ReactModal>
+  <ReactModal
+    className={clsx(styles[modalType === 'big' ? 'big-modal' : 'small-modal'], styles.modal)}
+    overlayClassName={{
+      base: styles.overlay,
+      afterOpen: styles['overlay--after-open'],
+      beforeClose: styles['overlay--before-close'],
+    }}
+    isOpen={isOpenModal}
+    onRequestClose={closeModal}
+    onAfterClose={onAfterClose}
+    closeTimeoutMS={120}>
+      {children}
+  </ReactModal>
 );
 
 export default Modal;

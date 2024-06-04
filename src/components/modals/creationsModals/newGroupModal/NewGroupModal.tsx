@@ -7,6 +7,7 @@ import { groupFormInitialValues, groupFormValidationSchema } from '../../../../c
 import GroupForm from './GroupForm';
 import { ModalHeader } from '../../commonComponents/header';
 import { ModalFooter } from '../../commonComponents/footer';
+import { useTypeOfScreen } from '../../../../hooks';
 
 type Props = {
   isOpenModal: boolean;
@@ -15,6 +16,7 @@ type Props = {
 
 export const NewGroupModal: React.FC<Props> = ({ isOpenModal, closeModal }) => {
   const { loadItems, createGroup } = chatsStore;
+  const { isHiddenModal } = useTypeOfScreen();
 
   const {
     values,
@@ -43,9 +45,14 @@ export const NewGroupModal: React.FC<Props> = ({ isOpenModal, closeModal }) => {
       isOpenModal={isOpenModal}
       closeModal={closeModal}
     >
-        <ModalHeader title="Новая группа" toggle={handleClose} />
+        <ModalHeader
+          title="Новая группа"
+          handleClose={isHiddenModal ? undefined : closeModal}
+          handleBack={isHiddenModal ? closeModal : undefined}
+          handleContunue={isHiddenModal ? submitForm : undefined}
+        />
         <GroupForm values={values} setFieldValue={setFieldValue} />
-        <ModalFooter handleBack={handleClose} handleSave={submitForm}/>
+        {!isHiddenModal && <ModalFooter handleBack={handleClose} handleSave={submitForm}/>}
     </Modal>
   );
 };

@@ -3,6 +3,7 @@ import { UserType } from '../../../../../types';
 import { ModalHeader } from '../../../commonComponents/header';
 
 import { UserModalMain } from '../../userProfile/UserMainModal';
+import { useTypeOfScreen } from '../../../../../hooks';
 
 type Props = {
   selectedUser: UserType;
@@ -10,9 +11,17 @@ type Props = {
   closeModal: () => void;
 };
 
-export const SelectedUserProfileView: React.FC<Props> = ({ selectedUser, handleBack, closeModal }) => (
+export const SelectedUserProfileView: React.FC<Props> = ({ selectedUser, handleBack, closeModal }) => {
+  const { isHiddenModal } = useTypeOfScreen();
+
+  return (
     <>
-      <ModalHeader handleBack={handleBack} toggle={closeModal} title="Информация о пользователе" />
+      <ModalHeader
+        handleBack={handleBack}
+        handleClose={isHiddenModal ? undefined : closeModal}
+        title="Информация о пользователе"
+      />
       <UserModalMain closeModal={closeModal} user={selectedUser}/>
     </>
-);
+  );
+};

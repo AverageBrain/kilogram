@@ -18,7 +18,6 @@ class MessagesStore extends BaseStore<MessageType> {
       loadDelayedMessages: action.bound,
       sendMessage: action.bound,
       updateMessages: action.bound,
-      clearMessages: action.bound,
       sendDelayMessage: action.bound,
       setReaction: action.bound,
       removeReaction: action.bound,
@@ -88,10 +87,6 @@ class MessagesStore extends BaseStore<MessageType> {
     } finally {
       this.disableLoading();
     }
-  }
-
-  clearMessages(): void {
-    this.items = [];
   }
 
   updateMessages(messages: MessageType[]): void {

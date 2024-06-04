@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { FormikErrors } from 'formik';
-import { Avatar, Input } from 'antd';
+import { Input } from 'antd';
 import { GroupFormType } from '../../../../../types';
 import UsersList from '../UsersList';
 import clsx from 'clsx';
@@ -8,6 +8,7 @@ import clsx from 'clsx';
 import styles from './GroupForm.module.scss';
 import { Divider } from '../../../commonComponents/divider';
 import { UserSearch } from '../../../commonComponents/userSearch';
+import { Avatar } from '../../../../Avatar';
 
 type Props = {
   values: GroupFormType;

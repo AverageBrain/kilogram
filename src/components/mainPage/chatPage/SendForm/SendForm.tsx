@@ -17,10 +17,11 @@ import buttonsStyles from '../../../../styles/buttons.module.scss';
 type Props = {
   scrollRef: React.RefObject<HTMLDivElement>;
   setShouldLoadDelayed: (value: boolean) => void;
+  isToolbarHidden: boolean;
 };
 
-const SendMessage: React.FC<Props> = ({ scrollRef, setShouldLoadDelayed }) => {
-  const { loading, sendMessage, sendDelayMessage, clearMessages } = messagesStore;
+const SendMessage: React.FC<Props> = ({ scrollRef, setShouldLoadDelayed, isToolbarHidden }) => {
+  const { loading, sendMessage, sendDelayMessage, resetItems } = messagesStore;
   const { selectedItem: chat, setSelectedChat, getMetadata, createChat } = chatsStore;
   const { selectedUser: user, setSelectedUser } = userStore;
 
@@ -76,7 +77,7 @@ const SendMessage: React.FC<Props> = ({ scrollRef, setShouldLoadDelayed }) => {
   };
 
   const handleClickDelay = () => {
-    clearMessages();
+    resetItems();
     setShouldLoadDelayed(true);
   };
 
@@ -91,51 +92,64 @@ const SendMessage: React.FC<Props> = ({ scrollRef, setShouldLoadDelayed }) => {
   };
 
   return (
-    <div className={styles['send-message']}>
-      <Editor
-        stripPastedStyles
-        wrapperClassName={styles['wrapper-class']}
-        toolbarClassName={styles['toolbar-class']}
-        editorClassName={styles['editor-class']}
-        placeholder="Введите сообщение..."
-        editorState={editorState}
-        onEditorStateChange={setEditorState}
-        handleReturn={handleReturn}
-        toolbar={{
-          options: ['inline', 'link', 'emoji', 'remove', 'history'],
-          inline: {
-            options: ['bold', 'italic', 'underline', 'strikethrough', 'monospace'],
-          },
-          emoji: {
-            popupClassName: styles['popover-class'],
-          },
-          link: {
-            popupClassName: styles['popover-class'],
-          },
-        }}
-        localization={{
-          locale: 'ru',
-        }}
-      />
-      <ul className={styles['file-list']}>
-        {files.map((file, idx) => (
-          <li key={idx} className={styles['file-list-element']}>
-            <p className={styles['file-name']}>{file.name}</p>
-            <CloseCircleOutlined />
-          </li>
-        ))}
-      </ul>
-      <input type={'file'} id={'files'} onChange={handleFileAdd} ref={fileInputRef} multiple hidden/>
-      <button className={buttonsStyles['icon-svg-button']} onClick={() => fileInputRef.current?.click()}>
-        <FileAddOutlined />
-      </button>
-      <button className={buttonsStyles['icon-svg-button']} onClick={handleClickDelay}>
-        <CalendarOutlined />
-      </button>
-      <SendButton
-        disabledDelay={editorState.getCurrentContent().getPlainText().trim().length === 0}
-        onSubmit={handleSubmit}
-      />
+    <div className={styles['wrapper-send-message']}>
+      {!isToolbarHidden && <div className={styles['space-for-texttools']}></div>}
+      <div className={styles['send-message']}>
+        <Editor
+          stripPastedStyles
+          wrapperClassName={styles['wrapper-class']}
+          toolbarClassName={styles['toolbar-class']}
+          editorClassName={styles['editor-class']}
+          placeholder="Введите сообщение..."
+          editorState={editorState}
+          onEditorStateChange={setEditorState}
+          handleReturn={handleReturn}
+          toolbarHidden={isToolbarHidden}
+          toolbar={{
+            options: ['inline', 'link', 'emoji', 'remove', 'history'],
+            inline: {
+              className: styles['inside-params'],
+              options: ['bold', 'italic', 'underline', 'strikethrough', 'monospace'],
+            },
+            emoji: {
+              className: styles['inside-params'],
+              popupClassName: styles['popover-class'],
+            },
+            link: {
+              className: styles['inside-params'],
+              popupClassName: styles['popover-class'],
+            },
+            remove: {
+              className: styles['inside-params'],
+            },
+            history: {
+              className: styles['inside-params'],
+            },
+          }}
+          localization={{
+            locale: 'ru',
+          }}
+        />
+        <ul className={styles['file-list']}>
+          {files.map((file, idx) => (
+            <li key={idx} className={styles['file-list-element']}>
+              <p className={styles['file-name']}>{file.name}</p>
+              <CloseCircleOutlined />
+            </li>
+          ))}
+        </ul>
+        <input type={'file'} id={'files'} onChange={handleFileAdd} ref={fileInputRef} multiple hidden/>
+        <button className={buttonsStyles['big-icon-svg-button']} onClick={() => fileInputRef.current?.click()}>
+          <FileAddOutlined />
+        </button>
+        <button className={buttonsStyles['big-icon-svg-button']} onClick={handleClickDelay}>
+          <CalendarOutlined />
+        </button>
+        <SendButton
+          disabledDelay={editorState.getCurrentContent().getPlainText().trim().length === 0}
+          onSubmit={handleSubmit}
+        />
+      </div>
     </div>
   );
 };

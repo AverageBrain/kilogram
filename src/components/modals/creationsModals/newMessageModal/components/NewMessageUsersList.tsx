@@ -18,7 +18,7 @@ type Props = {
 const NewMessageUsersList: React.FC<Props> = ({ searchTerm, setSearchTerm, closeModal }) => {
   const { setSelectedChat } = chatsStore;
   const { setSelectedUser } = userStore;
-  const { clearMessages } = messagesStore;
+  const { resetItems } = messagesStore;
   const { loadItems: loadUsers, loading, items } = userStore;
 
   const debouncedSearchTerm = useDebounce(searchTerm, 500);
@@ -43,7 +43,7 @@ const NewMessageUsersList: React.FC<Props> = ({ searchTerm, setSearchTerm, close
       setSelectedUser(user);
       setSelectedChat(undefined);
       closeModal();
-      clearMessages();
+      resetItems();
     }
   };
 
