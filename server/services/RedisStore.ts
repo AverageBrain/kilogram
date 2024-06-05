@@ -1,4 +1,5 @@
 import {createClient} from 'redis';
+import {SSEService} from "./SSEService";
 import {prisma} from "../domain/PrismaClient";
 import MainNotificationService from "./MainNotificationService";
 
