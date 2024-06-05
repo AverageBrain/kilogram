@@ -2,7 +2,8 @@ import {GetObjectCommand, PutObjectCommand, S3Client} from "@aws-sdk/client-s3";
 import crypto from "crypto";
 import {getSignedUrl} from "@aws-sdk/s3-request-presigner";
 import {FileInfo} from "../models/FileInfo";
-import path from "path";
+import path, {ParsedPath} from "path";
+import iconv from "iconv-lite";
 
 export class FileStorageService {
     private static storageUrl = 'https://storage.yandexcloud.net'
@@ -45,12 +46,13 @@ export class FileStorageService {
         if (![file.mimetype, this.baseMimetype(file)].some((mimetype) => this.allowedMimetypes.includes(mimetype)))
             throw Error('Недопустимый формат файла!')
 
-        return this.uploadFileData(file.data, path.extname(file.name))
+        return this.uploadFileData(file.data, file.name)
     }
 
-    private static async uploadFileData(data: Buffer, extension: string): Promise<string> {
+    private static async uploadFileData(data: Buffer, fileName: string): Promise<string> {
         const generatedUuid = crypto.randomUUID()
-        const key = `${generatedUuid}${extension}`
+        const fileNameParts: ParsedPath = path.parse(fileName)
+        const key = `${fileNameParts.name}.${generatedUuid}${fileNameParts.ext}`
         const uploadParams = {
             Bucket: this.bucketName,
             Key: key,
@@ -69,10 +71,12 @@ export class FileStorageService {
     }
 
     static async getFilePresignedUrl(fileKey: string): Promise<string> {
+        const fileName = convertKeyToName(fileKey);
         const params = {
             Bucket: this.bucketName,
             Key: fileKey,
-            ResponseContentType: this.getContentTypeByExtension(path.extname(fileKey))
+            ResponseContentType: this.getContentTypeByExtension(path.extname(fileName)),
+            ResponseContentDisposition: `attachment; filename="${fileName}"`
         }
 
         try {
@@ -82,6 +86,14 @@ export class FileStorageService {
             console.error("Ошибка при получении файла из S3:", error)
             throw error
         }
+
+        function convertKeyToName(fileKey: string): string {
+          const fileKeySplitted = fileKey.split('.');
+          fileKeySplitted.splice(-2, 1);
+          const encodedFileName = iconv.encode(decodeURI(fileKeySplitted.join('.')), 'binary');
+
+          return iconv.decode(encodedFileName, 'utf8');
+      }
     }
 
     private static baseMimetype(file: FileInfo): string {
