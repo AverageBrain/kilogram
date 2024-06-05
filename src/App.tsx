@@ -17,13 +17,9 @@ const App: React.FC = () => {
     loggedIn
   } = authUserStore;
 
-  const { loadReactions } = reactionsStore;
-
   useEffect(() => {
     moment.locale('ru');
     loadSelectedItem();
-    loadReactions();
-    requestPermission()
   } ,[]);
 
   return (

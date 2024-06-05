@@ -1,6 +1,7 @@
 import {createClient} from 'redis';
 import {SSEService} from "./SSEService";
 import {prisma} from "../domain/PrismaClient";
+import MainNotificationService from "./MainNotificationService";
 
 const client = await createClient({url: 'redis://158.160.118.181:6379', password: 'kilogram323'})
     .on('error', err => console.log('Redis Client Error', err))
@@ -20,7 +21,7 @@ export class RedisStore {
         } else {
             await this.notifyUsers(true, userId)
         }
-        await client.set(this.onlineKey(userId), 'true')
+        await client.set(this.onlineKey(userId), 'true', {EX: 60 * 60 * 6})
     }
 
     async setOffline(userId: number) {
@@ -29,10 +30,10 @@ export class RedisStore {
             await this.notifyUsers(false, userId)
             statusExpire.delete(userId)
         }, 5_000))
-        const user = await prisma.user.findUnique({ where: { id: userId } })
+        const user = await prisma.user.findUnique({where: {id: userId}})
         if (user) {
             user.lastSeen = new Date()
-            await prisma.user.update({ data: user, where: { id: user.id } })
+            await prisma.user.update({data: user, where: {id: user.id}})
         }
     }
 
@@ -40,14 +41,13 @@ export class RedisStore {
     * Notify users about online or offline for another users
     * */
     async notifyUsers(status: boolean, userId: number) {
-        console.log(status, userId);
-        const sseService = new SSEService();
+        const notificationService = new MainNotificationService();
         const currentUser = await prisma.user.findFirstOrThrow({
-            where: { id: userId },
+            where: {id: userId},
         });
         const supportUser = await prisma.userChat.findMany({
-            where: { userId: userId },
-            include: { chat: { include: { members: true } } }
+            where: {userId: userId},
+            include: {chat: {include: {members: true}}}
         });
         const relevantUsers = supportUser.reduce((acc, su) => {
             su.chat.members.map(i => i.userId).forEach((id) => acc.add(id));
@@ -55,12 +55,11 @@ export class RedisStore {
             return acc;
         }, new Set<number>());
         relevantUsers.delete(userId);
-
-        relevantUsers.forEach(
-            async (id) => {
-                await sseService.publishMessage(id, 'userStatus', { status, userId, lastSeen: currentUser.lastSeen });
-            }
-        );
+        await notificationService.publishMessages(Array.from(relevantUsers), 'userStatus', {
+            status,
+            userId,
+            lastSeen: currentUser.lastSeen
+        });
     }
 
     async getStatus(userIds: number[]): Promise<Map<number, boolean>> {

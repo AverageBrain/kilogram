@@ -1,5 +1,5 @@
-import { UserType } from "../types/types";
-import { BaseApiClient } from "./BaseApiClient";
+import {UserType} from "../types/types";
+import {BaseApiClient} from "./BaseApiClient";
 
 class UserApiClient extends BaseApiClient {
     getMe(): Promise<UserType> {
@@ -8,6 +8,10 @@ class UserApiClient extends BaseApiClient {
 
     editMe(user: UserType): Promise<UserType> {
         return this.axiosPost('/user/edit', user);
+    }
+
+    setFirebaseToken(token: string) {
+        return this.axiosPost('/user/setFirebaseToken', {token})
     }
 
     findUsers(prefix: string): Promise<UserType[]> {

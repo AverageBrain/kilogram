@@ -9,18 +9,19 @@ datasource db {
 }
 
 model User {
-  id               Int               @id @default(autoincrement())
-  createdAt        DateTime          @default(now())
-  updatedAt        DateTime          @updatedAt
-  username         String            @unique @default("")
-  name             String            @default("")
-  githubId         String?           @unique
-  avatarKey        String?           @default("")
-  lastSeen         DateTime          @default(now())
-  DelayMessage     DelayMessage[]
-  messages         Message[]
-  messageReactions MessageReaction[]
-  chats            UserChat[]
+  id                        Int               @id @default(autoincrement())
+  createdAt                 DateTime          @default(now())
+  updatedAt                 DateTime          @updatedAt
+  username                  String            @unique @default("")
+  name                      String            @default("")
+  githubId                  String?           @unique
+  avatarKey                 String?           @default("")
+  lastSeen                  DateTime          @default(now())
+  DelayMessage              DelayMessage[]
+  messages                  Message[]
+  messageReactions          MessageReaction[]
+  chats                     UserChat[]
+  firebaseNotificationToken String?
 }
 
 model Chat {
