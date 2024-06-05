@@ -1,9 +1,8 @@
 import React, { PropsWithChildren } from 'react';
 import { observer } from 'mobx-react-lite';
-import { isEmpty } from 'lodash';
 
-import { authUserStore } from '../../../stores';
 import { Navigate } from 'react-router-dom';
+import { authUserStore } from '../../../stores';
 
 type Props = PropsWithChildren;
 

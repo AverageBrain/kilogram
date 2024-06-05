@@ -2,7 +2,7 @@ type BaseItemType = {
   id: number;
   createdAt: Date;
   updatedAt: Date;
-}
+};
 
 export type UserType = BaseItemType & {
   name: string;
@@ -10,7 +10,7 @@ export type UserType = BaseItemType & {
   bio?: string;
   lastSeen?: Date;
   userStatus?: boolean;
-}
+};
 
 export type MessageType = BaseItemType & {
   chatId: number;
@@ -19,27 +19,27 @@ export type MessageType = BaseItemType & {
   inTime?: Date;
   reactions?: MessageReactionType[];
   fileUrls?: string[];
-}
+};
 
 export type MessageReactionType = BaseItemType & {
   reactionType: ReactionType;
   userId: number;
-}
+};
 
 export type ReactionType = BaseItemType & {
   emoji: string;
-}
+};
 
 export type ReactionWithMessageInfoType = BaseItemType & {
   reactionTypeId: number;
   messageId: number;
   userId: number;
-}
+};
 
 export type ChatListItemType = BaseItemType & {
   name: string;
   lastMessage: string;
-}
+};
 
 export enum TypeOfChat {
   Chat = 'chat',
@@ -52,13 +52,13 @@ export type ChatType = BaseItemType & {
   joinKey?: string; // only for group
   messages: MessageType[];
   type: TypeOfChat;
-}
+};
 
 export type MetadataType = {
   title: string;
   description?: string;
   imageUrl?: string;
-}
+};
 
 export type GroupFormType = {
   name: string;

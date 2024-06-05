@@ -11,7 +11,7 @@ import { ModalFooter } from '../../commonComponents/footer';
 type Props = {
   isOpenModal: boolean;
   closeModal: () => void;
-}
+};
 
 export const NewGroupModal: React.FC<Props> = ({ isOpenModal, closeModal }) => {
   const { loadItems, createGroup } = chatsStore;
@@ -38,14 +38,14 @@ export const NewGroupModal: React.FC<Props> = ({ isOpenModal, closeModal }) => {
   };
 
   return (
-    <Modal 
-      modalType='big'
-      isOpenModal={isOpenModal} 
+    <Modal
+      modalType="big"
+      isOpenModal={isOpenModal}
       closeModal={closeModal}
     >
-        <ModalHeader title='Новая группа' toggle={handleClose} />
-        <GroupForm values={values} setFieldValue={setFieldValue} />
-        <ModalFooter handleBack={handleClose} handleSave={submitForm}/>
+      <ModalHeader title="Новая группа" toggle={handleClose} />
+      <GroupForm values={values} setFieldValue={setFieldValue} />
+      <ModalFooter handleBack={handleClose} handleSave={submitForm} />
     </Modal>
   );
 };

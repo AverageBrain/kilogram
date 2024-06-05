@@ -1,4 +1,3 @@
-
 import {
   action,
   makeObservable,
@@ -8,7 +7,9 @@ import {
 } from 'mobx';
 import { partition } from 'lodash';
 
-import { ChatType, MessageType, MetadataType, UserType } from '../types';
+import {
+  ChatType, MessageType, MetadataType, UserType,
+} from '../types';
 import BaseStore from './BaseStore';
 import { chatApiClient } from '../hands';
 
@@ -90,10 +91,7 @@ class ChatsStore extends BaseStore<ChatType> {
   }
 
   getChatByUser(user: UserType) {
-    for (let item of this.items) {
-      if (item.type === 'chat' && item.users[0] && item.users[0].id === user.id)
-        return item;
-    }
+    return this.items.find((item) => item.type === 'chat' && item.users[0] && item.users[0].id === user.id);
   }
 
   async updateChats(message: MessageType) {
@@ -121,16 +119,16 @@ class ChatsStore extends BaseStore<ChatType> {
         ...chat,
         users: chat.users.map((user) => ({
           ...user,
-          userStatus: user.id == userId ? userStatus : user?.userStatus,
-          lastSeen: user.id == userId ? lastSeen : user?.lastSeen,
+          userStatus: user.id === userId ? userStatus : user?.userStatus,
+          lastSeen: user.id === userId ? lastSeen : user?.lastSeen,
         })),
       }));
       this.selectedItem = this.selectedItem ? {
         ...this.selectedItem,
         users: this.selectedItem.users.map((user) => ({
           ...user,
-          userStatus: user.id == userId ? userStatus : user?.userStatus,
-          lastSeen: user.id == userId ? lastSeen : user?.lastSeen,
+          userStatus: user.id === userId ? userStatus : user?.userStatus,
+          lastSeen: user.id === userId ? lastSeen : user?.lastSeen,
         })),
       } : undefined;
     });

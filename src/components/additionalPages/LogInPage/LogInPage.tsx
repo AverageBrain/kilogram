@@ -1,13 +1,14 @@
 import React from 'react';
 import { observer } from 'mobx-react-lite';
-import { Button, Layout, Flex, Typography } from 'antd';
+import {
+  Button, Layout, Flex, Typography,
+} from 'antd';
 import { GithubOutlined } from '@ant-design/icons';
-
-import { authApiClient } from '../../../hands';
-import { authUserStore } from '../../../stores';
 
 import { Navigate } from 'react-router-dom';
 import clsx from 'clsx';
+import { authApiClient } from '../../../hands';
+import { authUserStore } from '../../../stores';
 
 import commonStyles from '../additionalPages.module.scss';
 import styles from './LogInPage.module.scss';
@@ -24,8 +25,8 @@ const LogInPage: React.FC = () => {
     <>
       {loggedIn
         ? <Navigate replace to="/" relative="path" />
-        :  (
-          <Layout className={commonStyles.container} style={{ height: "100vh" }}>
+        : (
+          <Layout className={commonStyles.container} style={{ height: '100vh' }}>
             <Content className={clsx(styles['log-in-page'], commonStyles.content)}>
               <Flex vertical gap={32} justify="center" align="center">
                 <Text className={styles.h1}>KILOGRAM</Text>
@@ -34,7 +35,7 @@ const LogInPage: React.FC = () => {
                   className={commonStyles['action-button']}
                   size="large"
                   type="text"
-                  icon={<GithubOutlined style={{ fontSize: '30px'}} />}
+                  icon={<GithubOutlined style={{ fontSize: '30px' }} />}
                   onClick={handleLogIn}
                 >
                   Войти через GitHub
@@ -42,11 +43,9 @@ const LogInPage: React.FC = () => {
               </Flex>
             </Content>
           </Layout>
-        )
-      }
+        )}
     </>
   );
-
-}
+};
 
 export default observer(LogInPage);

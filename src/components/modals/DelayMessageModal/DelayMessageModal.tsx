@@ -1,22 +1,22 @@
 import React, { useState } from 'react';
-import Modal from '../commonComponents/modal';
-import { ModalHeader } from '../commonComponents/header';
 import ru from 'antd/es/date-picker/locale/ru_RU';
-import { DatePicker, Flex } from 'antd';
+import { DatePicker } from 'antd';
 import dayjs from 'dayjs';
 import { range } from 'lodash';
+import { ModalHeader } from '../commonComponents/header';
+import Modal from '../commonComponents/modal';
 import { ModalFooter } from '../commonComponents/footer';
 
-import styles from './DelayMessageModal.module.scss'
+import styles from './DelayMessageModal.module.scss';
 
 type Props = {
   isOpenModal: boolean;
   closeModal: () => void;
   onSubmit: (delayDate?: Date) => void;
-}
+};
 
-export const DelayMessageModal: React.FC<Props> = ({ isOpenModal, closeModal, onSubmit } ) => {
-  const [ delayDate, setDelayDate ] = useState(dayjs().add(10, 'minute'));
+export const DelayMessageModal: React.FC<Props> = ({ isOpenModal, closeModal, onSubmit }) => {
+  const [delayDate, setDelayDate] = useState(dayjs().add(10, 'minute'));
   const locale: typeof ru = {
     ...ru,
     lang: {
@@ -31,7 +31,8 @@ export const DelayMessageModal: React.FC<Props> = ({ isOpenModal, closeModal, on
     const disabledHours = isToday
       ? () => range(0, now.hour())
       : undefined;
-    const disabledMinutes = (hour: number) => isToday && hour === now.hour() ? range(0, now.minute() + 1) : []; 
+    const disabledMinutes = (hour: number) => (isToday && hour === now.hour() ? range(0, now.minute() + 1) : []);
+
     return {
       disabledHours,
       disabledMinutes,
@@ -42,14 +43,14 @@ export const DelayMessageModal: React.FC<Props> = ({ isOpenModal, closeModal, on
     onSubmit(delayDate.toDate());
     closeModal();
   };
-  
+
   return (
-    <Modal 
-      modalType='small'
-      isOpenModal={isOpenModal} 
+    <Modal
+      modalType="small"
+      isOpenModal={isOpenModal}
       closeModal={closeModal}
     >
-      <ModalHeader title={'Отправить сообщение...'} toggle={closeModal}/>
+      <ModalHeader title="Отправить сообщение..." toggle={closeModal} />
       <DatePicker
         className={styles['date-picker']}
         showTime
@@ -64,7 +65,7 @@ export const DelayMessageModal: React.FC<Props> = ({ isOpenModal, closeModal, on
         disabledTime={getDisabledTime}
         onChange={setDelayDate}
       />
-      <ModalFooter handleSave={handleSendDelayMessage} saveText="Отправить" handleBack={closeModal}/>
+      <ModalFooter handleSave={handleSendDelayMessage} saveText="Отправить" handleBack={closeModal} />
     </Modal>
   );
-}
+};

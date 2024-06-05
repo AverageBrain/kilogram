@@ -9,12 +9,12 @@ import styles from './ChatListPage.module.scss';
 
 const ChatListPage: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState('');
-  
+
   return (
     <Layout className={styles.main}>
-        <Header value={searchTerm} setSearchTerm={setSearchTerm}/>
-        <ChatList searchTerm={searchTerm} setSearchTerm={setSearchTerm}/>
-        <NewChatButton />
+      <Header value={searchTerm} setSearchTerm={setSearchTerm} />
+      <ChatList searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
+      <NewChatButton />
     </Layout>
   );
 };
