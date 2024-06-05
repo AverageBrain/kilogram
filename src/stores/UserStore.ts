@@ -1,4 +1,6 @@
-import { action, makeObservable, observable, runInAction } from 'mobx';
+import {
+  action, makeObservable, observable, runInAction,
+} from 'mobx';
 
 import { UserType } from '../types';
 import { userApiClient } from '../hands';
@@ -7,6 +9,7 @@ import BaseStore from './BaseStore';
 
 class UserStore extends BaseStore<UserType> {
   selectedUser: UserType | undefined = undefined;
+
   avatarCache: Map<number, string> = new Map();
 
   constructor() {

@@ -1,18 +1,20 @@
-import {BASE_SERVER_GITHUB_REDIRECT, BaseApiClient} from "./BaseApiClient";
+/* eslint-disable class-methods-use-this */
+import { BASE_SERVER_GITHUB_REDIRECT, BaseApiClient } from './BaseApiClient';
 
 class AuthApiClient extends BaseApiClient {
-    async authWithGithub(): Promise<null> {
-        window.location.href = BASE_SERVER_GITHUB_REDIRECT;
-        return null;
-    }
+  async authWithGithub(): Promise<null> {
+    window.location.href = BASE_SERVER_GITHUB_REDIRECT;
 
-    async authGithubCallback(url: string) {
-        return this.axiosGet(url);
-    }
+    return null;
+  }
 
-    async logout() {
-        return this.axiosPost("/logout", {});
-    }
+  async authGithubCallback(url: string) {
+    return this.axiosGet(url);
+  }
+
+  async logout() {
+    return this.axiosPost('/logout', {});
+  }
 }
 
 export default new AuthApiClient();

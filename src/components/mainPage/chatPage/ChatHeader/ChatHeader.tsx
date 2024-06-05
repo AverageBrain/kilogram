@@ -1,7 +1,7 @@
 import React from 'react';
 import { Layout } from 'antd';
-import { useModal } from '../../../../hooks/useModal';
 import { observer } from 'mobx-react-lite';
+import { useModal } from '../../../../hooks/useModal';
 import { chatsStore, userStore } from '../../../../stores';
 import { TypeOfChat } from '../../../../types/types';
 import { GroupProfile, UserProfile } from '../../../modals';

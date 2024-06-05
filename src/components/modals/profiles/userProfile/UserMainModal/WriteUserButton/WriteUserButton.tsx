@@ -1,7 +1,7 @@
 import React from 'react';
+import { Button } from 'antd';
 import { UserType } from '../../../../../../types';
 import { chatsStore, messagesStore, userStore } from '../../../../../../stores';
-import { Button } from 'antd';
 import { Divider } from '../../../../commonComponents/divider';
 
 import styles from './WriteUserButton.module.scss';
@@ -9,9 +9,9 @@ import styles from './WriteUserButton.module.scss';
 type Props = {
   user: UserType;
   closeModal: () => void;
-}
+};
 
-export const WriteUserButton: React.FC<Props> = ( { user, closeModal } ) => {
+export const WriteUserButton: React.FC<Props> = ({ user, closeModal }) => {
   const { setSelectedChat } = chatsStore;
   const { setSelectedUser } = userStore;
   const { clearMessages } = messagesStore;
@@ -32,9 +32,9 @@ export const WriteUserButton: React.FC<Props> = ( { user, closeModal } ) => {
   return (
     <>
       <Divider />
-      <Button className={styles["write-user-button"]} type="text" size="large" onClick={handleClick}>
+      <Button className={styles['write-user-button']} type="text" size="large" onClick={handleClick}>
         Написать сообщение
       </Button>
     </>
   );
-}
+};

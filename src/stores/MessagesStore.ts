@@ -1,9 +1,10 @@
-
-import { action, makeObservable, override, reaction, runInAction } from 'mobx';
+import {
+  action, makeObservable, override, runInAction,
+} from 'mobx';
+import { partition } from 'lodash';
 import { MessageReactionType, MessageType } from '../types';
 import BaseStore from './BaseStore';
 import { chatApiClient } from '../hands';
-import { partition } from 'lodash';
 
 class MessagesStore extends BaseStore<MessageType> {
   constructor() {
@@ -29,7 +30,7 @@ class MessagesStore extends BaseStore<MessageType> {
   async loadMessages(chatId: number, afterId: number = -1, update?: boolean): Promise<boolean> {
     try {
       this.enableLoading();
-    
+
       const data = await chatApiClient.getMessages(chatId, afterId);
 
       runInAction(() => {
@@ -39,9 +40,11 @@ class MessagesStore extends BaseStore<MessageType> {
           this.items = data;
         }
       });
+
       return data.length > 0;
     } catch (e: any) {
       console.warn(e);
+
       return false;
     } finally {
       this.disableLoading();
@@ -51,7 +54,7 @@ class MessagesStore extends BaseStore<MessageType> {
   async loadDelayedMessages(chatId: number, beforeInTime?: Date, update?: boolean): Promise<boolean> {
     try {
       this.enableLoading();
-    
+
       const data = await chatApiClient.getDelayMessages(chatId, beforeInTime);
 
       runInAction(() => {
@@ -61,9 +64,11 @@ class MessagesStore extends BaseStore<MessageType> {
           this.items = data;
         }
       });
+
       return data.length > 0;
     } catch (e: any) {
       console.warn(e);
+
       return false;
     } finally {
       this.disableLoading();
@@ -73,7 +78,7 @@ class MessagesStore extends BaseStore<MessageType> {
   async sendMessage(chatId: number, text: string, files: File[]): Promise<void> {
     try {
       this.enableLoading();
-    
+
       await chatApiClient.sendMessage(chatId, text, files);
     } catch (e: any) {
       console.warn(e);
@@ -88,14 +93,14 @@ class MessagesStore extends BaseStore<MessageType> {
 
   updateMessages(messages: MessageType[]): void {
     runInAction(() => {
-        this.items = [...messages, ...this.items];
+      this.items = [...messages, ...this.items];
     });
   }
 
   async sendDelayMessage(chatId: number, text: string, files: File[], inTime: Date): Promise<void> {
     try {
       this.enableLoading();
-    
+
       await chatApiClient.sendDelayMessage(chatId, text, files, inTime);
     } catch (e: any) {
       console.warn(e);
@@ -103,38 +108,40 @@ class MessagesStore extends BaseStore<MessageType> {
       this.disableLoading();
     }
   }
-      
+
   async setReaction(messageId: number, reactionTypeId: number) {
     try {
-        await chatApiClient.setReaction(messageId, reactionTypeId);
+      await chatApiClient.setReaction(messageId, reactionTypeId);
     } catch (e: any) {
-        console.warn(e);
-        return false;
+      console.warn(e);
+
+      return false;
     } finally {
-        this.disableLoading();
+      this.disableLoading();
     }
   }
 
   async removeReaction(messageId: number, reactionTypeId: number) {
     try {
-        await chatApiClient.removeReaction(messageId, reactionTypeId);
+      await chatApiClient.removeReaction(messageId, reactionTypeId);
     } catch (e: any) {
+      console.warn(e);
 
-        console.warn(e);
-        return false;
+      return false;
     } finally {
-        this.disableLoading();
+      this.disableLoading();
     }
   }
 
   updateMessageByReaction(messageId: number, reaction: MessageReactionType, type: 'deleted' | 'set'): void {
-    const message = this.items.find((message) => (message.id == messageId)); 
-    if (!message) return
+    const message = this.items.find((message) => (message.id === messageId));
+    if (!message) return;
     const updatedmessage = this.items;
-    
-    updatedmessage.map(item => {
+
+    updatedmessage.forEach((item) => {
       if (item.id === messageId) {
         if (item.reactions) {
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           const [_, otherReaction] = partition(
             item.reactions,
             (item) => item.id === reaction.id,
@@ -150,13 +157,13 @@ class MessagesStore extends BaseStore<MessageType> {
       this.items = [...updatedmessage];
     });
   }
-  
+
   updateMessageByRemoveReaction(messageId: number, reactionId: number): void {
-    const message = this.items.find((message) => (message.id == messageId)); 
-    if (!message) return
+    const message = this.items.find((message) => (message.id === messageId));
+    if (!message) return;
     const updatedmessage = this.items;
-    
-    updatedmessage.map(item => {
+
+    updatedmessage.forEach((item) => {
       if (item.id === messageId) {
         if (item.reactions) {
           const [otherReaction] = partition(
@@ -165,7 +172,6 @@ class MessagesStore extends BaseStore<MessageType> {
           );
           item.reactions = [...otherReaction];
         }
-
       }
     });
     runInAction(() => {

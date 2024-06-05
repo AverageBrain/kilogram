@@ -1,8 +1,8 @@
-import { GroupFormType } from '../types';
 import * as Yup from 'yup';
+import { GroupFormType } from '../types';
 
 export const groupFormInitialValues: GroupFormType = {
-  name: "",
+  name: '',
   userIds: [],
 };
 
