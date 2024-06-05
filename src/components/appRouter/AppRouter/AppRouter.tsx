@@ -7,29 +7,27 @@ import MainPage from '../../mainPage/MainPage';
 import JoinGroupPage from '../../additionalPages/JoinGroupPage';
 import NotFoundPage from '../../additionalPages/NotFoundPage';
 
-const AppRouter: React.FC = () => {
-  return (
-    <BrowserRouter>
-      <Routes>
-        <Route
-          index
-          element={<AuthRoutes><MainPage /></AuthRoutes>}
-        />
-        <Route
-          path="/join/:joinKey"
-          element={<AuthRoutes><JoinGroupPage /></AuthRoutes>}
-        />
-        <Route
-          path="/login"
-          element={<LogInPage />}
-        />
-        <Route
-          path="*"
-          element={<NotFoundPage />}
-        />
-      </Routes>
-    </BrowserRouter>
-  );
-};
+const AppRouter: React.FC = () => (
+  <BrowserRouter>
+    <Routes>
+      <Route
+        index
+        element={<AuthRoutes><MainPage /></AuthRoutes>}
+      />
+      <Route
+        path="/join/:joinKey"
+        element={<AuthRoutes><JoinGroupPage /></AuthRoutes>}
+      />
+      <Route
+        path="/login"
+        element={<LogInPage />}
+      />
+      <Route
+        path="*"
+        element={<NotFoundPage />}
+      />
+    </Routes>
+  </BrowserRouter>
+);
 
 export default AppRouter;

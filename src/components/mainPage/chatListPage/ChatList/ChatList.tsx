@@ -9,35 +9,33 @@ import Chats from './Chats';
 type Props = {
   searchTerm: string;
   setSearchTerm: (value: string) => void;
-}
+};
 
 const ChatList: React.FC<Props> = ({ setSearchTerm, searchTerm }) => {
   const [isSearching, setIsSearcing] = useState('');
-  
+
   const [results, setResults] = useState(new Array<UserType>());
 
   const debouncedSearchTerm = useDebounce(searchTerm, 500);
 
-  useEffect(
-    () => {
-      if (debouncedSearchTerm) {
-        setIsSearcing('proccesing');
-        userApiClient.findUsers(debouncedSearchTerm).then(results => {
-          setIsSearcing('found');
+  useEffect(() => {
+    if (debouncedSearchTerm) {
+      setIsSearcing('proccesing');
+      userApiClient.findUsers(debouncedSearchTerm).then((results) => {
+        setIsSearcing('found');
 
-          setResults(results);
-        });
-      } else {
-        setIsSearcing('');
-        setResults([]);
-      }
-    }, [debouncedSearchTerm]
-  )
+        setResults(results);
+      });
+    } else {
+      setIsSearcing('');
+      setResults([]);
+    }
+  }, [debouncedSearchTerm]);
 
   return (
-    isSearching ? 
-      <SearchResults results={results} isSearching={isSearching} setSearchTerm={setSearchTerm} /> : 
-      <Chats setSearchTerm={setSearchTerm} />
+    isSearching
+      ? <SearchResults results={results} isSearching={isSearching} setSearchTerm={setSearchTerm} />
+      : <Chats setSearchTerm={setSearchTerm} />
   );
 };
 

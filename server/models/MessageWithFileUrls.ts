@@ -1,6 +1,6 @@
-import {Message} from "@prisma/client";
+import { Message } from '@prisma/client';
 
 export interface MessageWithFileUrls {
-    message: Message
-    fileUrls: string[]
+  message: Message;
+  fileUrls: string[];
 }

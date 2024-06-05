@@ -4,11 +4,11 @@ import { authUserStore, messagesStore, reactionsStore } from '../stores';
 
 export const useReaction = (message: MessageType) => {
   const { selectedItem } = authUserStore;
-  const [ authUserReaction, setAuthUserReaction ] = useState<MessageReactionType | null>(null);
+  const [authUserReaction, setAuthUserReaction] = useState<MessageReactionType | null>(null);
   const { items } = reactionsStore;
   const { setReaction, removeReaction } = messagesStore;
 
-  const isAuthUserReaction = (emoji: string) => emoji === authUserReaction?.reactionType.emoji; 
+  const isAuthUserReaction = (emoji: string) => emoji === authUserReaction?.reactionType.emoji;
 
   useEffect(() => {
     if (message.reactions) {
@@ -16,7 +16,7 @@ export const useReaction = (message: MessageType) => {
       if (userReaction) {
         setAuthUserReaction(userReaction);
       } else {
-        setAuthUserReaction(null)
+        setAuthUserReaction(null);
       }
     }
   }, [message.reactions]);
@@ -25,11 +25,13 @@ export const useReaction = (message: MessageType) => {
     const curReaction = items.find((reactionType) => reactionType.emoji === emoji);
     if (!isAuthUserReaction(emoji) && curReaction) {
       await setReaction(message.id, curReaction.id);
-    } 
+    }
     if (isAuthUserReaction(emoji) && curReaction) {
       await removeReaction(message.id, curReaction.id);
-    } 
-  }
+    }
+  };
 
-  return { isAuthUserReaction, setAuthUserReaction, handleReaction, authUserReaction };
+  return {
+    isAuthUserReaction, setAuthUserReaction, handleReaction, authUserReaction,
+  };
 };

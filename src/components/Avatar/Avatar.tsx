@@ -1,11 +1,10 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { observer } from 'mobx-react-lite';
-import { Avatar as AvatarAD, Spin, Badge } from 'antd';
+import { Avatar as AvatarAD, Badge } from 'antd';
 import { CommentOutlined, UserOutlined } from '@ant-design/icons';
 import clsx from 'clsx';
 
 import { userStore } from '../../stores';
-import { userApiClient } from '../../hands';
 import styles from './Avatar.module.scss';
 
 type Props = {
@@ -13,9 +12,11 @@ type Props = {
   size?: number;
   className?: string;
   userStatus?: boolean;
-}
+};
 
-const Avatar: React.FC<Props> = ({ userId, size, className, userStatus }) => {
+const Avatar: React.FC<Props> = ({
+  userId, size, className, userStatus,
+}) => {
   const { avatarCache, loadAvatar } = userStore;
 
   const [image, setImage] = useState<string | undefined>(undefined);
@@ -52,9 +53,8 @@ const Avatar: React.FC<Props> = ({ userId, size, className, userStatus }) => {
         />
       )}
       {userId && (image
-        ? <img alt='avatar' src={image} />
-        : <AvatarAD icon={<UserOutlined />} size={avatarSize} />)
-      }
+        ? <img alt="avatar" src={image} />
+        : <AvatarAD icon={<UserOutlined />} size={avatarSize} />)}
     </div>
   ), [image]);
 
@@ -71,10 +71,9 @@ const Avatar: React.FC<Props> = ({ userId, size, className, userStatus }) => {
             {avatarComponent}
           </Badge>
         )
-        : avatarComponent
-      }
+        : avatarComponent}
     </>
   );
-}
+};
 
 export default observer(Avatar);
