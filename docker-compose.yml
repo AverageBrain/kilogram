@@ -14,8 +14,9 @@ services:
     restart: always
     ports:
       - "6379:6379"
+    command:
+      - redis-server --requirepass kilogram323
     environment:
-      - REDIS_PASSWORD=kilogram
       - REDIS_PORT=6379
       - REDIS_DATABASES=16
 
@@ -56,6 +57,32 @@ services:
       - client
       - server
 
+  elasticsearch:
+    image: elasticsearch:7.16.1
+    volumes:
+      - ./repository/elk/configs/elasticsearch/config.yml:/usr/share/elasticsearch/config/elasticsearch.yml:ro
+      - ./docker_volumes/elasticsearch/data:/usr/share/elasticsearch/data
+    environment:
+      ELASTIC_USERNAME: "elastic"
+      ELASTIC_PASSWORD: "2VFGaHd46OwL"
+      discovery.type: single-node
+    networks:
+      - elk_bridge
+    ports:
+      - "9200:9200"
+      - "9300:9300"
+
+  kibana:
+    image: kibana:7.16.1
+    depends_on:
+      - elasticsearch
+    volumes:
+      - ./repository/elk/configs/kibana/config.yml:/usr/share/kibana/config/kibana.yml:ro
+    networks:
+      - elk_bridge
+    ports:
+      - "81:5601"
+
 networks:
   client_bridge:
     driver: bridge
@@ -64,4 +91,7 @@ networks:
     driver: bridge
 
   database_bridge:
+    driver: bridge
+
+  elk_bridge:
     driver: bridge

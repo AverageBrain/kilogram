@@ -1,12 +1,12 @@
-import { BodyParam, Get, JsonController, Param, Post, QueryParam, Req, Res } from 'routing-controllers';
+import {BodyParam, Get, JsonController, Param, Post, Req, Res} from 'routing-controllers';
 import * as types from '../../src/types';
 import express from 'express';
-import { prisma } from "../domain/PrismaClient";
-import { User } from "@prisma/client";
-import { UserAvatarService } from "../services/UserAvatarService";
-import { UploadedFile } from "express-fileupload"
-import { RedisStore } from "../services/RedisStore";
-import { FileInfo } from "../models/FileInfo";
+import {prisma} from "../domain/PrismaClient";
+import {User} from "@prisma/client";
+import {UserAvatarService} from "../services/UserAvatarService";
+import {UploadedFile} from "express-fileupload"
+import {RedisStore} from "../services/RedisStore";
+import {FileInfo} from "../models/FileInfo";
 
 const redisStore = new RedisStore()
 
@@ -60,13 +60,26 @@ export class UserController {
     @Post("/edit")
     async editMe(@Req() request: express.Request, @BodyParam("user") user: types.UserType): Promise<types.UserType> {
         const sessionUser = request.user
-        if (!user) {
+        if (!sessionUser?.prismaUser) {
             throw new Error("User must be authorized")
         }
-        const localUser = await prisma.user.findUniqueOrThrow({ where: { githubId: sessionUser?.toString() } })
-        localUser.name = user.name
-        localUser.username = user.username
-        return convertPrismaUser(localUser)
+        return convertPrismaUser(await prisma.user.update({
+            data: {name: user.name, username: user.username},
+            where: {id: sessionUser.userId}
+        }))
+    }
+
+
+    @Post("/setFirebaseToken")
+    async setFirebaseToken(@Req() request: express.Request, @BodyParam("token") token: string): Promise<types.UserType> {
+        const sessionUser = request.user
+        if (!sessionUser?.prismaUser) {
+            throw new Error("User must be authorized")
+        }
+        return convertPrismaUser(await prisma.user.update({
+            data: {firebaseNotificationToken: token},
+            where: {id: sessionUser.userId}
+        }))
     }
 
     @Get("/users/find/:prefix")
@@ -77,11 +90,11 @@ export class UserController {
             const users: User[] = await prisma.user.findMany({
                 where: {
                     AND: [{
-                        username: { startsWith: prefix, mode: 'insensitive' }
+                        username: {startsWith: prefix, mode: 'insensitive'}
                     },
-                    {
-                        NOT: { id: { equals: sessionUser?.prismaUser?.id } }
-                    }]
+                        {
+                            NOT: {id: {equals: sessionUser?.prismaUser?.id}}
+                        }]
                 }
             })
             const usersStatuses = await redisStore.getStatus(users.map(i => i.id))
@@ -97,6 +110,10 @@ export class UserController {
         @Req() request: express.Request,
         @BodyParam("id") id: number,
     ) {
+        const sessionUser = request.user
+        if (!sessionUser?.prismaUser) {
+            throw new Error("User must be authorized")
+        }
         const files = request.files
         let result = null
 
@@ -121,9 +138,14 @@ export class UserController {
 
     @Get("/avatar/:id")
     async getAvatar(
+        @Req() request: express.Request,
         @Res() response: express.Response,
         @Param("id") id: number,
     ) {
+        const sessionUser = request.user
+        if (!sessionUser?.prismaUser) {
+            throw new Error("User must be authorized")
+        }
         if (!id) throw new Error("Id required")
         return await UserAvatarService.getAvatar(id.toString())
     }
