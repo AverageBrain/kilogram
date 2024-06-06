@@ -1,10 +1,9 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { observer } from 'mobx-react-lite';
-import { UserType } from '../../../../types';
 import { useDebounce } from '../../../../hooks';
-import { userApiClient } from '../../../../hands';
 import SearchResults from './SearchResults';
 import Chats from './Chats';
+import { userStore } from '../../../../stores';
 
 type Props = {
   searchTerm: string;
@@ -12,29 +11,19 @@ type Props = {
 };
 
 const ChatList: React.FC<Props> = ({ setSearchTerm, searchTerm }) => {
-  const [isSearching, setIsSearcing] = useState('');
-
-  const [results, setResults] = useState(new Array<UserType>());
+  const { loadItems } = userStore;
 
   const debouncedSearchTerm = useDebounce(searchTerm, 500);
 
   useEffect(() => {
     if (debouncedSearchTerm) {
-      setIsSearcing('proccesing');
-      userApiClient.findUsers(debouncedSearchTerm).then((results) => {
-        setIsSearcing('found');
-
-        setResults(results);
-      });
-    } else {
-      setIsSearcing('');
-      setResults([]);
+      loadItems(debouncedSearchTerm);
     }
-  }, [debouncedSearchTerm]);
+  }, [loadItems, debouncedSearchTerm]);
 
   return (
-    isSearching
-      ? <SearchResults results={results} isSearching={isSearching} setSearchTerm={setSearchTerm} />
+    debouncedSearchTerm
+      ? <SearchResults setSearchTerm={setSearchTerm} />
       : <Chats setSearchTerm={setSearchTerm} />
   );
 };

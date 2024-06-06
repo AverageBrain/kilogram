@@ -5,6 +5,7 @@ import {
   override,
   runInAction,
 } from 'mobx';
+import { message } from 'antd';
 import { partition } from 'lodash';
 
 import {
@@ -48,13 +49,14 @@ class ChatsStore extends BaseStore<ChatType> {
         this.items = data;
       });
     } catch (e: any) {
+      message.error('Не удалось получить чаты');
       console.warn(e);
     } finally {
       this.disableLoading();
     }
   }
 
-  async createChat(userId: number): Promise<void> {
+  async createChat(userId: number): Promise<ChatType | undefined> {
     try {
       this.enableLoading();
 
@@ -62,7 +64,10 @@ class ChatsStore extends BaseStore<ChatType> {
       runInAction(() => {
         this.selectedItem = data;
       });
+
+      return data;
     } catch (e: any) {
+      message.error('Не удалось создать чат');
       console.warn(e);
     } finally {
       this.disableLoading();
@@ -78,6 +83,7 @@ class ChatsStore extends BaseStore<ChatType> {
         this.selectedItem = data;
       });
     } catch (e: any) {
+      message.error('Не удалось создать группу');
       console.warn(e);
     } finally {
       this.disableLoading();
@@ -151,6 +157,7 @@ class ChatsStore extends BaseStore<ChatType> {
         this.setResponseError('');
       });
     } catch (e: any) {
+      message.error('Не удалось получить группу');
       console.warn(e);
       this.setResponseError(e.response.data.message);
     } finally {
@@ -168,6 +175,7 @@ class ChatsStore extends BaseStore<ChatType> {
         this.selectedItem = data;
       });
     } catch (e: any) {
+      message.error('Не удалось вступить в группу');
       console.warn(e);
     } finally {
       this.disableLoading();

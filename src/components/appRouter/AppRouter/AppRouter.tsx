@@ -6,13 +6,20 @@ import LogInPage from '../../additionalPages/LogInPage';
 import MainPage from '../../mainPage/MainPage';
 import JoinGroupPage from '../../additionalPages/JoinGroupPage';
 import NotFoundPage from '../../additionalPages/NotFoundPage';
+import ErrorBoundary from '../../ErrorBoundary';
 
 const AppRouter: React.FC = () => (
   <BrowserRouter>
     <Routes>
       <Route
         index
-        element={<AuthRoutes><MainPage /></AuthRoutes>}
+        element={(
+          <ErrorBoundary>
+            <AuthRoutes>
+              <MainPage />
+            </AuthRoutes>
+          </ErrorBoundary>
+        )}
       />
       <Route
         path="/join/:joinKey"

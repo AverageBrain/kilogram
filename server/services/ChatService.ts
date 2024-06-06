@@ -1,8 +1,10 @@
 import { User } from '@prisma/client';
+
+import * as types from '../../src/types';
 import { prisma } from '../domain/PrismaClient';
 import { FileStorageService } from './FileStorageService';
-import { MessageWithFileUrls } from '../models/MessageWithFileUrls';
 import MainNotificationService from './MainNotificationService';
+import { convertPrismaMessage } from '../utils';
 
 const notificationService = new MainNotificationService();
 
@@ -55,7 +57,7 @@ export class ChatService {
   async sendMessage(
     user: User,
     message: { chatId: number; text: string; fileKeys: string[] },
-  ): Promise<MessageWithFileUrls> {
+  ): Promise<types.MessageType> {
     const chat = await this.updateUserChats(message.chatId, user);
 
     const prismaMessage = await prisma.message.create({
@@ -68,13 +70,10 @@ export class ChatService {
     });
     const fileUrls = await this.getFileUrls(prismaMessage.fileKeys);
 
-    const sendMessage: MessageWithFileUrls = {
-      message: prismaMessage,
-      fileUrls,
-    };
+    const sendMessage: types.MessageType = convertPrismaMessage(prismaMessage, [], fileUrls);
 
     notificationService.publishMessages(chat.members.map((uc) => uc.userId), 'newMessage', {
-      ...sendMessage,
+      message: sendMessage,
       chat,
       user,
     });

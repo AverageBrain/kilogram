@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { FormikErrors } from 'formik';
-import { Avatar, Input } from 'antd';
+import { Input } from 'antd';
 import clsx from 'clsx';
 import { GroupFormType } from '../../../../../types';
 import UsersList from '../UsersList';
@@ -8,6 +8,7 @@ import UsersList from '../UsersList';
 import styles from './GroupForm.module.scss';
 import { Divider } from '../../../commonComponents/divider';
 import { UserSearch } from '../../../commonComponents/userSearch';
+import { Avatar } from '../../../../Avatar';
 
 type Props = {
   values: GroupFormType;
@@ -48,6 +49,7 @@ const GroupForm: React.FC<Props> = ({ values, setFieldValue }) => {
                 variant="borderless"
                 placeholder="Введите название группы"
                 value={values.name}
+                maxLength={25}
                 onChange={handleChange}
                 onFocus={handleFocus}
                 onBlur={handleBlur}

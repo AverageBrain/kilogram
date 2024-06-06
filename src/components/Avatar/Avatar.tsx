@@ -12,10 +12,11 @@ type Props = {
   size?: number;
   className?: string;
   userStatus?: boolean;
+  onClick?: () => void;
 };
 
 const Avatar: React.FC<Props> = ({
-  userId, size, className, userStatus,
+  userId, size, className, userStatus, onClick,
 }) => {
   const { avatarCache, loadAvatar } = userStore;
 
@@ -42,11 +43,15 @@ const Avatar: React.FC<Props> = ({
 
   const avatarComponent = useMemo(() => (
   // TODO: настроить hitboxes
-    <div className={clsx(styles.avatar, className)} style={{ width: avatarSize, height: avatarSize }}>
+    <div
+      className={clsx(styles.avatar, className, onClick && styles.clickable)}
+      style={{ width: avatarSize, height: avatarSize }}
+      onClick={onClick}
+    >
       {!userId && (
         <AvatarAD
           style={{
-            backgroundColor: '#FF686B',
+            backgroundColor: 'var(--base-accent-color)',
           }}
           icon={<CommentOutlined />}
           size={avatarSize}
@@ -66,7 +71,7 @@ const Avatar: React.FC<Props> = ({
             size={avatarSize < 80 ? 'small' : undefined}
             count=" "
             offset={[-0.125 * avatarSize, 0.875 * avatarSize]}
-            color="var(--base-accent-color)"
+            color="var(--hover-icon-color)"
           >
             {avatarComponent}
           </Badge>

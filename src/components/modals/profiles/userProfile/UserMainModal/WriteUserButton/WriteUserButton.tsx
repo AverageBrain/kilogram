@@ -14,7 +14,7 @@ type Props = {
 export const WriteUserButton: React.FC<Props> = ({ user, closeModal }) => {
   const { setSelectedChat } = chatsStore;
   const { setSelectedUser } = userStore;
-  const { clearMessages } = messagesStore;
+  const { resetItems } = messagesStore;
 
   const handleClick = async () => {
     const chat = chatsStore.getChatByUser(user);
@@ -25,7 +25,7 @@ export const WriteUserButton: React.FC<Props> = ({ user, closeModal }) => {
       setSelectedUser(user);
       setSelectedChat(undefined);
       closeModal();
-      clearMessages();
+      resetItems();
     }
   };
 
@@ -35,6 +35,7 @@ export const WriteUserButton: React.FC<Props> = ({ user, closeModal }) => {
       <Button className={styles['write-user-button']} type="text" size="large" onClick={handleClick}>
         Написать сообщение
       </Button>
+      <Divider />
     </>
   );
 };

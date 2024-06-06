@@ -1,7 +1,7 @@
 import {
   BodyParam, Get, JsonController, Param, Post, Req, Res,
 } from 'routing-controllers';
-import { Message, UserChat } from '@prisma/client';
+import { UserChat } from '@prisma/client';
 import express from 'express';
 import { load } from 'cheerio';
 
@@ -11,46 +11,18 @@ import { prisma } from '../domain/PrismaClient';
 import * as types from '../../src/types';
 import { UserService } from '../services/UserService';
 import { convertPrismaUser } from './UserController';
-import { getDateCondition, getIdCondition, groupBy } from '../utils';
+import {
+  convertPrismaMessage, convertPrismaReaction, getDateCondition, getIdCondition, groupBy,
+} from '../utils';
 import { makeRandomString } from '../utils/makeid';
 import { MessageReactionType, ReactionType, TypeOfChat } from '../../src/types/types';
 import { RedisStore } from '../services/RedisStore';
-import { MessageWithFileUrls } from '../models/MessageWithFileUrls';
 import { FileStorageService } from '../services/FileStorageService';
 import { FileInfo } from '../models/FileInfo';
 
 const chatService = new ChatService();
 const userService = new UserService();
 const redisStore = new RedisStore();
-
-export function convertPrismaMessage(
-  prismaMessage: Message,
-  reactions: MessageReactionType[],
-  fileUrls: string[],
-  inTime?: Date,
-): types.MessageType {
-  return {
-    id: prismaMessage.id,
-    createdAt: prismaMessage.createdAt,
-    updatedAt: prismaMessage.updatedAt,
-    chatId: prismaMessage.chatId,
-    userId: prismaMessage.userId,
-    text: prismaMessage.text,
-    inTime,
-    reactions,
-    fileUrls,
-  };
-}
-
-export function convertPrismaReaction(prismaReaction: MessageReactionType): types.MessageReactionType {
-  return {
-    id: prismaReaction.id,
-    createdAt: prismaReaction.createdAt,
-    updatedAt: prismaReaction.updatedAt,
-    reactionType: prismaReaction.reactionType,
-    userId: prismaReaction.userId,
-  };
-}
 
 @JsonController('/chat')
 export class ChatController {
@@ -71,9 +43,7 @@ export class ChatController {
       fileKeys: files ? await this.uploadFiles(files) : [],
     };
 
-    const sentMessage: MessageWithFileUrls = await chatService.sendMessage(user, messageToSend);
-
-    return convertPrismaMessage(sentMessage.message, [], sentMessage.fileUrls);
+    return chatService.sendMessage(user, messageToSend);
   }
 
   @Post('/send/delay')

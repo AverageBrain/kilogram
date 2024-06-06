@@ -9,6 +9,7 @@ import { messagesStore } from '../../../../stores';
 
 import styles from './ChatPage.module.scss';
 import buttonsStyles from '../../../../styles/buttons.module.scss';
+import { useHiddenTexttools } from '../../../../hooks';
 
 const { Header } = Layout;
 
@@ -17,6 +18,7 @@ const ChatPage: React.FC = () => {
 
   const scrollRef = React.useRef<HTMLDivElement>(null);
   const [shouldLoadDelayed, setShouldLoadDelayed] = useState(false);
+  const { isToolbarHidden, setIsToolbarHidden } = useHiddenTexttools();
 
   useEffect(() => () => {
     resetItems();
@@ -32,16 +34,23 @@ const ChatPage: React.FC = () => {
       {shouldLoadDelayed
         ? (
           <Header className={styles['delay-chat-header']}>
-            <button type="button" aria-label="Back" className={buttonsStyles['icon-svg-button']} onClick={handleClickBack}>
+            <button type="button" aria-label="Back" className={buttonsStyles['big-icon-svg-button']} onClick={handleClickBack}>
               <ArrowLeftOutlined style={{ fontSize: '18px' }} />
             </button>
             <div className={styles.title}>
               Отложенные сообщения
             </div>
           </Header>
-        ) : <ChatHeader />}
+        ) : <ChatHeader isToolbarHidden={isToolbarHidden} setIsToolbarHidden={setIsToolbarHidden} />}
       <InfiniteScroll key={shouldLoadDelayed.toString()} scrollRef={scrollRef} shouldLoadDelayed={shouldLoadDelayed} />
-      {!shouldLoadDelayed && <SendForm scrollRef={scrollRef} setShouldLoadDelayed={setShouldLoadDelayed} />}
+      {!shouldLoadDelayed
+        && (
+        <SendForm
+          isToolbarHidden={isToolbarHidden}
+          scrollRef={scrollRef}
+          setShouldLoadDelayed={setShouldLoadDelayed}
+        />
+        )}
     </div>
   );
 };

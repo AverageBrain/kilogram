@@ -4,7 +4,6 @@ import {
   Dropdown, Input, Layout, MenuProps,
 } from 'antd';
 import { useModal } from '../../../../hooks';
-import { authApiClient } from '../../../../hands';
 import { authUserStore } from '../../../../stores';
 import { UserProfile } from '../../../modals';
 import { BASE_LOGOUT_HOST } from '../../../../hands/BaseApiClient';
@@ -21,12 +20,12 @@ type Props = {
 };
 
 const Header: React.FC<Props> = ({ value, setSearchTerm }) => {
-  const { selectedItem } = authUserStore;
+  const { selectedItem, logOut } = authUserStore;
 
   const { isOpenModal, showModal, closeModal } = useModal();
 
   const handleLogout = async () => {
-    await authApiClient.logout();
+    await logOut();
     window.location.href = BASE_LOGOUT_HOST;
   };
 
@@ -35,11 +34,6 @@ const Header: React.FC<Props> = ({ value, setSearchTerm }) => {
       label: 'Профиль',
       onClick: showModal,
       key: '0',
-    },
-    {
-      label: 'Подписаться на уведомления',
-      onClick: requestPermission,
-      key: '2',
     },
     {
       type: 'divider',

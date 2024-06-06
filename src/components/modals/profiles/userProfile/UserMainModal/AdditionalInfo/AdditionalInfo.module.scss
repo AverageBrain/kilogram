@@ -5,6 +5,10 @@
 
   .info-icon {
     padding: 10px 20px 20px 5px;
+
+    svg:hover {
+      color: var(--base-font-color);
+    }
   }
 
   .additional-info-list {

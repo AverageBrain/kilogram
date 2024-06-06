@@ -31,17 +31,20 @@ const SendButton: React.FC<Props> = ({ disabledDelay, onSubmit }) => {
   return (
     <>
       {loading
-        ? <Spin className={buttonsStyles['icon-svg-button']} />
+        ? <Spin className={buttonsStyles['big-icon-svg-button']} />
         : (
-          <Dropdown
-            menu={{ items }}
-            trigger={['contextMenu']}
-            placement="topRight"
-          >
-            <button type="submit" aria-label="Send" className={buttonsStyles['icon-svg-button']} onClick={handleSendMessage}>
-              <SendOutlined />
-            </button>
-          </Dropdown>
+          <>
+            <Dropdown
+              menu={{ items }}
+              trigger={['contextMenu']}
+              placement="topRight"
+            >
+              <button type="submit" aria-label="Send" className={buttonsStyles['big-icon-svg-button']} onClick={handleSendMessage}>
+                <SendOutlined />
+              </button>
+            </Dropdown>
+
+          </>
         )}
       <DelayMessageModal isOpenModal={isOpenModal} closeModal={closeModal} onSubmit={onSubmit} />
     </>

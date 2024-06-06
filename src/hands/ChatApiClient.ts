@@ -56,8 +56,9 @@ class UserApiClient extends BaseApiClient {
   getMessages(
     chatId: number,
     afterId: number,
+    signal: AbortSignal,
   ): Promise<MessageType[]> {
-    return this.axiosPost('/chat/messages', { chatMessages: { chatId, afterId } });
+    return this.axiosPost('/chat/messages', { chatMessages: { chatId, afterId } }, { signal });
   }
 
   getReactionsTypes(): Promise<ReactionType[]> {

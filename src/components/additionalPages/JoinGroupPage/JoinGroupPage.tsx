@@ -4,11 +4,13 @@ import { observer } from 'mobx-react-lite';
 import {
   Button, Flex, Layout, Spin, Typography,
 } from 'antd';
+import clsx from 'clsx';
 import { chatsStore } from '../../../stores';
 import { getCorrectMemberCase } from '../../../utils';
 import { Avatar } from '../../Avatar';
 
-import styles from '../additionalPages.module.scss';
+import commonStyles from '../additionalPages.module.scss';
+import styles from './JoinGroupPage.module.scss';
 
 const { Content } = Layout;
 const { Text } = Typography;
@@ -39,20 +41,24 @@ const JoinGroupPage: React.FC = () => {
   }, []);
 
   return (
-    <Layout className={styles.container} style={{ height: '100vh' }}>
-      <Content className={styles.content}>
+    <Layout className={commonStyles.container} style={{ height: '100vh' }}>
+      <Content className={commonStyles.content}>
         <Flex vertical gap={32} justify="center" align="center">
           {loading
             ? <Spin />
             : responseError === 'JoinKey not connected to any group'
-              ? <Text className={styles.h3}>Такая группа не существует, проверьте вашу ссылку.</Text>
+              ? (
+                <Text className={clsx(commonStyles.h3, styles.h3)}>
+                  Такая группа не существует, проверьте вашу ссылку.
+                </Text>
+              )
               : responseError === 'User already joined the group'
-                ? <Text className={styles.h3}>Вы уже состоите в данной группе</Text>
+                ? <Text className={clsx(commonStyles.h3, styles.h3)}>Вы уже состоите в данной группе</Text>
                 : selectedItem && (
                   <>
                     <Avatar size={250} />
-                    <Text className={styles.h3}>{selectedItem.name}</Text>
-                    <Text className={styles.h4}>
+                    <Text className={clsx(commonStyles.h3, styles.h3)}>{selectedItem.name}</Text>
+                    <Text className={clsx(commonStyles.h4, styles.h4)}>
                       {selectedItem.users.length}
                       {' '}
                       {getCorrectMemberCase(selectedItem.users.length)}
@@ -60,8 +66,7 @@ const JoinGroupPage: React.FC = () => {
                   </>
                 )}
           <Button
-            size="large"
-            className={styles['action-button']}
+            className={commonStyles['action-button']}
             type="text"
             onClick={handleClick}
           >

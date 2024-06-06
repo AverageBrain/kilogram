@@ -1,14 +1,24 @@
-.icon-svg-button {
+@mixin icon {
   align-self: center;
   border: none;
-  font-size: 24px;
   color: var(--base-font-color);
   background: none;
 
   cursor: pointer;
-  width: 60px;
 
   &:hover {
-    color: #06A191;
+    color: var(--hover-icon-color);
   }
+}
+
+.small-icon-svg-button {
+  @include icon;
+  font-size: 16px;
+}
+
+.big-icon-svg-button {
+  @include icon;
+  
+  width: 60px;
+  font-size: 24px;
 }

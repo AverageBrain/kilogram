@@ -38,6 +38,7 @@ module.exports = {
     ],
     ignorePatterns: ['dist', '.eslintrc.js', 'postcss.config.js'],
     rules: {
+        "linebreak-style": "off",
         "no-continue": "off",
         "jsx-a11y/no-noninteractive-element-interactions": "off",
         "react/jsx-no-useless-fragment": "off",

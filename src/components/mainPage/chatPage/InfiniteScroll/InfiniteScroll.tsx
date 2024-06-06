@@ -1,15 +1,15 @@
 import React, {
   useCallback, useEffect, useRef, useState,
 } from 'react';
-import { observer } from 'mobx-react-lite';
 import { Spin } from 'antd';
-import moment from 'moment';
+import { observer } from 'mobx-react-lite';
 import { groupBy } from 'lodash';
+import moment from 'moment';
+
 import { chatsStore, messagesStore } from '../../../../stores';
 import { Message } from '../Message';
 import { TypeOfChat } from '../../../../types';
 import ChatDate from './ChatDate';
-
 import styles from './InfiniteScroll.module.scss';
 
 type Props = {
@@ -19,12 +19,13 @@ type Props = {
 
 const InfiniteScroll: React.FC<Props> = ({ scrollRef, shouldLoadDelayed }) => {
   const {
-    items, loadMessages, loadDelayedMessages, loading,
+    items, loadMessages, loadDelayedMessages, loading, doAbortController,
   } = messagesStore;
   const { selectedItem: chat } = chatsStore;
 
   const [hasMore, setHasMore] = useState(true);
   const target = useRef<HTMLDivElement>(null);
+  const [isReactionsAlreadyOpened, setIsReactionsAlreadyOpened] = useState(false);
 
   const handleObserver = useCallback(async (entries: IntersectionObserverEntry[]) => {
     if (hasMore && !loading && chat && entries[0].isIntersecting) {
@@ -52,6 +53,10 @@ const InfiniteScroll: React.FC<Props> = ({ scrollRef, shouldLoadDelayed }) => {
     };
   }, [target, handleObserver]);
 
+  useEffect(() => () => {
+    doAbortController();
+  }, []);
+
   const itemsGroupedByDate = groupBy(items, (item) => (moment(item.createdAt).format('D MMM YYYY')));
 
   return (
@@ -63,18 +68,20 @@ const InfiniteScroll: React.FC<Props> = ({ scrollRef, shouldLoadDelayed }) => {
               key={curMessage.id}
               message={curMessage}
               isGroup={chat?.type === TypeOfChat.Group}
+              isAllowedReaction={!shouldLoadDelayed}
+              isReactionsAlreadyOpened={isReactionsAlreadyOpened}
+              setIsReactionsAlreadyOpened={setIsReactionsAlreadyOpened}
             />
           ))}
           <ChatDate date={date} />
         </div>
       ))}
       <div className={styles['loading-bar']} ref={target}>
-        {loading
-          && (
+        {loading && (
           <div className={styles.loading}>
             <Spin />
           </div>
-          )}
+        )}
       </div>
     </div>
   );

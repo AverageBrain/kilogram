@@ -41,8 +41,8 @@ export function requestPermission() {
 
   if (
     'Notification' in window
-        && 'serviceWorker' in navigator
-        && 'PushManager' in window
+    && 'serviceWorker' in navigator
+    && 'PushManager' in window
   ) {
     Notification.requestPermission().then((permission) => {
       if (permission === 'granted') {
