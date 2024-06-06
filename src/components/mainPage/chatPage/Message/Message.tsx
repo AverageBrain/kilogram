@@ -1,15 +1,15 @@
-import React, { useState } from 'react';
+import React, {useState} from 'react';
 import clsx from 'clsx';
 import moment from 'moment';
-import { observer } from 'mobx-react-lite';
-import { Image } from 'antd';
+import {observer} from 'mobx-react-lite';
+import {Image} from 'antd';
 
-import { MessageType } from '../../../../types';
-import { authUserStore } from '../../../../stores';
-import { Avatar } from '../../../Avatar';
+import {MessageType} from '../../../../types';
+import {authUserStore} from '../../../../stores';
+import {Avatar} from '../../../Avatar';
 import Reactions from './reactions/Reactions';
 import ReactionButton from './reactions/ReactionButton';
-import { fileUrlsToAttachments } from './utils';
+import {fileUrlsToAttachments} from './utils';
 import styles from './Message.module.scss';
 import galleryStyles from './ImageGallery.module.scss';
 
@@ -51,7 +51,7 @@ const Message: React.FC<Props> = ({ message, isGroup }) => {
         { attachments.files.length > 0 && (
           <>
             <hr className={styles['attachments-separate-line']} />
-            <div>
+            <div className={styles['attachments']}>
               { attachments.files }
             </div>
           </>
