@@ -1,10 +1,11 @@
-import {ExpressMiddlewareInterface, HttpError, Middleware} from "routing-controllers";
-import {Logger} from "../services/Logger";
+/* eslint-disable @typescript-eslint/ban-types */
+import { ExpressMiddlewareInterface, Middleware } from 'routing-controllers';
+import { Logger } from '../services/Logger';
 
-@Middleware({type: 'before'})
+@Middleware({ type: 'before' })
 export class LoggerMiddleware implements ExpressMiddlewareInterface {
-    use(request: Request, response: any, next?: Function): any {
-        Logger.info("Request", {method: request.method, url: request.url})
-        if (next) next();
-    }
+  use(request: Request, response: any, next?: Function): any {
+    Logger.info('Request', { method: request.method, url: request.url });
+    if (next) next();
+  }
 }
