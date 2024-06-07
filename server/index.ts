@@ -19,7 +19,8 @@ import { AuthController } from './controllers/AuthController';
 import { ChatController } from './controllers/ChatController';
 import { SSEService } from './services/SSEService';
 import { DelayMessageJob } from './job/DelayMessageJob';
-import { errorHandler } from './middleware/ErrorHandler';
+import { errorHandler, HttpErrorHandler } from './middleware/ErrorHandler';
+import { Logger } from './services/Logger';
 
 const pgSession = connect_pg_simple(expressSession);
 
@@ -66,6 +67,7 @@ useExpressServer(app, {
     ChatController,
   ],
   middlewares: [
+    HttpErrorHandler,
     LoggerMiddleware,
   ],
 });
@@ -104,8 +106,5 @@ app.get('/api/user/sse', (req, res) => {
 
 new DelayMessageJob().run();
 
-// new PushNotificationService().send("d1f-PcbzGockAJV7aMcn-q:APA91bE4uA86R6cq45RkNShCFQoUHLJ55AnvDEckggk6x0REbNvOaxDeabQnm0EAe8KvYhwB0r-iDBeUBOuQ_zboo4O6KUWkMv_kjV6mru4JI9_oG1BevGLN1_qP-rNS19bLyH0DmIk2", "Hihihihihi", 'kl1m3lk1m23k',
-//     {'asd': 'asd'})
-
-console.warn('Server started');
+Logger.info('Server started');
 app.listen(3000);

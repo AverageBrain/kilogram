@@ -41,12 +41,16 @@ const Chats: React.FC<Props> = ({ setSearchTerm }) => {
         >
           <List.Item.Meta
             className={clsx(listsStyles['chat-list-item-meta'], chat.id === selectedItem?.id && listsStyles['chat-list-item-meta-active'])}
-            avatar={chat.type === TypeOfChat.Chat
+            avatar={chat.type === TypeOfChat.Chat && chat.users[0]
               ? <Avatar userId={chat.users[0].id} userStatus={chat.users[0]?.userStatus} />
               : <Avatar />}
             title={(
               <span className={listsStyles.title}>
-                {chat.type === TypeOfChat.Chat ? chat.users[0].name : chat.name}
+                {chat.type === TypeOfChat.Chat
+                  ? chat.users[0]
+                    ? chat.users[0].name
+                    : 'Удаленный пользователь'
+                  : chat.name}
               </span>
             )}
             description={

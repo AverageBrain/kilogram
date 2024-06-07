@@ -6,7 +6,7 @@ export class UserService {
   async getOrCreateUserByGithub(githubId: string, name: string | null, username: string): Promise<User> {
     const user = await prisma.user.findUnique({ where: { githubId } });
     if (user == null) {
-      const avatarKey = await UserAvatarService.createAvatar(username);
+      const avatarKey = await UserAvatarService.createAvatar(githubId);
 
       if (avatarKey === null) throw Error('Не удалось создать аватар для нового пользователя - повторите попытку');
 

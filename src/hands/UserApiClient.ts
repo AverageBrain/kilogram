@@ -25,6 +25,14 @@ class UserApiClient extends BaseApiClient {
   getAvatar(id: number): Promise<string> {
     return this.axiosGet(`user/avatar/${id}`);
   }
+
+  uploadAvatar(id: number, avatarFile: File): Promise<string> {
+    const form = new FormData();
+    form.append('id', id.toString());
+    form.append('files', avatarFile);
+
+    return this.axiosPostForm('/user/uploadAvatar', form);
+  }
 }
 
 export default new UserApiClient();

@@ -1,5 +1,6 @@
 import { cert, initializeApp } from 'firebase-admin/app';
 import { getMessaging } from 'firebase-admin/messaging';
+import { Logger } from './Logger';
 
 const firebaseAdmin = initializeApp(
   {
@@ -22,10 +23,10 @@ export class PushNotificationService {
     getMessaging(firebaseAdmin)
       .send(payload)
       .then((response) => {
-        console.log('Successfully sent message:', response);
+        Logger.info('Successfully sent message:', { response });
       })
       .catch((error) => {
-        console.warn('Error sending message:', error);
+        Logger.error('Error sending message:', { error });
       });
   };
 }

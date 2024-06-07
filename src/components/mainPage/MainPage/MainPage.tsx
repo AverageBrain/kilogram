@@ -41,7 +41,7 @@ const MainPage: React.FC = () => {
   }, [location.pathname]);
 
   return (
-    <Layout style={{ height: '100vh' }}>
+    <Layout style={{ height: '100dvh' }}>
       <Content>
         {isBigScreen
           ? (
