@@ -1,11 +1,9 @@
-import {
-  action, makeObservable, observable, runInAction,
-} from 'mobx';
-import { message } from 'antd';
+import {action, makeObservable, observable, runInAction,} from 'mobx';
+import {message} from 'antd';
 
-import { UserType } from '../types';
-import { userApiClient } from '../hands';
-import { cacheMaxSize } from '../constants';
+import {UserType} from '../types';
+import {userApiClient} from '../hands';
+import {cacheMaxSize} from '../constants';
 import BaseStore from './BaseStore';
 
 class UserStore extends BaseStore<UserType> {
@@ -69,6 +67,20 @@ class UserStore extends BaseStore<UserType> {
       });
 
       return data;
+    } catch (e: any) {
+      message.error('Не удалось загрузить аватар');
+      console.warn(e);
+    }
+  }
+
+  async uploadAvatar(id: number, files: File[]) {
+    try {
+      if (files.length !== 1) {
+        message.error('Можно выбрать только один файл');
+
+        return;
+      }
+      await userApiClient.uploadAvatar(id, files[0]);
     } catch (e: any) {
       message.error('Не удалось загрузить аватар');
       console.warn(e);

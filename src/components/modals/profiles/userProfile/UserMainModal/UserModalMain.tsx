@@ -1,11 +1,11 @@
 import React from 'react';
 
-import { MainInfo } from '../../../commonComponents/mainInfo';
-import { UserType } from '../../../../../types';
-import { AdditionalInfo } from './AdditionalInfo';
-import { WriteUserButton } from './WriteUserButton';
-import { authUserStore } from '../../../../../stores';
-import { getHandle } from '../../../../../utils';
+import {MainInfo} from '../../../commonComponents/mainInfo';
+import {UserType} from '../../../../../types';
+import {AdditionalInfo} from './AdditionalInfo';
+import {WriteUserButton} from './WriteUserButton';
+import {authUserStore} from '../../../../../stores';
+import {getHandle} from '../../../../../utils';
 
 type Props = {
   user: UserType;
@@ -22,7 +22,7 @@ export const UserModalMain: React.FC<Props> = ({ user, closeModal }) => {
       <MainInfo
         name={user.name}
         description={getHandle({ user })}
-        avatarParams={{ userId: user.id, size: 80, userStatus: user?.userStatus }}
+        avatarParams={{ userId: user.id, size: 80, userStatus: user?.userStatus, availableForUpdate: isAuthUser }}
       />
       <AdditionalInfo user={user} />
 
