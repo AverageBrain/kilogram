@@ -10,21 +10,9 @@ const firebaseAdmin = initializeApp(
 );
 
 export class PushNotificationService {
-    options = {
-        priority: 'high',
-        timeToLive: 60 * 60 * 24,
-    };
-
-    send = (userToken: string, message: string): void => {
+    send = (userToken: string, type: string, uuid: string, data: any): void => {
         const payload = {
-            data: {
-                title: 'Notification',
-                data: message,
-            },
-            notification: {
-                title: 'Notification',
-                body: message
-            },
+            data: {type: type, data: JSON.stringify(data), eventId: uuid},
             token: userToken,
             webpush: {
                 fcmOptions: {
