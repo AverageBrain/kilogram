@@ -4,6 +4,7 @@
   @include header-base-style;
   padding: 0 20px;
   gap: 20px;
+  box-shadow: 0 5px 5px -8px var(--base-font-color);
 
   .search {
     padding: 5px 15px !important;

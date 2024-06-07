@@ -15,9 +15,10 @@ import styles from './InfiniteScroll.module.scss';
 type Props = {
   scrollRef: React.RefObject<HTMLDivElement>;
   shouldLoadDelayed?: boolean;
+  fileBoxHeight: number;
 };
 
-const InfiniteScroll: React.FC<Props> = ({ scrollRef, shouldLoadDelayed }) => {
+const InfiniteScroll: React.FC<Props> = ({ scrollRef, shouldLoadDelayed, fileBoxHeight }) => {
   const {
     items, loadMessages, loadDelayedMessages, loading, doAbortController,
   } = messagesStore;
@@ -61,6 +62,7 @@ const InfiniteScroll: React.FC<Props> = ({ scrollRef, shouldLoadDelayed }) => {
 
   return (
     <div ref={scrollRef} className={styles.messages}>
+      {!shouldLoadDelayed && <div className={styles['space-for-files']} style={{ minHeight: (fileBoxHeight || 0) }} />}
       {Object.entries(itemsGroupedByDate).map(([date, messages]) => (
         <div key={date} className={styles['messages-with-same-date']}>
           {messages.map((curMessage) => (

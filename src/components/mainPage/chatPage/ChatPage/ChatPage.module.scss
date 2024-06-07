@@ -4,8 +4,8 @@
   height: 100%;
   display: flex;
   flex-direction: column;
-
-  background-color: white;
+  background: var(--base-background-gradient);
+  background-color: rgb(221, 191, 191);
 }
 
 .delay-chat-header {

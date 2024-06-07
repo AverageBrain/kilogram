@@ -1,8 +1,9 @@
+/* eslint-disable react/jsx-wrap-multilines */
 import React, { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import { Layout } from 'antd';
-import { Splitter, SplitterPanel } from 'primereact/splitter';
 import { observer } from 'mobx-react-lite';
+import clsx from 'clsx';
 import { ChatListPage } from '../chatListPage';
 import { ChatPage, EmptyPanel } from '../chatPage';
 import { chatsStore, messagesStore, userStore } from '../../../stores';
@@ -44,17 +45,16 @@ const MainPage: React.FC = () => {
       <Content>
         {isBigScreen
           ? (
-            <Splitter className={styles.splitter}>
-              <SplitterPanel size={35} minSize={25}>
+            <div className={styles.splitter}>
+              <div className={clsx(styles.sidebar, styles['splitter-panel'])}>
                 <ChatListPage />
-              </SplitterPanel>
-              <SplitterPanel size={65} minSize={55}>
+              </div>
+              <div className={clsx(styles['main-panel'], styles['splitter-panel'])}>
                 {selectedItem || selectedUser
                   ? <ChatPage key={selectedItem?.id} />
                   : <EmptyPanel />}
-              </SplitterPanel>
-            </Splitter>
-          )
+              </div>
+            </div>)
           : selectedItem || selectedUser
             ? <ChatPage key={selectedItem?.id} />
             : <ChatListPage />}

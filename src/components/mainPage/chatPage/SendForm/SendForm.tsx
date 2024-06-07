@@ -1,26 +1,35 @@
 /* eslint-disable @typescript-eslint/no-unused-expressions */
 import React, { useRef, useState } from 'react';
 import { observer } from 'mobx-react-lite';
-import { CalendarOutlined, CloseCircleOutlined, FileAddOutlined } from '@ant-design/icons';
+import { CalendarOutlined, CloseOutlined, FileAddOutlined } from '@ant-design/icons';
 import DOMPurify from 'dompurify';
 import { EditorState, convertToRaw } from 'draft-js';
 import draftToHtml from 'draftjs-to-html';
 import { Editor, SyntheticKeyboardEvent } from 'react-draft-wysiwyg';
 import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
 
+import clsx from 'clsx';
+import { Tooltip, message } from 'antd';
 import { chatsStore, messagesStore, userStore } from '../../../../stores';
 import SendButton from '../SendButton';
 import { getHTMLMetadata } from './getHTMLMetadata';
 import styles from './SendForm.module.scss';
 import buttonsStyles from '../../../../styles/buttons.module.scss';
+import { useScroll } from '../../../../hooks';
 
 type Props = {
   scrollRef: React.RefObject<HTMLDivElement>;
   setShouldLoadDelayed: (value: boolean) => void;
   isToolbarHidden: boolean;
+  setFileBoxHeight: (value: number) => void;
 };
 
-const SendMessage: React.FC<Props> = ({ scrollRef, setShouldLoadDelayed, isToolbarHidden }) => {
+const SendMessage: React.FC<Props> = ({
+  scrollRef,
+  setShouldLoadDelayed,
+  isToolbarHidden,
+  setFileBoxHeight,
+}) => {
   const {
     loading, sendMessage, sendDelayMessage, resetItems,
   } = messagesStore;
@@ -32,6 +41,7 @@ const SendMessage: React.FC<Props> = ({ scrollRef, setShouldLoadDelayed, isToolb
   const [editorState, setEditorState] = useState<EditorState>(() => EditorState.createEmpty());
   const [fileList, setFileList] = useState<FileList | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const { ref: refAttachments } = useScroll<HTMLDivElement>();
 
   const files = fileList ? Array.from(fileList) : [];
 
@@ -45,9 +55,10 @@ const SendMessage: React.FC<Props> = ({ scrollRef, setShouldLoadDelayed, isToolb
 
     const safeHtml = DOMPurify.sanitize(htmlContent + await getHTMLMetadata(htmlContent, getMetadata));
 
-    if (editorState.getCurrentContent().getPlainText().trim().length || fileList?.length) {
+    if (editorState.getCurrentContent().getPlainText().trim().length || files.length) {
       setEditorState(EditorState.moveFocusToEnd(EditorState.createEmpty()));
       setFileList(null);
+      setFileBoxHeight(0);
       if (chat) {
         inTime
           ? await sendDelayMessage(chat.id, safeHtml, files, inTime)
@@ -85,18 +96,76 @@ const SendMessage: React.FC<Props> = ({ scrollRef, setShouldLoadDelayed, isToolb
     setShouldLoadDelayed(true);
   };
 
-  const handleFileAdd = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const setFileListByFiles = (files: File[]) => {
+    let boxHeight = 0;
     const data = new DataTransfer();
-    const newFiles = e.target.files ?? [];
-    const allFiles = Array.from(newFiles).concat(files);
 
-    allFiles.forEach((file) => data.items.add(file));
+    files.forEach((file) => {
+      if (file.type.startsWith('image')) {
+        boxHeight = Math.max(boxHeight, 60);
+      } else {
+        boxHeight = Math.max(boxHeight, 36);
+      }
+      data.items.add(file);
+    });
 
+    setFileBoxHeight(boxHeight);
     setFileList(data.files);
+  };
+
+  const handleFileAdd = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newFiles = e.target.files ?? [];
+    if (files.length + newFiles.length > 10) {
+      message.warning('Нельзя загрузить больше 10 файлов');
+    }
+    const allFiles = Array.from(newFiles)
+      .slice(0, Math.min(newFiles.length, 10 - files.length))
+      .concat(files);
+
+    setFileListByFiles(allFiles);
+  };
+
+  const handleDeleteFile = (idx: number) => {
+    if (files.length === 1) {
+      setFileList(null);
+      setFileBoxHeight(0);
+
+      return;
+    }
+
+    setFileListByFiles(files.filter((_fileItem, curIdx) => idx !== curIdx));
   };
 
   return (
     <div className={styles['wrapper-send-message']}>
+      {files.length > 0
+        && (
+        <div className={styles['attachments-wrapper']}>
+          <div ref={refAttachments} className={styles.attachments}>
+            {files.map((file, idx) => (
+              <div key={file.name} className={styles.attachment}>
+                <Tooltip title={file.name}>
+                  {file.type.startsWith('image')
+                    ? (
+                      <div className={styles['image-preview']}>
+                        <img className={styles.image} alt={file.name} src={URL.createObjectURL(file)} />
+                        <span className={clsx(styles['attachment-close'], styles['image-close'])}>
+                          <CloseOutlined className={styles['attachment-close']} onClick={() => handleDeleteFile(idx)} />
+                        </span>
+                      </div>
+                    )
+                    : (
+                      <div className={styles['file-attachment']}>
+                        <p className={styles['attachment-name']}>{file.name}</p>
+                        <CloseOutlined className={styles['attachment-close']} onClick={() => handleDeleteFile(idx)} />
+                      </div>
+                    )}
+                </Tooltip>
+              </div>
+            ))}
+          </div>
+        </div>
+        )}
       {!isToolbarHidden && <div className={styles['space-for-texttools']} />}
       <div className={styles['send-message']}>
         <Editor
@@ -134,15 +203,6 @@ const SendMessage: React.FC<Props> = ({ scrollRef, setShouldLoadDelayed, isToolb
             locale: 'ru',
           }}
         />
-        <ul className={styles['file-list']}>
-          {files.map((file) => (
-            <li key={file.name} className={styles['file-list-element']}>
-              <p className={styles['file-name']}>{file.name}</p>
-              {' '}
-              <CloseCircleOutlined />
-            </li>
-          ))}
-        </ul>
         <input type="file" id="files" onChange={handleFileAdd} ref={fileInputRef} multiple hidden />
         <button
           type="button"
@@ -161,7 +221,7 @@ const SendMessage: React.FC<Props> = ({ scrollRef, setShouldLoadDelayed, isToolb
           <CalendarOutlined />
         </button>
         <SendButton
-          disabledDelay={editorState.getCurrentContent().getPlainText().trim().length === 0}
+          disabledDelay={editorState.getCurrentContent().getPlainText().trim().length === 0 && files.length === 0}
           onSubmit={handleSubmit}
         />
       </div>
