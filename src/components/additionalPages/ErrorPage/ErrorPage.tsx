@@ -9,7 +9,7 @@ const { Content } = Layout;
 const { Text } = Typography;
 
 const ErrorPage: React.FC = () => (
-  <Layout className={commonStyles.container} style={{ height: '100vh' }}>
+  <Layout className={commonStyles.container} style={{ height: '100dvh' }}>
     <Content className={commonStyles.content}>
       <Flex vertical gap={32} justify="center">
         <Text className={clsx(commonStyles.h2, styles.h2)}>Произошла ошибка</Text>

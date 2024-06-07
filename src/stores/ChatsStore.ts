@@ -157,7 +157,10 @@ class ChatsStore extends BaseStore<ChatType> {
         this.setResponseError('');
       });
     } catch (e: any) {
-      message.error('Не удалось получить группу');
+      if (e.response.data.message !== 'JoinKey not connected to any group'
+        && e.response.data.message !== 'User already joined the group') {
+        message.error('Не удалось получить группу');
+      }
       console.warn(e);
       this.setResponseError(e.response.data.message);
     } finally {

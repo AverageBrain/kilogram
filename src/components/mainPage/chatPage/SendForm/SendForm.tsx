@@ -55,8 +55,8 @@ const SendMessage: React.FC<Props> = ({
 
     const safeHtml = DOMPurify.sanitize(htmlContent + await getHTMLMetadata(htmlContent, getMetadata));
 
-    if (editorState.getCurrentContent().getPlainText().trim().length || fileList) {
-      setEditorState(EditorState.createEmpty());
+    if (editorState.getCurrentContent().getPlainText().trim().length || fileList?.length) {
+      setEditorState(EditorState.moveFocusToEnd(EditorState.createEmpty()));
       setFileList(null);
       setFileBoxHeight(0);
       if (chat) {

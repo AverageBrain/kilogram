@@ -17,7 +17,7 @@ const NotFoundPage: React.FC = () => {
   const handleClick = () => navigate('/');
 
   return (
-    <Layout className={commonStyles.container} style={{ height: '100vh' }}>
+    <Layout className={commonStyles.container} style={{ height: '100dvh' }}>
       <Content className={commonStyles.content}>
         <Flex vertical gap={32} justify="center" align="center">
           <Text className={clsx(commonStyles.h1, styles.h1)}>404</Text>

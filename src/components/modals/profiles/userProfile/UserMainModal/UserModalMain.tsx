@@ -22,7 +22,9 @@ export const UserModalMain: React.FC<Props> = ({ user, closeModal }) => {
       <MainInfo
         name={user.name}
         description={getHandle({ user })}
-        avatarParams={{ userId: user.id, size: 80, userStatus: user?.userStatus }}
+        avatarParams={{
+          userId: user.id, size: 80, userStatus: user?.userStatus, availableForUpdate: isAuthUser,
+        }}
       />
       <AdditionalInfo user={user} />
 

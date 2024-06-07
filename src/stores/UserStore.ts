@@ -74,6 +74,20 @@ class UserStore extends BaseStore<UserType> {
       console.warn(e);
     }
   }
+
+  async uploadAvatar(id: number, files: File[]) {
+    try {
+      if (files.length !== 1) {
+        message.error('Можно выбрать только один файл');
+
+        return;
+      }
+      await userApiClient.uploadAvatar(id, files[0]);
+    } catch (e: any) {
+      message.error('Не удалось загрузить аватар');
+      console.warn(e);
+    }
+  }
 }
 
 export default new UserStore();

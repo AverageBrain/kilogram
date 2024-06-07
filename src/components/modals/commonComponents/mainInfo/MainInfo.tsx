@@ -7,6 +7,7 @@ type AvatarParams = {
   userId?: number;
   size?: number;
   userStatus?: boolean;
+  availableForUpdate?: boolean;
 };
 
 type Props = {
