@@ -45,8 +45,8 @@ const SendMessage: React.FC<Props> = ({ scrollRef, setShouldLoadDelayed, isToolb
 
     const safeHtml = DOMPurify.sanitize(htmlContent + await getHTMLMetadata(htmlContent, getMetadata));
 
-    if (editorState.getCurrentContent().getPlainText().trim().length) {
-      setEditorState(EditorState.createEmpty());
+    if (editorState.getCurrentContent().getPlainText().trim().length || fileList?.length) {
+      setEditorState(EditorState.moveFocusToEnd(EditorState.createEmpty()));
       setFileList(null);
       if (chat) {
         inTime

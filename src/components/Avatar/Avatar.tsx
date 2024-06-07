@@ -1,10 +1,12 @@
-import React, {useEffect, useMemo, useRef, useState,} from 'react';
-import {observer} from 'mobx-react-lite';
-import {Avatar as AvatarAD, Badge} from 'antd';
-import {CommentOutlined, UserOutlined} from '@ant-design/icons';
+import React, {
+  useEffect, useMemo, useRef, useState,
+} from 'react';
+import { observer } from 'mobx-react-lite';
+import { Avatar as AvatarAD, Badge } from 'antd';
+import { CommentOutlined, UserOutlined } from '@ant-design/icons';
 import clsx from 'clsx';
 
-import {userStore} from '../../stores';
+import { userStore } from '../../stores';
 import styles from './Avatar.module.scss';
 
 type Props = {

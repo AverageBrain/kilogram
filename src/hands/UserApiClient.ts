@@ -1,5 +1,5 @@
-import {UserType} from '../types/types';
-import {BaseApiClient} from './BaseApiClient';
+import { UserType } from '../types/types';
+import { BaseApiClient } from './BaseApiClient';
 
 class UserApiClient extends BaseApiClient {
   getMe(): Promise<UserType> {

@@ -1,6 +1,6 @@
 import React from 'react';
-import {Avatar} from '../../../Avatar';
-import {Divider} from '../divider';
+import { Avatar } from '../../../Avatar';
+import { Divider } from '../divider';
 import styles from './MainInfo.module.scss';
 
 type AvatarParams = {

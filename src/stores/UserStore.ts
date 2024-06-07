@@ -1,9 +1,11 @@
-import {action, makeObservable, observable, runInAction,} from 'mobx';
-import {message} from 'antd';
+import {
+  action, makeObservable, observable, runInAction,
+} from 'mobx';
+import { message } from 'antd';
 
-import {UserType} from '../types';
-import {userApiClient} from '../hands';
-import {cacheMaxSize} from '../constants';
+import { UserType } from '../types';
+import { userApiClient } from '../hands';
+import { cacheMaxSize } from '../constants';
 import BaseStore from './BaseStore';
 
 class UserStore extends BaseStore<UserType> {
