@@ -114,8 +114,8 @@ const SendMessage: React.FC<Props> = ({
     setFileList(data.files);
   };
 
-  const handleFileAdd = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newFiles = e.target.files ?? [];
+  const handleFileAdd = (e: React.ChangeEvent<HTMLInputElement> | React.DragEvent<HTMLDivElement>) => {
+    const newFiles = 'dataTransfer' in e ? e.dataTransfer.files : e.target.files ?? [];
     if (files.length + newFiles.length > 10) {
       message.warning('Нельзя загрузить больше 10 файлов');
     }
@@ -124,7 +124,7 @@ const SendMessage: React.FC<Props> = ({
       .concat(files);
 
     setFileListByFiles(allFiles);
-    e.target.value = '';
+    if ('value' in e.target) e.target.value = '';
   };
 
   const handleDeleteFile = (idx: number) => {
@@ -139,7 +139,13 @@ const SendMessage: React.FC<Props> = ({
   };
 
   return (
-    <div className={styles['wrapper-send-message']}>
+    <div
+      className={styles['wrapper-send-message']}
+      onDrop={(e) => {
+        e.preventDefault();
+        handleFileAdd(e);
+      }}
+    >
       {files.length > 0
         && (
         <div className={styles['attachments-wrapper']}>
