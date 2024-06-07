@@ -1,6 +1,6 @@
-import {User} from '@prisma/client';
-import {prisma} from '../domain/PrismaClient';
-import {UserAvatarService} from './UserAvatarService';
+import { User } from '@prisma/client';
+import { prisma } from '../domain/PrismaClient';
+import { UserAvatarService } from './UserAvatarService';
 
 export class UserService {
   async getOrCreateUserByGithub(githubId: string, name: string | null, username: string): Promise<User> {
