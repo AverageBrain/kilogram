@@ -118,6 +118,12 @@ $texttool_height: 26px;
     align-items: flex-end;
     gap: 1px;
 
+    @media not ((min-width: 650px) and (min-height: 650px)) {
+      &::-webkit-scrollbar {
+        display: none;
+      }
+    }    
+
     &::-webkit-scrollbar {
       background-color: white;
       height: 5px;
