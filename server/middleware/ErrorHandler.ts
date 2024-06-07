@@ -2,13 +2,13 @@
 import {Logger} from "../services/Logger";
 import {ExpressErrorMiddlewareInterface, HttpError, Middleware} from 'routing-controllers';
 
-// @ts-ignore
+// @ts-expect-error error-Handler
 export function errorHandler(err, req, res, next) {
     if (res.headersSent) {
-        return next(err)
-    }
-    Logger.error('Server error', {stack: err})
-    res.status(500).send(err)
+        return next(err);
+  }
+  Logger.warn('Server error', {stack: err});
+  res.status(500).send(err);
 }
 
 @Middleware({type: 'after'})

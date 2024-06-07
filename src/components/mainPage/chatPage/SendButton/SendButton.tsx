@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { observer } from 'mobx-react-lite';
 import { Spin, Dropdown, MenuProps } from 'antd';
 import { SendOutlined } from '@ant-design/icons';
@@ -30,25 +30,22 @@ const SendButton: React.FC<Props> = ({ disabledDelay, onSubmit }) => {
 
   return (
     <>
-      {loading 
-      ? <Spin className={buttonsStyles["icon-svg-button"]} />
-      : (
-        <>
+      {loading
+        ? <Spin className={buttonsStyles['icon-svg-button']} />
+        : (
           <Dropdown
             menu={{ items }}
             trigger={['contextMenu']}
             placement="topRight"
           >
-            <button className={buttonsStyles["icon-svg-button"]} onClick={handleSendMessage}>
+            <button type="submit" aria-label="Send" className={buttonsStyles['icon-svg-button']} onClick={handleSendMessage}>
               <SendOutlined />
             </button>
           </Dropdown>
-          
-        </>
-      )}
+        )}
       <DelayMessageModal isOpenModal={isOpenModal} closeModal={closeModal} onSubmit={onSubmit} />
     </>
   );
-}
+};
 
 export default observer(SendButton);

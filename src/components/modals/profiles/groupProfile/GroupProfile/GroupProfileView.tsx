@@ -1,6 +1,6 @@
 import React from 'react';
-import MembersList from '../MembersList';
 import { Button } from 'antd';
+import MembersList from '../MembersList';
 import { ChatType, UserType } from '../../../../../types';
 import { copyToClipboard, getCorrectMemberCase } from '../../../../../utils';
 import { authUserStore } from '../../../../../stores';
@@ -14,7 +14,7 @@ type Props = {
   group: ChatType;
   closeModal: () => void;
   setSelectedUser: (user: UserType) => void;
-}
+};
 
 export const GroupProfileView: React.FC<Props> = ({ group, closeModal, setSelectedUser }) => {
   const { selectedItem } = authUserStore;
@@ -27,18 +27,18 @@ export const GroupProfileView: React.FC<Props> = ({ group, closeModal, setSelect
 
   const handleClickOnUser = (user: UserType) => {
     setSelectedUser(user);
-  }
+  };
 
   return (
     <>
-      <ModalHeader toggle={closeModal} title='Информация о группе' />
-      <MainInfo 
-          name={group.name}
-          description={`${membersCount} ${getCorrectMemberCase(membersCount)}`}
-          avatarParams={{size: 80}}
-        />
+      <ModalHeader toggle={closeModal} title="Информация о группе" />
+      <MainInfo
+        name={group.name}
+        description={`${membersCount} ${getCorrectMemberCase(membersCount)}`}
+        avatarParams={{ size: 80 }}
+      />
       <Button
-        className={styles["invite-button"]}
+        className={styles['invite-button']}
         type="text"
         size="large"
         onClick={handleClick}
@@ -49,5 +49,4 @@ export const GroupProfileView: React.FC<Props> = ({ group, closeModal, setSelect
       {selectedItem && (<MembersList users={[selectedItem, ...group.users]} handleClickOnUser={handleClickOnUser} />)}
     </>
   );
-}
-
+};

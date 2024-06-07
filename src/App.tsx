@@ -7,30 +7,26 @@ import moment from 'moment';
 import 'moment/locale/ru';
 
 import AppRouter from './components';
-import {authUserStore, reactionsStore} from './stores';
-import {requestPermission} from "./plugins/firebase";
+import { authUserStore, reactionsStore } from './stores';
+import { requestPermission } from './plugins/firebase';
 
 const App: React.FC = () => {
   const {
     loading,
     loadSelectedItem,
-    loggedIn
+    loggedIn,
   } = authUserStore;
-
-  const { loadReactions } = reactionsStore;
 
   useEffect(() => {
     moment.locale('ru');
     loadSelectedItem();
-    loadReactions();
-    requestPermission()
-  } ,[]);
+  }, []);
 
   return (
     loading
       ? <Spin />
       : <AppRouter />
   );
-}
+};
 
 export default observer(App);

@@ -5,15 +5,15 @@ import { UserSearch } from '../../../commonComponents/userSearch';
 
 type Props = {
   closeModal: () => void;
-}
+};
 
 export const NewMessageMain: React.FC<Props> = ({ closeModal }) => {
-  const [ searchTerm, setSearchTerm ] = useState('');
+  const [searchTerm, setSearchTerm] = useState('');
 
   return (
     <>
-      <UserSearch searchTerm={searchTerm} setSearchTerm={setSearchTerm}/>
-      <NewMessageUsersList searchTerm={searchTerm} setSearchTerm={setSearchTerm} closeModal={closeModal}/>
+      <UserSearch searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
+      <NewMessageUsersList searchTerm={searchTerm} setSearchTerm={setSearchTerm} closeModal={closeModal} />
     </>
   );
 };

@@ -1,26 +1,30 @@
-import { UserType } from "../types/types";
-import { BaseApiClient } from "./BaseApiClient";
+import { UserType } from '../types/types';
+import { BaseApiClient } from './BaseApiClient';
 
 class UserApiClient extends BaseApiClient {
-    getMe(): Promise<UserType> {
-        return this.axiosGet<UserType>('/user/me');
-    }
+  getMe(): Promise<UserType> {
+    return this.axiosGet<UserType>('/user/me');
+  }
 
-    editMe(user: UserType): Promise<UserType> {
-        return this.axiosPost('/user/edit', user);
-    }
+  editMe(user: UserType): Promise<UserType> {
+    return this.axiosPost('/user/edit', user);
+  }
 
-    findUsers(prefix: string): Promise<UserType[]> {
-        return this.axiosGet('user/users/find/' + prefix);
-    }
+  setFirebaseToken(token: string) {
+    return this.axiosPost('/user/setFirebaseToken', { token });
+  }
 
-    getUsers(): Promise<UserType[]> {
-        return this.axiosGet('user/users');
-    }
+  findUsers(prefix: string): Promise<UserType[]> {
+    return this.axiosGet(`user/users/find/${prefix}`);
+  }
 
-    getAvatar(id: number): Promise<string> {
-        return this.axiosGet('user/avatar/' + id);
-    }
+  getUsers(): Promise<UserType[]> {
+    return this.axiosGet('user/users');
+  }
+
+  getAvatar(id: number): Promise<string> {
+    return this.axiosGet(`user/avatar/${id}`);
+  }
 }
 
 export default new UserApiClient();
