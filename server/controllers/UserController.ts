@@ -1,13 +1,12 @@
-import {
-  BodyParam, Get, JsonController, Param, Post, Req, Res,
-} from 'routing-controllers';
+import {BodyParam, Get, JsonController, Param, Post, Req, Res,} from 'routing-controllers';
 import express from 'express';
-import { User } from '@prisma/client';
+import {User} from '@prisma/client';
 import * as types from '../../src/types';
-import { prisma } from '../domain/PrismaClient';
-import { UserAvatarService } from '../services/UserAvatarService';
-import { RedisStore } from '../services/RedisStore';
-import { FileInfo } from '../models/FileInfo';
+import {prisma} from '../domain/PrismaClient';
+import {UserAvatarService} from '../services/UserAvatarService';
+import {RedisStore} from '../services/RedisStore';
+import {FileInfo} from '../models/FileInfo';
+import {UploadedFile} from "express-fileupload";
 
 const redisStore = new RedisStore();
 
@@ -110,9 +109,9 @@ export class UserController {
 
   @Post('/uploadAvatar')
   async uploadAvatar(
-  @Res() response: express.Response,
+    @Res() response: express.Response,
     @Req() request: express.Request,
-    @BodyParam('id') id: number,
+    @BodyParam('id') id: string,
   ) {
     const sessionUser = request.user;
     if (!sessionUser?.prismaUser) {
@@ -124,8 +123,7 @@ export class UserController {
     if (!files) {
       result = await UserAvatarService.createAvatar(id.toString());
     } else {
-      const { avatar } = files;
-      if (!avatar) throw Error('Неверное имя инпута для аватара');
+      const avatar: UploadedFile[] | UploadedFile = files.files;
       if (Array.isArray(avatar)) throw Error('Можно загружать только один аватар');
 
       const avatarFileInfo: FileInfo = {
@@ -142,7 +140,7 @@ export class UserController {
 
   @Get('/avatar/:id')
   async getAvatar(
-  @Req() request: express.Request,
+    @Req() request: express.Request,
     @Res() response: express.Response,
     @Param('id') id: number,
   ) {

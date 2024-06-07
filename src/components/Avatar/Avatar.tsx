@@ -1,10 +1,10 @@
-import React, { useEffect, useMemo, useState } from 'react';
-import { observer } from 'mobx-react-lite';
-import { Avatar as AvatarAD, Badge } from 'antd';
-import { CommentOutlined, UserOutlined } from '@ant-design/icons';
+import React, {useEffect, useMemo, useRef, useState,} from 'react';
+import {observer} from 'mobx-react-lite';
+import {Avatar as AvatarAD, Badge} from 'antd';
+import {CommentOutlined, UserOutlined} from '@ant-design/icons';
 import clsx from 'clsx';
 
-import { userStore } from '../../stores';
+import {userStore} from '../../stores';
 import styles from './Avatar.module.scss';
 
 type Props = {
@@ -12,15 +12,17 @@ type Props = {
   size?: number;
   className?: string;
   userStatus?: boolean;
+  availableForUpdate?: boolean;
   onClick?: () => void;
 };
 
 const Avatar: React.FC<Props> = ({
-  userId, size, className, userStatus, onClick,
+  userId, size, className, userStatus, availableForUpdate, onClick,
 }) => {
   const { avatarCache, loadAvatar } = userStore;
 
   const [image, setImage] = useState<string | undefined>(undefined);
+  const avatarUploadRef = useRef<HTMLInputElement>(null);
 
   const avatarSize = size ?? 40;
 
@@ -58,7 +60,29 @@ const Avatar: React.FC<Props> = ({
         />
       )}
       {userId && (image
-        ? <img alt="avatar" src={image} />
+        ? (
+          <>
+            <img alt="avatar" src={image} />
+            { availableForUpdate && (
+              <div className={styles['avatar-upload-overlay']} onClick={() => avatarUploadRef.current?.click()}>
+                <input
+                  ref={avatarUploadRef}
+                  type="file"
+                  name="avatar"
+                  hidden
+                  onInput={(e: React.ChangeEvent<HTMLInputElement>) => {
+                    const files = Array.from(e.target.files ?? []);
+                    userStore.uploadAvatar(userId, files).then(() => {
+                      loadAvatar(userId).then((avatar) => {
+                        if (avatar) setImage(avatar);
+                      });
+                    });
+                  }}
+                />
+              </div>
+            )}
+          </>
+        )
         : <AvatarAD icon={<UserOutlined />} size={avatarSize} />)}
     </div>
   ), [image]);
