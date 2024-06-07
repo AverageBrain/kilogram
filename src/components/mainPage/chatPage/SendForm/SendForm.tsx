@@ -221,7 +221,7 @@ const SendMessage: React.FC<Props> = ({
           <CalendarOutlined />
         </button>
         <SendButton
-          disabledDelay={editorState.getCurrentContent().getPlainText().trim().length === 0}
+          disabledDelay={editorState.getCurrentContent().getPlainText().trim().length === 0 && fileList?.length === 0}
           onSubmit={handleSubmit}
         />
       </div>
