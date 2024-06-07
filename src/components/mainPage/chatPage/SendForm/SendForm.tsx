@@ -55,7 +55,7 @@ const SendMessage: React.FC<Props> = ({
 
     const safeHtml = DOMPurify.sanitize(htmlContent + await getHTMLMetadata(htmlContent, getMetadata));
 
-    if (editorState.getCurrentContent().getPlainText().trim().length || fileList?.length) {
+    if (editorState.getCurrentContent().getPlainText().trim().length || files.length) {
       setEditorState(EditorState.moveFocusToEnd(EditorState.createEmpty()));
       setFileList(null);
       setFileBoxHeight(0);
@@ -221,7 +221,7 @@ const SendMessage: React.FC<Props> = ({
           <CalendarOutlined />
         </button>
         <SendButton
-          disabledDelay={editorState.getCurrentContent().getPlainText().trim().length === 0 && fileList?.length === 0}
+          disabledDelay={editorState.getCurrentContent().getPlainText().trim().length === 0 && files.length === 0}
           onSubmit={handleSubmit}
         />
       </div>
