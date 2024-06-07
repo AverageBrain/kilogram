@@ -2,22 +2,22 @@ import "reflect-metadata"
 import cookieParser from "cookie-parser";
 import expressSession from "express-session";
 
-import { useExpressServer } from "routing-controllers";
-import { UserController } from "./controllers/UserController";
-import { myPassport } from "./passport/myPassport";
-import { LoggerMiddleware } from "./middleware/LoggingMiddleware";
+import {useExpressServer} from "routing-controllers";
+import {UserController} from "./controllers/UserController";
+import {myPassport} from "./passport/myPassport";
+import {LoggerMiddleware} from "./middleware/LoggingMiddleware";
 import express from "express";
-import { User as PrismaUser } from "@prisma/client";
-import { AuthController } from "./controllers/AuthController";
-import { ChatController } from "./controllers/ChatController";
+import {User as PrismaUser} from "@prisma/client";
+import {AuthController} from "./controllers/AuthController";
+import {ChatController} from "./controllers/ChatController";
 import connect_pg_simple from "connect-pg-simple";
 import cors from "cors";
 import passport from "passport";
-import { SSEService } from "./services/SSEService";
-import { DelayMessageJob } from "./job/DelayMessageJob";
+import {SSEService} from "./services/SSEService";
+import {DelayMessageJob} from "./job/DelayMessageJob";
 import fileUpload from "express-fileupload";
-import { errorHandler } from "./middleware/ErrorHandler";
-import PushNotificationService from "./services/FirebaseNotification";
+import {errorHandler, HttpErrorHandler} from "./middleware/ErrorHandler";
+import {Logger} from "./services/Logger";
 
 const pgSession = connect_pg_simple(expressSession)
 
@@ -33,12 +33,12 @@ declare global {
 const app = express();
 
 
-app.use(cors({ credentials: true, origin: 'http://localhost:3000' }));
+app.use(cors({credentials: true, origin: 'http://localhost:3000'}));
 
 app.use(cookieParser());
 
 app.use(fileUpload({
-    limits: { fileSize: 20 * 1024 * 1024 }, // 20 MB
+    limits: {fileSize: 20 * 1024 * 1024}, // 20 MB
     abortOnLimit: true,
 }));
 
@@ -46,7 +46,7 @@ app.use(expressSession({
     secret: process.env.EXPRESS_SESSION_SECRET as string,
     resave: false,
     saveUninitialized: true,
-    cookie: { maxAge: 24 * 60 * 60 * 1000 }, // 24 hours
+    cookie: {maxAge: 24 * 60 * 60 * 1000}, // 24 hours
     name: "SID",
     store: new pgSession({
         conString: "postgresql://kilogram:kilogram@158.160.118.181:5432/kilogram",
@@ -66,14 +66,15 @@ useExpressServer(app, {
         ChatController,
     ],
     middlewares: [
-        LoggerMiddleware,
+        HttpErrorHandler,
+        LoggerMiddleware
     ]
 })
 
 
 app.get(
     '/api/auth/github/callback',
-    passport.authenticate('github', { failureRedirect: '/' }),
+    passport.authenticate('github', {failureRedirect: '/'}),
     (req, res) => res.redirect('/')
 );
 
@@ -105,8 +106,6 @@ app.get("/api/user/sse", (req, res) => {
 
 new DelayMessageJob().run()
 
-// new PushNotificationService().send("eMilM8tFAkTHc3vyDsp2cR:APA91bESepHpZBGnv5tuE6D326eLG140BNW__EcQwyXtWarY7xyRzUY1fS_MqAxcP0Ox3mehTZ1tWp-dBqr--Upy42gGe_GAanRpGiO9RQiTZgFVQwS8EepIfbW_CbR87AwR21JR92-s", "Hihihihihi")
-// new PushNotificationService().send("d1f-PcbzGockAJV7aMcn-q:APA91bE4uA86R6cq45RkNShCFQoUHLJ55AnvDEckggk6x0REbNvOaxDeabQnm0EAe8KvYhwB0r-iDBeUBOuQ_zboo4O6KUWkMv_kjV6mru4JI9_oG1BevGLN1_qP-rNS19bLyH0DmIk2", "Hihihihihi")
 
-console.log("Server started")
+Logger.info("Server started")
 app.listen(3000);

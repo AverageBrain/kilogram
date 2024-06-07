@@ -1,5 +1,6 @@
 import {cert, initializeApp} from 'firebase-admin/app';
 import {getMessaging} from 'firebase-admin/messaging';
+import {Logger} from "./Logger";
 
 const firebaseAdmin = initializeApp({
         credential: cert("./server/services/firebase_serviceAccountKey.json"),
@@ -32,10 +33,10 @@ export class PushNotificationService {
         getMessaging(firebaseAdmin)
             .send(payload)
             .then(response => {
-                console.log('Successfully sent message:', response);
+                Logger.info('Successfully sent message:', {response: response});
             })
             .catch(error => {
-                console.log('Error sending message:', error);
+                Logger.error('Error sending message:', {error: error});
             });
     };
 }

@@ -1,9 +1,10 @@
-import { createClient } from 'redis';
-import { SSEService } from "./SSEService";
-import { prisma } from "../domain/PrismaClient";
+import {createClient} from 'redis';
+import {SSEService} from "./SSEService";
+import {prisma} from "../domain/PrismaClient";
+import {Logger} from "./Logger";
 
-const client = await createClient({ url: 'redis://158.160.118.181:6379' })
-    .on('error', err => console.log('Redis Client Error', err))
+const client = await createClient({url: 'redis://158.160.118.181:6379', password: 'kilogram323'})
+    .on('error', err => Logger.error('Redis Client Error', {'error': err}))
     .connect();
 
 const statusExpire: Map<number, any> = new Map();
@@ -29,10 +30,10 @@ export class RedisStore {
             await this.notifyUsers(false, userId)
             statusExpire.delete(userId)
         }, 5_000))
-        const user = await prisma.user.findUnique({ where: { id: userId } })
+        const user = await prisma.user.findUnique({where: {id: userId}})
         if (user) {
             user.lastSeen = new Date()
-            await prisma.user.update({ data: user, where: { id: user.id } })
+            await prisma.user.update({data: user, where: {id: user.id}})
         }
     }
 
@@ -40,14 +41,14 @@ export class RedisStore {
     * Notify users about online or offline for another users
     * */
     async notifyUsers(status: boolean, userId: number) {
-        console.log(status, userId);
+        Logger.info("notifyUsers", {status: status, userId: userId});
         const sseService = new SSEService();
         const currentUser = await prisma.user.findFirstOrThrow({
-            where: { id: userId },
+            where: {id: userId},
         });
         const supportUser = await prisma.userChat.findMany({
-            where: { userId: userId },
-            include: { chat: { include: { members: true } } }
+            where: {userId: userId},
+            include: {chat: {include: {members: true}}}
         });
         const relevantUsers = supportUser.reduce((acc, su) => {
             su.chat.members.map(i => i.userId).forEach((id) => acc.add(id));
@@ -58,7 +59,7 @@ export class RedisStore {
 
         relevantUsers.forEach(
             async (id) => {
-                await sseService.publishMessage(id, 'userStatus', { status, userId, lastSeen: currentUser.lastSeen });
+                await sseService.publishMessage(id, 'userStatus', {status, userId, lastSeen: currentUser.lastSeen});
             }
         );
     }
