@@ -1,22 +1,22 @@
 /* eslint-disable @typescript-eslint/no-unused-expressions */
-import React, {useRef, useState} from 'react';
-import {observer} from 'mobx-react-lite';
-import {CalendarOutlined, CloseOutlined, FileAddOutlined} from '@ant-design/icons';
+import React, { useRef, useState } from 'react';
+import { observer } from 'mobx-react-lite';
+import { CalendarOutlined, CloseOutlined, FileAddOutlined } from '@ant-design/icons';
 import DOMPurify from 'dompurify';
-import {convertToRaw, EditorState} from 'draft-js';
+import { EditorState, convertToRaw } from 'draft-js';
 import draftToHtml from 'draftjs-to-html';
-import {Editor, SyntheticKeyboardEvent} from 'react-draft-wysiwyg';
+import { Editor, SyntheticKeyboardEvent } from 'react-draft-wysiwyg';
 import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
-import {v4 as uuid} from 'uuid';
+import { v4 as uuid } from 'uuid';
 
 import clsx from 'clsx';
-import {message, Tooltip} from 'antd';
-import {chatsStore, messagesStore, userStore} from '../../../../stores';
+import { Tooltip, message } from 'antd';
+import { chatsStore, messagesStore, userStore } from '../../../../stores';
 import SendButton from '../SendButton';
-import {getHTMLMetadata} from './getHTMLMetadata';
+import { getHTMLMetadata } from './getHTMLMetadata';
 import styles from './SendForm.module.scss';
 import buttonsStyles from '../../../../styles/buttons.module.scss';
-import {useScroll} from '../../../../hooks';
+import { useScroll } from '../../../../hooks';
 
 type Props = {
   scrollRef: React.RefObject<HTMLDivElement>;
