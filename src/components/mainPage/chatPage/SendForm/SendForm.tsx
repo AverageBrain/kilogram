@@ -1,21 +1,22 @@
 /* eslint-disable @typescript-eslint/no-unused-expressions */
-import React, { useRef, useState } from 'react';
-import { observer } from 'mobx-react-lite';
-import { CalendarOutlined, CloseOutlined, FileAddOutlined } from '@ant-design/icons';
+import React, {useRef, useState} from 'react';
+import {observer} from 'mobx-react-lite';
+import {CalendarOutlined, CloseOutlined, FileAddOutlined} from '@ant-design/icons';
 import DOMPurify from 'dompurify';
-import { EditorState, convertToRaw } from 'draft-js';
+import {convertToRaw, EditorState} from 'draft-js';
 import draftToHtml from 'draftjs-to-html';
-import { Editor, SyntheticKeyboardEvent } from 'react-draft-wysiwyg';
+import {Editor, SyntheticKeyboardEvent} from 'react-draft-wysiwyg';
 import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
+import {v4 as uuid} from 'uuid';
 
 import clsx from 'clsx';
-import { Tooltip, message } from 'antd';
-import { chatsStore, messagesStore, userStore } from '../../../../stores';
+import {message, Tooltip} from 'antd';
+import {chatsStore, messagesStore, userStore} from '../../../../stores';
 import SendButton from '../SendButton';
-import { getHTMLMetadata } from './getHTMLMetadata';
+import {getHTMLMetadata} from './getHTMLMetadata';
 import styles from './SendForm.module.scss';
 import buttonsStyles from '../../../../styles/buttons.module.scss';
-import { useScroll } from '../../../../hooks';
+import {useScroll} from '../../../../hooks';
 
 type Props = {
   scrollRef: React.RefObject<HTMLDivElement>;
@@ -123,6 +124,7 @@ const SendMessage: React.FC<Props> = ({
       .concat(files);
 
     setFileListByFiles(allFiles);
+    e.target.value = '';
   };
 
   const handleDeleteFile = (idx: number) => {
@@ -143,7 +145,7 @@ const SendMessage: React.FC<Props> = ({
         <div className={styles['attachments-wrapper']}>
           <div ref={refAttachments} className={styles.attachments}>
             {files.map((file, idx) => (
-              <div key={file.name} className={styles.attachment}>
+              <div key={uuid()} className={styles.attachment}>
                 <Tooltip title={file.name}>
                   {file.type.startsWith('image')
                     ? (
