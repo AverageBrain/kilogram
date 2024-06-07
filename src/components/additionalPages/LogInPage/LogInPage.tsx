@@ -24,7 +24,7 @@ const LogInPage: React.FC = () => {
       {loggedIn
         ? <Navigate replace to="/" relative="path" />
         : (
-          <Layout className={commonStyles.container} style={{ height: '100vh' }}>
+          <Layout className={commonStyles.container} style={{ height: '100dvh' }}>
             <Content className={clsx(styles['log-in-page'], commonStyles.content)}>
               <Flex vertical gap={32} justify="center" align="center">
                 <Text className={clsx(commonStyles.h1, styles.h1)}>KILOGRAM</Text>
