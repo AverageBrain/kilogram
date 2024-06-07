@@ -9,7 +9,6 @@ import { TypeOfChat } from '../../../../types/types';
 import { GroupProfile, UserProfile } from '../../../modals';
 import { getHandle } from '../../../../utils';
 import { useTypeOfScreen } from '../../../../hooks';
-import { Avatar } from '../../../Avatar';
 
 import styles from './ChatHeader.module.scss';
 import buttonStyles from '../../../../styles/buttons.module.scss';
@@ -38,7 +37,6 @@ const ChatHeader: React.FC<Props> = ({ isToolbarHidden, setIsToolbarHidden }) =>
     setSelectedUser(undefined);
     resetItems();
   };
-  console.log('Header', isToolbarHidden);
 
   const toggleToolbarHidden = () => {
     setIsToolbarHidden(!isToolbarHidden);
@@ -62,9 +60,8 @@ const ChatHeader: React.FC<Props> = ({ isToolbarHidden, setIsToolbarHidden }) =>
           </div>
           )}
         <div className={styles.info} onClick={showModal}>
-          {!isBigScreen && <Avatar />}
           <div className={styles['text-info']}>
-            <span className={styles.name}>{isGroup ? chat.name : curUser?.name}</span>
+            <span className={styles.name}>{isGroup ? chat.name : (curUser?.name ?? 'Удаленный пользователь')}</span>
             <span className={styles.description}>
               {getHandle({ isGroup, membersCount, user: curUser })}
             </span>
