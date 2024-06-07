@@ -1,5 +1,6 @@
 import { cert, initializeApp } from 'firebase-admin/app';
 import { getMessaging } from 'firebase-admin/messaging';
+import {Logger} from "./Logger";
 
 const firebaseAdmin = initializeApp(
   {
@@ -9,25 +10,37 @@ const firebaseAdmin = initializeApp(
 );
 
 export class PushNotificationService {
-  send = (userToken: string, type: string, uuid: string, data: any): void => {
-    const payload = {
-      data: { type, data: JSON.stringify(data), eventId: uuid },
-      token: userToken,
-      webpush: {
-        fcmOptions: {
-          link: 'https://team1.ya-itmo.ru/',
-        },
-      },
+    options = {
+        priority: 'high',
+        timeToLive: 60 * 60 * 24,
     };
-    getMessaging(firebaseAdmin)
-      .send(payload)
-      .then((response) => {
-        console.log('Successfully sent message:', response);
-      })
-      .catch((error) => {
-        console.warn('Error sending message:', error);
-      });
-  };
+
+    send = (userToken: string, message: string): void => {
+        const payload = {
+            data: {
+                title: 'Notification',
+                data: message,
+            },
+            notification: {
+                title: 'Notification',
+                body: message
+            },
+            token: userToken,
+            webpush: {
+                fcmOptions: {
+                    link: "https://team1.ya-itmo.ru/"
+                }
+            }
+        };
+        getMessaging(firebaseAdmin)
+            .send(payload)
+            .then(response => {
+                Logger.info('Successfully sent message:', {response: response});
+            })
+            .catch(error => {
+                Logger.error('Error sending message:', {error: error});
+            });
+    };
 }
 
 export default PushNotificationService;
