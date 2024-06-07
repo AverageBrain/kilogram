@@ -62,7 +62,7 @@ const InfiniteScroll: React.FC<Props> = ({ scrollRef, shouldLoadDelayed, fileBox
 
   return (
     <div ref={scrollRef} className={styles.messages}>
-      <div className={styles['space-for-files']} style={{ minHeight: (fileBoxHeight || 0) }} />
+      {!shouldLoadDelayed && <div className={styles['space-for-files']} style={{ minHeight: (fileBoxHeight || 0) }} />}
       {Object.entries(itemsGroupedByDate).map(([date, messages]) => (
         <div key={date} className={styles['messages-with-same-date']}>
           {messages.map((curMessage) => (

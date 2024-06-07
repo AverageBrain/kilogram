@@ -58,6 +58,7 @@ const SendMessage: React.FC<Props> = ({
     if (editorState.getCurrentContent().getPlainText().trim().length || fileList) {
       setEditorState(EditorState.createEmpty());
       setFileList(null);
+      setFileBoxHeight(0);
       if (chat) {
         inTime
           ? await sendDelayMessage(chat.id, safeHtml, files, inTime)
