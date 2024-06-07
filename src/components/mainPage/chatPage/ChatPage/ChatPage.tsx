@@ -19,6 +19,7 @@ const ChatPage: React.FC = () => {
   const scrollRef = React.useRef<HTMLDivElement>(null);
   const [shouldLoadDelayed, setShouldLoadDelayed] = useState(false);
   const { isToolbarHidden, setIsToolbarHidden } = useHiddenTexttools();
+  const [fileBoxHeight, setFileBoxHeight] = useState(0);
 
   useEffect(() => () => {
     resetItems();
@@ -42,13 +43,19 @@ const ChatPage: React.FC = () => {
             </div>
           </Header>
         ) : <ChatHeader isToolbarHidden={isToolbarHidden} setIsToolbarHidden={setIsToolbarHidden} />}
-      <InfiniteScroll key={shouldLoadDelayed.toString()} scrollRef={scrollRef} shouldLoadDelayed={shouldLoadDelayed} />
+      <InfiniteScroll
+        key={shouldLoadDelayed.toString()}
+        scrollRef={scrollRef}
+        shouldLoadDelayed={shouldLoadDelayed}
+        fileBoxHeight={fileBoxHeight}
+      />
       {!shouldLoadDelayed
         && (
         <SendForm
           isToolbarHidden={isToolbarHidden}
           scrollRef={scrollRef}
           setShouldLoadDelayed={setShouldLoadDelayed}
+          setFileBoxHeight={setFileBoxHeight}
         />
         )}
     </div>

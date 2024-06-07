@@ -1,3 +1,17 @@
 .splitter {
   height: 100vh;
+  width: 100vw;
+  display: flex;
+
+  .splitter-panel {
+    height: 100%;
+  }
+
+  .sidebar {
+    width: 35%;
+  }
+
+  .main-panel {
+    width: 65%;
+  }
 }

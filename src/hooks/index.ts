@@ -9,3 +9,5 @@ export { useComponentVisible } from './useComponentVisible';
 export { useTypeOfScreen } from './useTypeOfScreen';
 
 export { useHiddenTexttools } from './useHiddenTexttools';
+
+export { useScroll } from './useScroll';

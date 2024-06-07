@@ -50,6 +50,8 @@ $texttool_height: 26px;
 }
 
 .wrapper-send-message {
+  position: relative;
+
   .space-for-texttools {
     width: 100%;
     height: $texttool_height;
@@ -74,8 +76,8 @@ $texttool_height: 26px;
 
 .editor-class {
   padding: 10px;
-  min-height: 90px;
-  max-height: 90px;
+  min-height: 60px;
+  max-height: 120px;
 
   overflow-y: scroll;
 
@@ -95,31 +97,95 @@ $texttool_height: 26px;
   top: 0%;
 }
 
-.file-list {
-  list-style: none;
-  width: 150px;
-  padding: 0;
+.attachments-wrapper {
+  width: 100%;
+  position: absolute;
+  top: -60px;
+  display: flex;
+  height: 60px;
+  z-index: 9998;
 
-  .file-list-element {
-    height: min-content;
+  .attachments {
+    width: 100%;
+    overflow-x: scroll;
+    overflow-y: hidden;
+    list-style: none;
+    padding: 0;
+
     display: flex;
-    justify-content: space-between;
-    padding-left: 5px;
-    padding-right: 5px;
-    gap: 10px;
-    width: inherit;
-    margin: 0;
-    background: #ffdfdf;
-    border-radius: 2px;
-    border: 1px black;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    align-items: flex-end;
+    gap: 1px;
 
-    .file-name {
-      margin: 0;
-      max-width: 100px;
-      white-space: nowrap;
-      height: 20px;
-      text-overflow: ellipsis;
-      overflow: clip;
+    &::-webkit-scrollbar {
+      display: none;
+    }
+
+    .attachment {
+      position: relative;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: -3px;
+      user-select: none;
+
+      color: var(--base-font-color);
+      background: white;
+      border-radius: 10px 10px 0 0;
+      border: 1px black;
+      box-shadow: inset 0 -5px 5px -5px var(--base-font-color);
+
+      .image-preview {
+        padding: 5px;
+        padding-bottom: 0;
+
+        .image {
+          width: 64px;
+          height: 50px;
+          object-fit: cover;
+          border-radius: 6px 6px 0 0 ;
+        }
+
+        .image-close {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          width: 16px;
+          height: 16px;
+          background-color:#ffffffbb;
+          font-size: 12px;
+
+          top: 5px;
+          right: 5px;
+          border-radius: 50%;
+          position: absolute;
+        }
+      }
+
+      .file-attachment {
+        display: flex;
+        align-items: center;
+        height: 36px;
+        padding: 0 10px;
+        justify-content: space-between;
+        gap: 10px;
+
+        .attachment-name {
+          margin: 0;
+          max-width: 100px;
+          white-space: nowrap;
+          height: 20px;
+          text-overflow: ellipsis;
+          overflow: clip;
+        }
+
+        .attachment-close {
+          font-size: 14px;
+          cursor: pointer;
+        }
+      }
     }
   }
 }

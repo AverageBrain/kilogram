@@ -1,12 +1,16 @@
 .messages {
-    /* max-height: 679px; */
     overflow: scroll;
     position: relative;
     display: flex;
     flex-direction: column-reverse;
-    background: var(--base-background-gradient);
     padding: 10px;
     height: 100%;
+
+    .space-for-files {
+        min-height: 58px;
+        width: 100%;
+        display: block;
+    }
 
     .messages-with-same-date {
         position: relative;
